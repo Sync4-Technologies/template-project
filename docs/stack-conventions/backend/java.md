@@ -1,79 +1,79 @@
 # Stack Convention — Java
 
-> Frameworks suportados: **Spring Boot** (preferencial — ecosistema enterprise) ou **Quarkus** (cloud-native, startup rápido, GraalVM).
+> Supported frameworks: **Spring Boot** (preferred — enterprise ecosystem) or **Quarkus** (cloud-native, fast startup, GraalVM).
 
 ---
 
-## Quando usar esta stack
+## When to use this stack
 
-Escolher Java quando:
+Choose Java when:
 
-- **Sistemas enterprise** com requisitos rigorosos (banking, telco, healthcare)
-- **Alta concorrência** com modelo de threads maduro (Virtual Threads no Java 21+)
-- **Ecosistema Spring** crítico (Spring Security, Spring Data, Spring Cloud)
-- **Time já experiente em JVM** — pool de devs vasto
-- **Integrações complexas** com legado (mainframes, ESBs, sistemas SOAP)
-- **Backends de longa vida** com manutenção de 5+ anos
-- **Apps que rodam on-premise** com restrições de cloud
-- **Necessidade de strong typing rígido** com generics expressivos
+- **Enterprise systems** with stringent requirements (banking, telco, healthcare)
+- **High concurrency** with mature thread model (Virtual Threads in Java 21+)
+- **Critical Spring ecosystem** (Spring Security, Spring Data, Spring Cloud)
+- **Team experienced in JVM** — vast developer pool
+- **Complex integrations** with legacy (mainframes, ESBs, SOAP systems)
+- **Long-lived backends** with 5+ years of maintenance
+- **On-premise apps** with cloud restrictions
+- **Need for rigorous strong typing** with expressive generics
 
-## Quando NÃO usar
+## When NOT to use
 
-- **Startup ultra-rápido** (lambdas, edge) — preferir Go ou Java com GraalVM Native Image
-- **AI/ML** — Python domina
-- **Prototipagem rápida** — boilerplate alto vs Python/Node.js
-- **Memória extremamente limitada** — JVM consome bastante (mitigado por Native Image)
-- **Times pequenos sem experiência JVM** — overhead de aprendizado significativo
+- **Ultra-fast startup** (lambdas, edge) — prefer Go or Java with GraalVM Native Image
+- **AI/ML** — Python dominates
+- **Fast prototyping** — high boilerplate vs Python/Node.js
+- **Extremely limited memory** — JVM consumes a lot (mitigated by Native Image)
+- **Small teams without JVM experience** — significant learning overhead
 
 ---
 
-## Versões e dependências
+## Versions and dependencies
 
-| Item | Versão mínima |
-|------|---------------|
-| Java | ≥ 21 LTS (preferencial 21+ para Virtual Threads) |
-| Build tool | Maven ≥ 3.9 ou Gradle ≥ 8.5 (Kotlin DSL preferencial) |
+| Item | Minimum version |
+|------|-----------------|
+| Java | ≥ 21 LTS (prefer 21+ for Virtual Threads) |
+| Build tool | Maven ≥ 3.9 or Gradle ≥ 8.5 (Kotlin DSL preferred) |
 | Spring Boot | ≥ 3.3 |
 | Quarkus | ≥ 3.10 |
 
 ### Frameworks
 
-| Framework | Quando usar |
+| Framework | When to use |
 |-----------|-------------|
-| **Spring Boot** | Default — ecosistema mais rico (Security, Data, Cloud, Integration) |
-| **Quarkus** | Cloud-native, startup ultra-rápido, GraalVM Native Image |
-| **Micronaut** | Alternativa moderna a Spring com compile-time DI |
+| **Spring Boot** | Default — richest ecosystem (Security, Data, Cloud, Integration) |
+| **Quarkus** | Cloud-native, ultra-fast startup, GraalVM Native Image |
+| **Micronaut** | Modern Spring alternative with compile-time DI |
 
-### Bibliotecas padrão
+### Standard libraries
 
-| Necessidade | Biblioteca |
-|-------------|-----------|
-| ORM | Spring Data JPA + Hibernate ou Spring Data JDBC |
-| Migrations | Flyway (preferencial) ou Liquibase |
-| Validação | Bean Validation (Hibernate Validator) |
-| HTTP client | RestClient (Spring 6.1+) ou WebClient (reativo) ou OpenFeign |
+| Need | Library |
+|------|---------|
+| ORM | Spring Data JPA + Hibernate or Spring Data JDBC |
+| Migrations | Flyway (preferred) or Liquibase |
+| Validation | Bean Validation (Hibernate Validator) |
+| HTTP client | RestClient (Spring 6.1+) or WebClient (reactive) or OpenFeign |
 | Logging | SLF4J + Logback |
 | Testing | JUnit 5 + Mockito + AssertJ + Testcontainers |
 | Tracing/Metrics | Micrometer + OpenTelemetry |
-| Auth | Spring Security + JWT (jjwt ou nimbus-jose-jwt) |
+| Auth | Spring Security + JWT (jjwt or nimbus-jose-jwt) |
 | Queue | Spring AMQP (RabbitMQ), Spring Kafka |
-| Cache | Spring Cache + Caffeine ou Redis |
-| Mapping | MapStruct (preferencial sobre reflexão) |
+| Cache | Spring Cache + Caffeine or Redis |
+| Mapping | MapStruct (preferred over reflection) |
 
 ---
 
-## Tooling obrigatório
+## Required tooling
 
-| Tool | Propósito |
-|------|-----------|
-| **SpotBugs** ou **ErrorProne** | Static analysis |
+| Tool | Purpose |
+|------|---------|
+| **SpotBugs** or **ErrorProne** | Static analysis |
 | **Checkstyle** | Code style |
 | **PMD** | Code quality |
-| **JaCoCo** | Cobertura de testes |
+| **JaCoCo** | Test coverage |
 | **Spotless** | Formatter (Google Java Format) |
 | **OWASP Dependency-Check** | CVE scanning |
 
-### build.gradle.kts mínimo
+### Minimum build.gradle.kts
 
 ```kotlin
 plugins {
@@ -110,17 +110,17 @@ jacoco {
 
 ---
 
-## Layout do projeto (Hexagonal)
+## Project layout (Hexagonal)
 
 ### Spring Boot
 
 ```
 src/main/java/com/company/app/
-├── domain/                          # núcleo
+├── domain/                          # core
 │   ├── user/
 │   │   ├── model/                   # entities, value objects
 │   │   ├── port/                    # interfaces (UserRepository, etc.)
-│   │   └── service/                 # serviços de domínio
+│   │   └── service/                 # domain services
 │   └── order/
 │       └── ...
 │
@@ -149,24 +149,24 @@ src/main/java/com/company/app/
 └── Application.java                 # @SpringBootApplication
 ```
 
-### Configuração de DI
+### DI configuration
 
-- Constructor injection **obrigatória** (evitar `@Autowired` em fields)
-- `@Bean` em config classes para wirings explícitos quando necessário
-- `@Primary`, `@Qualifier` para múltiplas implementações
+- Constructor injection **mandatory** (avoid `@Autowired` on fields)
+- `@Bean` in config classes for explicit wirings when needed
+- `@Primary`, `@Qualifier` for multiple implementations
 
 ---
 
-## Convenções de código
+## Code conventions
 
 ### Naming (Google Java Style)
 
-- **PascalCase** para classes, interfaces, enums
-- **camelCase** para métodos, variáveis
-- **UPPER_SNAKE_CASE** para constantes (`static final`)
-- Pacotes em **lowercase** sem underscore
+- **PascalCase** for classes, interfaces, enums
+- **camelCase** for methods, variables
+- **UPPER_SNAKE_CASE** for constants (`static final`)
+- Packages **lowercase** without underscores
 
-### Records para DTOs (Java 14+)
+### Records for DTOs (Java 14+)
 
 ```java
 public record CreateUserRequest(
@@ -182,27 +182,27 @@ public record UserResponse(
 ) {}
 ```
 
-### Imutabilidade
+### Immutability
 
-- `final` em variáveis locais e parâmetros (Spotless pode forçar)
-- Records para Value Objects e DTOs
-- `Collections.unmodifiableList()` ou `List.copyOf()` para coleções imutáveis
-- Builders (Lombok `@Builder` ou Records com builders) para entidades complexas
+- `final` on local variables and parameters (Spotless can enforce)
+- Records for Value Objects and DTOs
+- `Collections.unmodifiableList()` or `List.copyOf()` for immutable collections
+- Builders (Lombok `@Builder` or Records with builders) for complex entities
 
-### Optional para retornos nullable
+### Optional for nullable returns
 
 ```java
 public Optional<User> findById(UUID id) { ... }
 
-// uso correto
+// correct usage
 userRepository.findById(id)
     .map(this::toResponse)
     .orElseThrow(() -> new NotFoundException("user not found"));
 
-// NUNCA: optional.get() sem ifPresent/orElse
+// NEVER: optional.get() without ifPresent/orElse
 ```
 
-### Streams idiomáticos
+### Idiomatic streams
 
 ```java
 List<UserResponse> active = users.stream()
@@ -213,17 +213,17 @@ List<UserResponse> active = users.stream()
 
 ### Error handling
 
-- **Checked exceptions** apenas para casos onde caller PRECISA tratar
-- **RuntimeException** para erros de domínio (`DomainException`, `NotFoundException`)
-- `@RestControllerAdvice` ou `@ControllerAdvice` global para tradução em HTTP
-- **Nunca** `catch (Exception e)` sem rethrow ou ação clara
-- Não engolir InterruptedException — sempre `Thread.currentThread().interrupt()`
+- **Checked exceptions** only when caller MUST handle them
+- **RuntimeException** for domain errors (`DomainException`, `NotFoundException`)
+- Global `@RestControllerAdvice` or `@ControllerAdvice` for HTTP translation
+- **Never** `catch (Exception e)` without rethrow or clear action
+- Don't swallow InterruptedException — always `Thread.currentThread().interrupt()`
 
-### Validação
+### Validation
 
-- Bean Validation (`@Valid`, `@NotNull`, `@Email`, etc.) no controller
-- Custom validators para regras complexas
-- Domain re-valida invariantes
+- Bean Validation (`@Valid`, `@NotNull`, `@Email`, etc.) in the controller
+- Custom validators for complex rules
+- Domain re-validates invariants
 
 ```java
 @PostMapping
@@ -235,19 +235,19 @@ public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest
 
 ---
 
-## Padrão de testes
+## Testing standards
 
-### Pirâmide
+### Pyramid
 
-| Camada | Ferramenta | Cobertura por modo |
-|--------|-----------|--------------------|
-| Unit (domain + use cases) | JUnit 5 + Mockito + AssertJ | MVP ≥60% críticas / Production ≥95% críticas |
+| Layer | Tool | Coverage by mode |
+|-------|------|------------------|
+| Unit (domain + use cases) | JUnit 5 + Mockito + AssertJ | MVP ≥60% critical / Production ≥95% critical |
 | Integration (adapters + DB) | @SpringBootTest + Testcontainers | MVP ≥40% / Production ≥80% |
-| E2E (HTTP) | RestAssured ou MockMvc | Happy paths críticos |
-| Architecture | ArchUnit | Aderência a Hexagonal |
-| Load | JMeter ou Gatling | Production: NFRs do PRD |
+| E2E (HTTP) | RestAssured or MockMvc | Critical happy paths |
+| Architecture | ArchUnit | Hexagonal compliance |
+| Load | JMeter or Gatling | Production: PRD NFRs |
 
-### ArchUnit para enforçar Hexagonal
+### ArchUnit to enforce Hexagonal
 
 ```java
 @AnalyzeClasses(packages = "com.company.app")
@@ -260,7 +260,7 @@ class ArchitectureTest {
 }
 ```
 
-### Testcontainers obrigatório para integration tests
+### Testcontainers required for integration tests
 
 ```java
 @Testcontainers
@@ -284,27 +284,27 @@ class UserRepositoryIT {
 ### Flyway
 
 ```bash
-# pasta padrão: src/main/resources/db/migration
-# nomenclatura: V1__init.sql, V2__add_users_table.sql
+# default folder: src/main/resources/db/migration
+# naming: V1__init.sql, V2__add_users_table.sql
 
 ./gradlew flywayMigrate
 ./gradlew flywayInfo
 ./gradlew flywayValidate
 ```
 
-### Regras
+### Rules
 
-- Toda migration **forward-only** em Production (preferencial)
-- **Expand-contract** em breaking changes (sem `down`, mas planejado em fases)
-- Backup confirmado antes de migration destrutiva
-- Migration testada em staging com volume realista
-- Migration > 5min → janela de manutenção ou online schema change (gh-ost, pt-online-schema-change)
+- Every migration **forward-only** in Production (preferred)
+- **Expand-contract** for breaking changes (no `down`, but planned in phases)
+- Backup confirmed before destructive migration
+- Migration tested on staging with realistic volume
+- Migration > 5min → maintenance window or online schema change (gh-ost, pt-online-schema-change)
 
 ---
 
-## Logging e Observabilidade
+## Logging and Observability
 
-### SLF4J + Logback estruturado (JSON em produção)
+### Structured SLF4J + Logback (JSON in production)
 
 ```java
 private static final Logger log = LoggerFactory.getLogger(UserService.class);
@@ -312,42 +312,42 @@ private static final Logger log = LoggerFactory.getLogger(UserService.class);
 log.info("user_created", kv("userId", user.getId()), kv("email", user.getEmail()));
 ```
 
-### Regras
+### Rules
 
-- Sempre estruturado (JSON em produção)
-- Correlation ID via Spring Cloud Sleuth ou MDC
-- Nunca logar dados sensíveis
-- Micrometer + OpenTelemetry para tracing/metrics em Production
-- Actuator endpoints expostos em rede interna (`/actuator/health`, `/actuator/metrics`)
+- Always structured (JSON in production)
+- Correlation ID via Spring Cloud Sleuth or MDC
+- Never log sensitive data
+- Micrometer + OpenTelemetry for tracing/metrics in Production
+- Actuator endpoints exposed on internal network (`/actuator/health`, `/actuator/metrics`)
 
 ---
 
 ## Performance
 
-- **Virtual Threads** (Java 21) para I/O-heavy workloads
-- **Connection pooling** via HikariCP (default Spring Boot — ajustar `maximum-pool-size`)
-- Cache via Spring Cache + Caffeine (in-memory) ou Redis (distribuído)
-- **Async** via `@Async` ou `CompletableFuture` para tarefas paralelas
+- **Virtual Threads** (Java 21) for I/O-heavy workloads
+- **Connection pooling** via HikariCP (Spring Boot default — tune `maximum-pool-size`)
+- Cache via Spring Cache + Caffeine (in-memory) or Redis (distributed)
+- **Async** via `@Async` or `CompletableFuture` for parallel tasks
 - Profiling: JFR (Java Flight Recorder), async-profiler, VisualVM
-- **GraalVM Native Image** (Spring Boot 3+ ou Quarkus) para startup sub-segundo
+- **GraalVM Native Image** (Spring Boot 3+ or Quarkus) for sub-second startup
 
 ---
 
-## Segurança específica
+## Stack-specific security
 
-- **Spring Security** obrigatório em APIs
-- BCrypt ou Argon2 para senhas (Spring Security `PasswordEncoder`)
-- JWT validation com biblioteca estabelecida (jjwt, nimbus-jose-jwt)
-- CORS configurado explicitamente (nunca `*` com auth)
-- CSRF habilitado em apps com session (desabilitar apenas em APIs stateless com token)
-- OWASP Dependency-Check na pipeline
-- Headers de segurança via Spring Security
-- SQL Injection: JPA parametriza — **nunca** concatenar com `Query` nativa
-- XXE: desabilitar processamento de DTD/external entities em parsers XML
+- **Spring Security** required in APIs
+- BCrypt or Argon2 for passwords (Spring Security `PasswordEncoder`)
+- JWT validation via established library (jjwt, nimbus-jose-jwt)
+- CORS configured explicitly (never `*` with auth)
+- CSRF enabled in apps with sessions (disable only in stateless APIs with token)
+- OWASP Dependency-Check in pipeline
+- Security headers via Spring Security
+- SQL Injection: JPA parameterizes — **never** concatenate with native `Query`
+- XXE: disable DTD/external entity processing in XML parsers
 
 ---
 
-## Comandos padrão
+## Standard commands
 
 ### Gradle
 
@@ -360,13 +360,13 @@ log.info("user_created", kv("userId", user.getId()), kv("email", user.getEmail()
 
 # test
 ./gradlew test                               # unit
-./gradlew integrationTest                    # se separado
-./gradlew jacocoTestReport                   # cobertura
+./gradlew integrationTest                    # if separate
+./gradlew jacocoTestReport                   # coverage
 
 # lint
 ./gradlew spotlessCheck
 ./gradlew spotlessApply
-./gradlew check                              # roda spotless + tests + checkstyle
+./gradlew check                              # spotless + tests + checkstyle
 
 # migrations
 ./gradlew flywayMigrate
@@ -390,29 +390,29 @@ mvn dependency-check:check
 
 ---
 
-## Anti-patterns (bloquear)
+## Anti-patterns (block)
 
-- Field injection (`@Autowired` em fields) — usar constructor injection
-- `null` retornado quando o esperado é entidade — usar `Optional` ou lançar exception
+- Field injection (`@Autowired` on fields) — use constructor injection
+- `null` returned when an entity is expected — use `Optional` or throw exception
 - Mutable static state
-- Captura de `Exception` sem rethrow
-- Domínio importando JPA/Spring (poluição de framework no core)
-- Lógica de negócio em controller
-- Repositório retornando entidade JPA cru (mapear para entity de domínio)
-- Lazy loading sem cuidado (LazyInitializationException)
-- N+1 queries (usar `JOIN FETCH` ou `@EntityGraph`)
-- `System.out.println` em código de produção
-- `Thread.sleep()` em handlers (use async)
-- Servlet APIs no domain
-- Engolir InterruptedException sem `Thread.currentThread().interrupt()`
+- Catching `Exception` without rethrow
+- Domain importing JPA/Spring (framework pollution in core)
+- Business logic in controller
+- Repository returning raw JPA entity (map to domain entity)
+- Lazy loading without care (LazyInitializationException)
+- N+1 queries (use `JOIN FETCH` or `@EntityGraph`)
+- `System.out.println` in production code
+- `Thread.sleep()` in handlers (use async)
+- Servlet APIs in the domain
+- Swallowing InterruptedException without `Thread.currentThread().interrupt()`
 
 ---
 
-## Referências
+## References
 
 - Java: <https://docs.oracle.com/en/java/javase/21/>
 - Spring Boot: <https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/>
 - Quarkus: <https://quarkus.io/guides/>
 - ArchUnit: <https://www.archunit.org/userguide/html/000_Index.html>
 - Google Java Style: <https://google.github.io/styleguide/javaguide.html>
-- Effective Java (Joshua Bloch) — referência canônica
+- Effective Java (Joshua Bloch) — canonical reference

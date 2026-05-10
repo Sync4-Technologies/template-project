@@ -1,77 +1,77 @@
 # Stack Convention — Node.js (TypeScript)
 
-> Frameworks suportados: **NestJS** (preferencial para projetos grandes) ou **Express** (APIs simples). Sempre TypeScript.
+> Supported frameworks: **NestJS** (preferred for large projects) or **Express** (simple APIs). Always TypeScript.
 
 ---
 
-## Quando usar esta stack
+## When to use this stack
 
-Escolher Node.js + TypeScript quando:
+Choose Node.js + TypeScript when:
 
-- **I/O intensivo** — alto volume de requests, real-time (WebSockets, SSE), streaming
-- **Compartilhamento de tipos com frontend** — monorepo com React/Next.js consumindo tipos do backend
-- **Ecosistema JS no time** — desenvolvedores já dominam JS/TS
-- **Tempo real** — chat, notificações push, dashboards live
-- **Microserviços orquestrados via API** — lightweight, startup rápido
-- **APIs GraphQL** — Apollo Server tem ótima maturidade
-- **Edge functions** — Vercel/Cloudflare Workers compatíveis
-- **Backend-for-Frontend (BFF)** — agregação para mobile/web
+- **I/O-intensive** — high request volume, real-time (WebSockets, SSE), streaming
+- **Type sharing with frontend** — monorepo with React/Next.js consuming backend types
+- **JS ecosystem on the team** — developers already fluent in JS/TS
+- **Real-time** — chat, push notifications, live dashboards
+- **API-orchestrated microservices** — lightweight, fast startup
+- **GraphQL APIs** — Apollo Server is mature
+- **Edge functions** — Vercel/Cloudflare Workers compatibility
+- **Backend-for-Frontend (BFF)** — aggregation for mobile/web
 
-## Quando NÃO usar
+## When NOT to use
 
-- **CPU-bound pesado** (processamento de imagem/vídeo, ML inference) — preferir Python/Go
-- **Cálculos numéricos intensos** — falta de SIMD nativo, GC pause
-- **AI/ML pipelines** — ecosistema Python é dramaticamente superior
-- **Sistemas com requisitos hard real-time** — GC imprevisível
-- **Equipes sem experiência em assincronismo** — async/await mal usado vira pesadelo
+- **Heavy CPU-bound work** (image/video processing, ML inference) — prefer Python/Go
+- **Intensive numerical computation** — no native SIMD, GC pauses
+- **AI/ML pipelines** — Python ecosystem is dramatically superior
+- **Hard real-time requirements** — unpredictable GC
+- **Teams without async experience** — misused async/await becomes a nightmare
 
 ---
 
-## Versões e dependências
+## Versions and dependencies
 
-| Item | Versão mínima |
-|------|---------------|
-| Node.js | ≥ 20 LTS (preferir 22 LTS quando disponível) |
+| Item | Minimum version |
+|------|-----------------|
+| Node.js | ≥ 20 LTS (prefer 22 LTS when available) |
 | TypeScript | ≥ 5.4 |
-| pnpm | ≥ 9 (preferencial sobre npm/yarn por velocidade e disk usage) |
+| pnpm | ≥ 9 (preferred over npm/yaml for speed and disk usage) |
 
 ### Frameworks
 
-| Framework | Quando usar |
+| Framework | When to use |
 |-----------|-------------|
-| **NestJS** | Projetos médios/grandes com necessidade de DI, módulos, decorators, integrações enterprise |
-| **Express** | APIs simples, microserviços lightweight, prototipagem rápida |
-| **Fastify** | Performance acima da média sem opinião arquitetural forte |
+| **NestJS** | Medium/large projects needing DI, modules, decorators, enterprise integrations |
+| **Express** | Simple APIs, lightweight microservices, fast prototyping |
+| **Fastify** | Above-average performance without strong architectural opinion |
 
-### Bibliotecas padrão
+### Standard libraries
 
-| Necessidade | Biblioteca |
-|-------------|-----------|
-| ORM | Prisma (preferencial) ou TypeORM |
-| Validação | Zod (preferencial) ou class-validator |
-| HTTP client | undici (nativo Node ≥ 18) ou axios |
-| Logging | pino (estruturado, fast) |
-| Testing | Vitest (preferencial) ou Jest |
+| Need | Library |
+|------|---------|
+| ORM | Prisma (preferred) or TypeORM |
+| Validation | Zod (preferred) or class-validator |
+| HTTP client | undici (Node ≥ 18 native) or axios |
+| Logging | pino (structured, fast) |
+| Testing | Vitest (preferred) or Jest |
 | Tracing/Metrics | OpenTelemetry SDK |
-| Auth | passport.js (estratégias) ou implementação própria com JOSE para JWT |
-| Migrations | Prisma Migrate ou node-pg-migrate |
+| Auth | passport.js (strategies) or in-house with JOSE for JWT |
+| Migrations | Prisma Migrate or node-pg-migrate |
 | Queue/Jobs | BullMQ (Redis) |
 | Cache | ioredis |
 
 ---
 
-## Tooling obrigatório
+## Required tooling
 
-| Tool | Propósito |
-|------|-----------|
+| Tool | Purpose |
+|------|---------|
 | **ESLint** | Linter (config: `@typescript-eslint/strict` + `eslint-plugin-import`) |
 | **Prettier** | Formatter |
-| **TypeScript** | Type check (`tsc --noEmit` em CI) |
-| **Vitest** ou **Jest** | Test runner |
+| **TypeScript** | Type check (`tsc --noEmit` in CI) |
+| **Vitest** or **Jest** | Test runner |
 | **husky + lint-staged** | Pre-commit hooks |
-| **commitlint** | Convenção de commits (Conventional Commits) |
+| **commitlint** | Commit conventions (Conventional Commits) |
 
-### Configuração de TypeScript (tsconfig.json mínimo)
+### Minimum TypeScript config (tsconfig.json)
 
 ```json
 {
@@ -96,66 +96,66 @@ Escolher Node.js + TypeScript quando:
 
 ---
 
-## Layout do projeto (Hexagonal)
+## Project layout (Hexagonal)
 
 ```
 src/
-├── domain/                      # núcleo — sem deps externas
-│   ├── entities/                # entidades + value objects
+├── domain/                      # core — no external deps
+│   ├── entities/                # entities + value objects
 │   ├── ports/                   # interfaces (repositories, gateways)
-│   └── services/                # serviços de domínio (sem orquestração)
+│   └── services/                # domain services (no orchestration)
 │
-├── application/                 # orquestração de domínio
-│   └── use-cases/               # cada use case = uma operação de negócio
+├── application/                 # domain orchestration
+│   └── use-cases/               # each use case = one business operation
 │
 ├── adapters/
-│   ├── inbound/                 # entrada
+│   ├── inbound/                 # entry
 │   │   ├── http/                # controllers, routes, middlewares
 │   │   ├── messaging/           # consumers (RabbitMQ, Kafka)
-│   │   └── cli/                 # comandos CLI
+│   │   └── cli/                 # CLI commands
 │   │
-│   └── outbound/                # saída
-│       ├── persistence/         # repositórios (Prisma, etc.)
-│       ├── http-clients/        # clients para APIs externas
+│   └── outbound/                # exit
+│       ├── persistence/         # repositories (Prisma, etc.)
+│       ├── http-clients/        # external API clients
 │       └── messaging/           # producers
 │
 ├── infrastructure/              # cross-cutting
 │   ├── config/                  # env, secrets
 │   ├── logging/                 # logger setup
 │   ├── observability/           # tracing, metrics
-│   └── di/                      # composição de dependências
+│   └── di/                      # dependency composition
 │
 └── main.ts                      # bootstrap
 ```
 
 ### NestJS
 
-Em NestJS, mapear:
+In NestJS, map:
 - `domain/` → `src/<bounded-context>/domain/`
-- `application/` → use cases como `*.use-case.ts`
+- `application/` → use cases as `*.use-case.ts`
 - `adapters/inbound/http/` → `*.controller.ts` + `*.module.ts`
-- `adapters/outbound/persistence/` → `*.repository.ts` (impl) + token de DI
+- `adapters/outbound/persistence/` → `*.repository.ts` (impl) + DI token
 
 ### Express
 
-Sem DI nativo — usar **awilix** ou **tsyringe** para inversão de dependência.
+No native DI — use **awilix** or **tsyringe** for dependency inversion.
 
 ---
 
-## Convenções de código
+## Code conventions
 
 ### Naming
 
-- **camelCase** para variáveis, funções, métodos
-- **PascalCase** para classes, types, interfaces, enums
-- **UPPER_SNAKE_CASE** para constantes globais
-- **kebab-case** para nomes de arquivo (ex: `user-repository.ts`)
-- **Sem prefix `I`** em interfaces (`UserRepository`, não `IUserRepository`)
+- **camelCase** for variables, functions, methods
+- **PascalCase** for classes, types, interfaces, enums
+- **UPPER_SNAKE_CASE** for global constants
+- **kebab-case** for filenames (e.g., `user-repository.ts`)
+- **No `I` prefix** on interfaces (`UserRepository`, not `IUserRepository`)
 
 ### Imports
 
 ```typescript
-// ordem: built-in → externo → interno (paths absolutos) → relativo
+// order: built-in → external → internal (absolute paths) → relative
 import { readFile } from 'node:fs/promises';
 import { z } from 'zod';
 import { UserRepository } from '@domain/ports/user-repository';
@@ -164,24 +164,24 @@ import { logger } from '../infrastructure/logger';
 
 ### Async/await
 
-- **Sempre** preferir `async/await` sobre `.then()`
-- Não bloquear event loop com operações síncronas pesadas
-- Usar `Promise.all()` para paralelismo, `Promise.allSettled()` quando falhas parciais são aceitas
-- **Nunca** misturar callbacks com promises sem `util.promisify()`
+- **Always** prefer `async/await` over `.then()`
+- Don't block the event loop with heavy synchronous operations
+- Use `Promise.all()` for parallelism, `Promise.allSettled()` when partial failures are acceptable
+- **Never** mix callbacks with promises without `util.promisify()`
 
 ### Error handling
 
-- Lançar erros tipados (subclasses de `Error`) com mensagens claras
-- Errors de domínio: `DomainError`, `ValidationError`, `NotFoundError`, `UnauthorizedError`
-- Adapter inbound (controller) traduz erro de domínio em HTTP status apropriado
-- **Nunca** retornar `null` quando o esperado é uma entidade — lançar `NotFoundError`
-- Usar `Result<T, E>` pattern (ex: `neverthrow`) em funções com falha previsível
+- Throw typed errors (subclasses of `Error`) with clear messages
+- Domain errors: `DomainError`, `ValidationError`, `NotFoundError`, `UnauthorizedError`
+- Inbound adapter (controller) translates domain errors to appropriate HTTP status
+- **Never** return `null` when an entity is expected — throw `NotFoundError`
+- Use `Result<T, E>` pattern (e.g., `neverthrow`) in functions with predictable failure
 
-### Validação
+### Validation
 
-- Zod para schemas de entrada (HTTP body, query, params)
-- Validação no adapter inbound, antes de chegar ao use case
-- Nunca confiar em dados externos no domain
+- Zod for input schemas (HTTP body, query, params)
+- Validation in the inbound adapter, before reaching the use case
+- Never trust external data in the domain
 
 ```typescript
 // adapters/inbound/http/users.controller.ts
@@ -199,28 +199,28 @@ router.post('/users', async (req, res) => {
 
 ---
 
-## Padrão de testes
+## Testing standards
 
-### Pirâmide
+### Pyramid
 
-| Camada | Ferramenta | Cobertura por modo |
-|--------|-----------|--------------------|
-| Unit (domain + use cases) | Vitest | MVP ≥60% críticas / Production ≥95% críticas |
+| Layer | Tool | Coverage by mode |
+|-------|------|------------------|
+| Unit (domain + use cases) | Vitest | MVP ≥60% critical / Production ≥95% critical |
 | Integration (adapters) | Vitest + Testcontainers | MVP ≥40% / Production ≥80% |
-| E2E (HTTP) | Vitest + supertest | Happy paths críticos |
-| Load/Performance | k6 | Production: NFRs do PRD |
+| E2E (HTTP) | Vitest + supertest | Critical happy paths |
+| Load/Performance | k6 | Production: PRD NFRs |
 
-### Estrutura
+### Structure
 
-- `*.spec.ts` colocado **ao lado** do arquivo testado
-- Nunca usar dados de produção
-- Testcontainers para PostgreSQL/Redis em testes de integração
-- Mocks apenas para serviços externos (HTTP); banco real via Testcontainers
+- `*.spec.ts` colocated **next to** the file under test
+- Never use production data
+- Testcontainers for PostgreSQL/Redis in integration tests
+- Mocks only for external services (HTTP); real database via Testcontainers
 
-### TDD obrigatório
+### TDD required
 
-- QA define cenários antes da implementação
-- Implementação só passa quando testes verdes
+- QA defines scenarios before implementation
+- Implementation only passes when tests are green
 
 ---
 
@@ -229,26 +229,26 @@ router.post('/users', async (req, res) => {
 ### Prisma Migrate
 
 ```bash
-# criar migration
+# create migration
 pnpm prisma migrate dev --name add_users_table
 
-# aplicar em produção
+# apply in production
 pnpm prisma migrate deploy
 ```
 
-### Regras (ver `agents/backend-engineer.md` → Migrations)
+### Rules (see `agents/backend-engineer.md` → Migrations)
 
-- Toda migration **reversível** (down testado)
-- **Expand-contract** em mudanças breaking (Production)
-- Backup confirmado antes de migration destrutiva
-- Migrations testadas em staging com volume realista
-- Migration > 5min → janela de manutenção ou background job
+- Every migration **reversible** (down tested)
+- **Expand-contract** for breaking changes (Production)
+- Backup confirmed before destructive migration
+- Migrations tested on staging with realistic volume
+- Migration > 5min → maintenance window or background job
 
 ---
 
-## Logging e Observabilidade
+## Logging and Observability
 
-### Logger estruturado (pino)
+### Structured logger (pino)
 
 ```typescript
 import pino from 'pino';
@@ -262,48 +262,48 @@ export const logger = pino({
 });
 ```
 
-### Regras
+### Rules
 
-- **Sempre** logar com contexto estruturado (não string concatenada)
-- Correlation ID em toda requisição (middleware)
-- Nunca logar dados sensíveis (PII, tokens, senhas) — use `redact`
-- Tracing via OpenTelemetry em Production Mode
-- Métricas via prom-client expostas em `/metrics`
+- **Always** log with structured context (not concatenated strings)
+- Correlation ID on every request (middleware)
+- Never log sensitive data (PII, tokens, passwords) — use `redact`
+- OpenTelemetry tracing in Production Mode
+- Metrics via prom-client exposed at `/metrics`
 
 ---
 
 ## Performance
 
-- **Streams** para arquivos grandes (não carregar em memória)
-- **Connection pooling** em DB (Prisma faz por padrão)
-- Cache via Redis para queries pesadas
-- **Cluster mode** ou múltiplas instâncias atrás de load balancer (Node single-threaded)
-- Worker threads para CPU-bound (Worker Threads API)
+- **Streams** for large files (don't load into memory)
+- **Connection pooling** in DB (Prisma does this by default)
+- Cache via Redis for heavy queries
+- **Cluster mode** or multiple instances behind a load balancer (Node is single-threaded)
+- Worker threads for CPU-bound work (Worker Threads API)
 - Profiling: `clinic.js` (doctor, flame, bubbleprof)
 
 ---
 
-## Segurança específica
+## Stack-specific security
 
-- `helmet` para headers HTTP de segurança
-- Rate limiting via `express-rate-limit` ou `@fastify/rate-limit`
-- CORS configurado explicitamente (nunca `*` em produção com auth)
-- JWT via JOSE (não jsonwebtoken — abandonado)
-- Bcrypt para senhas (cost ≥ 12) ou Argon2id (preferencial)
-- `process.env` validado no boot via Zod (fail-fast)
-- npm audit / `pnpm audit` na pipeline (SAST)
-- Snyk ou Dependabot para CVEs em deps
+- `helmet` for HTTP security headers
+- Rate limiting via `express-rate-limit` or `@fastify/rate-limit`
+- CORS configured explicitly (never `*` in production with auth)
+- JWT via JOSE (not jsonwebtoken — abandoned)
+- Bcrypt for passwords (cost ≥ 12) or Argon2id (preferred)
+- `process.env` validated at boot via Zod (fail-fast)
+- npm audit / `pnpm audit` in pipeline (SAST)
+- Snyk or Dependabot for dependency CVEs
 
 ---
 
-## Comandos padrão
+## Standard commands
 
 ```bash
 # install
 pnpm install
 
 # dev
-pnpm dev                                    # ts-node-dev ou tsx watch
+pnpm dev                                    # ts-node-dev or tsx watch
 
 # build
 pnpm build                                  # tsc
@@ -322,29 +322,29 @@ pnpm typecheck                              # tsc --noEmit
 pnpm prisma migrate dev
 pnpm prisma migrate deploy
 
-# CI (tudo de uma vez)
+# CI (everything at once)
 pnpm typecheck && pnpm lint && pnpm test:cov && pnpm build
 ```
 
 ---
 
-## Anti-patterns (bloquear)
+## Anti-patterns (block)
 
-- `any` sem justificativa documentada
-- Mistura de callback e promise sem util.promisify
-- Lógica de negócio em controller (adapter inbound)
-- Importação de Prisma/ORM no domain
-- `console.log` em código de produção (use logger)
-- `process.exit()` espalhado (deixar para boot/shutdown)
-- Sync I/O em request handlers (`readFileSync`, etc.)
-- Repos retornando ORM models cru (mapear para entidades de domínio)
-- Validação de input só no service (sempre no adapter inbound também)
-- Magic numbers / strings — extrair para constantes
-- Try/catch que apenas logam e seguem (silencia bugs)
+- `any` without documented justification
+- Mixing callbacks and promises without util.promisify
+- Business logic in controller (inbound adapter)
+- Importing Prisma/ORM in the domain
+- `console.log` in production code (use the logger)
+- `process.exit()` scattered (reserve for boot/shutdown)
+- Sync I/O in request handlers (`readFileSync`, etc.)
+- Repos returning raw ORM models (map to domain entities)
+- Input validation only in the service (always also in the inbound adapter)
+- Magic numbers / strings — extract to constants
+- Try/catch that only logs and continues (silences bugs)
 
 ---
 
-## Referências
+## References
 
 - TypeScript: <https://www.typescriptlang.org/docs/>
 - NestJS: <https://docs.nestjs.com/>

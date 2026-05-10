@@ -1,82 +1,84 @@
 # Stack Conventions
 
-> Convenções específicas por stack. Cada documento define **quando usar**, **tooling**, **layout**, **padrões idiomáticos** e **comandos**.
+> Stack-specific conventions per language/framework. Each document defines **when to use**, **tooling**, **layout**, **idiomatic patterns**, and **commands**.
 >
-> Architect consulta estes documentos ao decidir stack do projeto. Engineers consultam o documento da stack ativa ao implementar.
+> Architect consults these documents when deciding the project stack. Engineers consult the active stack's document while implementing.
+>
+> **Note:** these conventions are intentionally written in English to align with upstream documentation, library docs, and community standards. The rest of the squad (agents, CLAUDE.md, skills, ADRs) remains in Portuguese until full migration.
 
 ---
 
-## Como funciona
+## How it works
 
-1. **Architect** decide a stack no início do projeto, considerando os critérios "Quando usar" de cada documento
-2. Decisão registrada em ADR específico do projeto (ex: `memory/ADR/ADR-NNN-stack-projeto.md`)
-3. Stack ativa documentada em `memory/ARCHITECTURE.md` → seção "Stack Conventions Doc"
-4. **Engineers** consultam o documento da stack ativa quando recebem tarefas
+1. **Architect** decides the stack at project start, using each document's "When to use" criteria
+2. Decision is recorded in a project-specific ADR (e.g. `memory/ADR/ADR-NNN-stack-projeto.md`)
+3. Active stack is documented in `memory/ARCHITECTURE.md` → "Stack Conventions Doc" section
+4. **Engineers** consult the active stack's document when receiving tasks
 
 ---
 
-## Stacks suportadas
+## Supported stacks
 
 ### Backend
 
-| Stack | Documento | Pontos fortes |
-|-------|-----------|---------------|
-| Node.js + TypeScript | [`backend/nodejs.md`](backend/nodejs.md) | I/O intensivo, tempo real, compartilhamento de tipos com frontend |
-| Python | [`backend/python.md`](backend/python.md) | AI/ML, data pipelines, APIs simples |
-| PHP | [`backend/php.md`](backend/php.md) | CMS, e-commerce maduro, ecosistema Laravel/Symfony |
-| Java | [`backend/java.md`](backend/java.md) | Sistemas enterprise, alta concorrência, ecosistema Spring |
-| Go | [`backend/go.md`](backend/go.md) | Performance crítica, microserviços, ferramentas de infra |
+| Stack | Document | Strengths |
+|-------|----------|-----------|
+| Node.js + TypeScript | [`backend/nodejs.md`](backend/nodejs.md) | I/O-intensive, real-time, type sharing with frontend |
+| Python | [`backend/python.md`](backend/python.md) | AI/ML, data pipelines, simple APIs |
+| PHP | [`backend/php.md`](backend/php.md) | CMS, mature e-commerce, Laravel/Symfony ecosystem |
+| Java | [`backend/java.md`](backend/java.md) | Enterprise systems, high concurrency, Spring ecosystem |
+| Go | [`backend/go.md`](backend/go.md) | Performance-critical, microservices, infra tooling |
 
 ### Frontend
 
-| Stack | Documento | Pontos fortes |
-|-------|-----------|---------------|
-| React + Next.js | [`frontend/react.md`](frontend/react.md) | SSR/SSG, ecosistema maduro, SEO |
-| Vue + Nuxt | [`frontend/vue.md`](frontend/vue.md) | Curva mais suave, menos boilerplate, prototipagem |
+| Stack | Document | Strengths |
+|-------|----------|-----------|
+| React + Next.js | [`frontend/react.md`](frontend/react.md) | SSR/SSG, mature ecosystem, SEO |
+| Vue + Nuxt | [`frontend/vue.md`](frontend/vue.md) | Smoother learning curve, less boilerplate, prototyping |
 
 ### Mobile
 
-| Stack | Documento | Pontos fortes |
-|-------|-----------|---------------|
-| Flutter (Dart) | [`mobile/flutter.md`](mobile/flutter.md) | Performance nativa, código único, UI consistente |
-| React Native | [`mobile/react-native.md`](mobile/react-native.md) | Reúso de skill React, ecosistema JS, flexibilidade |
+| Stack | Document | Strengths |
+|-------|----------|-----------|
+| Flutter (Dart) | [`mobile/flutter.md`](mobile/flutter.md) | Native performance, single codebase, consistent UI |
+| React Native | [`mobile/react-native.md`](mobile/react-native.md) | React skill reuse, JS ecosystem, flexibility |
 
 ---
 
-## Adicionar nova stack
+## Adding a new stack
 
-1. Architect propõe nova stack em ADR
-2. Criar documento em `docs/stack-conventions/{categoria}/{stack}.md`
-3. Espelhar estrutura dos documentos existentes (Quando usar / Tooling / Layout / Padrões / Comandos / Anti-patterns)
-4. Atualizar tabela neste README
-5. Submeter para review do Tech Lead
+1. Architect proposes the new stack in an ADR
+2. Create the document in `docs/stack-conventions/{category}/{stack}.md`
+3. Mirror the structure of existing documents (When to use / Tooling / Layout / Patterns / Commands / Anti-patterns)
+4. Update the table in this README
+5. Submit for Tech Lead review
 
 ---
 
-## Estrutura padrão de cada documento
+## Standard structure of each document
 
-Todo documento de stack convention deve conter:
+Every stack convention document must contain:
 
-1. **Quando usar esta stack** — critérios objetivos
-2. **Quando NÃO usar** — condições de exclusão
-3. **Versões e dependências**
-4. **Tooling obrigatório** (linter, formatter, type checker, test runner)
-5. **Layout do projeto** (com Hexagonal/Clean Architecture aplicado)
-6. **Convenções de código** (naming, idiomáticos da linguagem)
-7. **Padrão de testes** (unit, integration, E2E)
-8. **Migrations** (backend) ou **State management** (frontend/mobile)
-9. **Logging e Observabilidade**
+1. **When to use this stack** — objective criteria
+2. **When NOT to use** — exclusion conditions
+3. **Versions and dependencies**
+4. **Required tooling** (linter, formatter, type checker, test runner)
+5. **Project layout** (with Hexagonal/Clean Architecture applied)
+6. **Code conventions** (naming, language idioms)
+7. **Testing standards** (unit, integration, E2E)
+8. **Migrations** (backend) or **State management** (frontend/mobile)
+9. **Logging and Observability**
 10. **Performance**
-11. **Segurança específica da stack**
-12. **Comandos padrão**
-13. **Anti-patterns a evitar**
+11. **Stack-specific security**
+12. **Standard commands**
+13. **Anti-patterns to avoid**
 
 ---
 
-## Fonte autoritativa
+## Authoritative sources
 
-- **Padrão arquitetural geral** (Hexagonal, Clean Architecture mobile, Atomic Design): `agents/{name}.md` + `memory/ADR/ADR-002-arquitetura-hexagonal.md`
-- **Convenções idiomáticas da linguagem/framework**: este diretório (stack-conventions)
-- **Stack ativa do projeto**: `memory/ARCHITECTURE.md` + ADR específico do projeto
+- **General architectural pattern** (Hexagonal, mobile Clean Architecture, Atomic Design): `agents/{name}.md` + `memory/ADR/ADR-002-arquitetura-hexagonal.md`
+- **Language/framework idiomatic conventions:** this directory (stack-conventions)
+- **Active project stack:** `memory/ARCHITECTURE.md` + project-specific ADR
 
-Em caso de conflito entre stack-convention e ADR-002 (Hexagonal): vale ADR-002.
+In case of conflict between a stack-convention and ADR-002 (Hexagonal): ADR-002 prevails.

@@ -1,90 +1,90 @@
 # Stack Convention — Python
 
-> Frameworks suportados: **FastAPI** (preferencial para APIs e AI/ML) ou **Django** (apps full-stack monolíticos com ORM rico).
+> Supported frameworks: **FastAPI** (preferred for APIs and AI/ML) or **Django** (full-stack monolithic apps with rich ORM).
 
 ---
 
-## Quando usar esta stack
+## When to use this stack
 
-Escolher Python quando:
+Choose Python when:
 
-- **AI/ML pipelines** — ecosistema (PyTorch, TensorFlow, scikit-learn, HuggingFace) é dramaticamente superior
+- **AI/ML pipelines** — ecosystem (PyTorch, TensorFlow, scikit-learn, HuggingFace) is dramatically superior
 - **Data engineering** — Pandas, Polars, Spark (PySpark), Airflow, dbt, dlt
-- **APIs simples e médias** com FastAPI — type hints + Pydantic = excelente DX
-- **Integração com modelos LLM** — LangChain, LangGraph, oficiais SDKs (anthropic, openai)
-- **Scripts e automações** — sintaxe limpa, ecosistema vasto
-- **Notebooks e prototipagem científica** — Jupyter, IPython
-- **CMS e dashboards admin** — Django Admin gera interface gratuitamente
-- **Time com background científico/dados** — Python é lingua franca
+- **Simple-to-medium APIs** with FastAPI — type hints + Pydantic = excellent DX
+- **LLM model integration** — LangChain, LangGraph, official SDKs (anthropic, openai)
+- **Scripts and automation** — clean syntax, vast ecosystem
+- **Notebooks and scientific prototyping** — Jupyter, IPython
+- **CMS and admin dashboards** — Django Admin gives you the UI for free
+- **Team with scientific/data background** — Python is lingua franca
 
-## Quando NÃO usar
+## When NOT to use
 
-- **Concorrência massiva CPU-bound** — GIL limita; preferir Go/Rust
-- **Aplicações de altíssimo throughput em I/O** — Node.js/Go performam melhor
-- **Sistemas com hard latency budgets** — startup lento, GC imprevisível
-- **Compartilhamento de tipos com frontend** — sem TypeScript-like
+- **Massive CPU-bound concurrency** — GIL is limiting; prefer Go/Rust
+- **Highest-throughput I/O applications** — Node.js/Go perform better
+- **Hard latency budgets** — slow startup, unpredictable GC
+- **Type sharing with frontend** — no TypeScript-like
 
 ---
 
-## Versões e dependências
+## Versions and dependencies
 
-| Item | Versão mínima |
-|------|---------------|
-| Python | ≥ 3.12 (preferencial 3.13) |
-| pip + venv | Substituir por **uv** (preferencial) ou **Poetry** |
+| Item | Minimum version |
+|------|-----------------|
+| Python | ≥ 3.12 (prefer 3.13) |
+| pip + venv | Replace with **uv** (preferred) or **Poetry** |
 | Frameworks: FastAPI ≥ 0.110 | Django ≥ 5.0 |
 
 ### Frameworks
 
-| Framework | Quando usar |
+| Framework | When to use |
 |-----------|-------------|
-| **FastAPI** | APIs REST/WebSocket, AI/ML services, microserviços |
-| **Django** | Apps full-stack com Admin, monolitos com forte modelagem ORM |
-| **Litestar** | Alternativa moderna a FastAPI com plugins ricos |
+| **FastAPI** | REST/WebSocket APIs, AI/ML services, microservices |
+| **Django** | Full-stack apps with Admin, monoliths with strong ORM modeling |
+| **Litestar** | Modern alternative to FastAPI with rich plugins |
 
-### Bibliotecas padrão
+### Standard libraries
 
-| Necessidade | Biblioteca |
-|-------------|-----------|
-| ORM | SQLAlchemy 2.x (preferencial) ou Django ORM |
-| Migrations | Alembic (preferencial) ou Django Migrations |
-| Validação | Pydantic v2 |
-| HTTP client | httpx (preferencial sobre requests — async-ready) |
-| Logging | structlog ou loguru |
+| Need | Library |
+|------|---------|
+| ORM | SQLAlchemy 2.x (preferred) or Django ORM |
+| Migrations | Alembic (preferred) or Django Migrations |
+| Validation | Pydantic v2 |
+| HTTP client | httpx (preferred over requests — async-ready) |
+| Logging | structlog or loguru |
 | Testing | pytest + pytest-asyncio + pytest-cov |
 | Tracing/Metrics | OpenTelemetry SDK |
-| Auth | python-jose (JWT) ou Authlib (OAuth) |
-| Queue/Jobs | Celery + Redis ou RQ (mais simples) |
+| Auth | python-jose (JWT) or Authlib (OAuth) |
+| Queue/Jobs | Celery + Redis or RQ (simpler) |
 | Cache | redis-py |
 | AI/LLM | anthropic, openai, langchain, langgraph |
 | Data | pandas, polars |
 
-### Gerenciamento de dependências
+### Dependency management
 
-- **uv** (preferencial) — extremamente rápido, drop-in para pip
-- **Poetry** — alternativa madura
-- **Nunca** `pip install` direto — sempre via `pyproject.toml`
+- **uv** (preferred) — extremely fast, drop-in replacement for pip
+- **Poetry** — mature alternative
+- **Never** `pip install` directly — always via `pyproject.toml`
 
 ---
 
-## Tooling obrigatório
+## Required tooling
 
-| Tool | Propósito |
-|------|-----------|
-| **ruff** | Linter + formatter (substitui flake8, black, isort, pyupgrade) |
-| **mypy** | Type check (modo strict) |
+| Tool | Purpose |
+|------|---------|
+| **ruff** | Linter + formatter (replaces flake8, black, isort, pyupgrade) |
+| **mypy** | Type check (strict mode) |
 | **pytest** | Test runner |
-| **pytest-cov** | Cobertura |
-| **pre-commit** | Hooks pre-commit |
+| **pytest-cov** | Coverage |
+| **pre-commit** | Pre-commit hooks |
 
-### pyproject.toml mínimo
+### Minimum pyproject.toml
 
 ```toml
 [tool.ruff]
 target-version = "py312"
 line-length = 100
 select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20", "RET", "SIM"]
-ignore = ["S101"]  # asserts em testes
+ignore = ["S101"]  # asserts in tests
 
 [tool.ruff.format]
 quote-style = "double"
@@ -104,17 +104,17 @@ asyncio_mode = "auto"
 
 ---
 
-## Layout do projeto (Hexagonal)
+## Project layout (Hexagonal)
 
 ```
 src/
-├── domain/                      # núcleo
-│   ├── entities/                # entidades (dataclass ou Pydantic)
-│   ├── ports/                   # protocolos (typing.Protocol) — interfaces
-│   └── services/                # serviços de domínio
+├── domain/                      # core
+│   ├── entities/                # entities (dataclass or Pydantic)
+│   ├── ports/                   # protocols (typing.Protocol) — interfaces
+│   └── services/                # domain services
 │
 ├── application/
-│   └── use_cases/               # cada use case = uma classe ou função
+│   └── use_cases/               # each use case = one class or function
 │
 ├── adapters/
 │   ├── inbound/
@@ -131,38 +131,38 @@ src/
 │   ├── config/                  # Pydantic Settings
 │   ├── logging/
 │   ├── observability/
-│   └── di/                      # dependency-injector ou manual
+│   └── di/                      # dependency-injector or manual
 │
 └── main.py                      # ASGI app factory
 ```
 
 ### Django
 
-Em Django, mapear bounded contexts como **apps**:
-- `apps/<context>/domain/` — entidades não-ORM
+In Django, map bounded contexts to **apps**:
+- `apps/<context>/domain/` — non-ORM entities
 - `apps/<context>/application/` — use cases
-- `apps/<context>/adapters/` — views, repositories, models (Django ORM aqui)
-- `apps/<context>/admin.py`, `urls.py` — config Django
+- `apps/<context>/adapters/` — views, repositories, models (Django ORM here)
+- `apps/<context>/admin.py`, `urls.py` — Django config
 
 ---
 
-## Convenções de código
+## Code conventions
 
 ### Naming
 
-- **snake_case** para variáveis, funções, módulos, arquivos
-- **PascalCase** para classes
-- **UPPER_SNAKE_CASE** para constantes
-- **_underscore_prefix** para "privado" (convenção, não enforcement)
+- **snake_case** for variables, functions, modules, files
+- **PascalCase** for classes
+- **UPPER_SNAKE_CASE** for constants
+- **_underscore_prefix** for "private" (convention, not enforcement)
 
-### Type hints obrigatórios
+### Type hints required
 
 ```python
-# OBRIGATÓRIO em código novo
+# REQUIRED in new code
 def calculate_total(items: list[OrderItem], discount: Decimal = Decimal("0")) -> Decimal:
     ...
 
-# Protocols para ports (evita herança forçada)
+# Protocols for ports (avoid forced inheritance)
 from typing import Protocol
 
 class UserRepository(Protocol):
@@ -172,13 +172,13 @@ class UserRepository(Protocol):
 
 ### Async I/O
 
-- FastAPI naturalmente async — usar `async def` em routes que fazem I/O
-- `httpx.AsyncClient` para HTTP externo
-- SQLAlchemy 2.x com `AsyncSession` para DB
-- **Nunca** misturar `time.sleep()` com `asyncio.sleep()`
-- **Nunca** chamar função async sem `await`
+- FastAPI is naturally async — use `async def` in routes that do I/O
+- `httpx.AsyncClient` for external HTTP
+- SQLAlchemy 2.x with `AsyncSession` for DB
+- **Never** mix `time.sleep()` with `asyncio.sleep()`
+- **Never** call an async function without `await`
 
-### Pydantic v2 para validação e schemas
+### Pydantic v2 for validation and schemas
 
 ```python
 from pydantic import BaseModel, EmailStr, Field
@@ -200,10 +200,10 @@ class UserResponse(BaseModel):
 
 ### Error handling
 
-- **Exceções tipadas** — herança de classe base (`DomainError`, `ValidationError`, `NotFoundError`)
-- Adapter inbound traduz para HTTPException no FastAPI
-- **Nunca** capturar `Exception` genérico (silencia bugs) — capturar exceções específicas
-- Usar `try/except` apenas onde há ação clara de tratamento
+- **Typed exceptions** — inherit from a base class (`DomainError`, `ValidationError`, `NotFoundError`)
+- Inbound adapter translates to FastAPI HTTPException
+- **Never** catch generic `Exception` (silences bugs) — catch specific exceptions
+- Use `try/except` only where there's a clear handling action
 
 ### FastAPI dependency injection
 
@@ -224,18 +224,18 @@ async def create_user(
 
 ---
 
-## Padrão de testes
+## Testing standards
 
-### Pirâmide
+### Pyramid
 
-| Camada | Ferramenta | Cobertura por modo |
-|--------|-----------|--------------------|
-| Unit (domain + use cases) | pytest | MVP ≥60% críticas / Production ≥95% críticas |
+| Layer | Tool | Coverage by mode |
+|-------|------|------------------|
+| Unit (domain + use cases) | pytest | MVP ≥60% critical / Production ≥95% critical |
 | Integration (adapters) | pytest + Testcontainers | MVP ≥40% / Production ≥80% |
-| E2E (HTTP) | pytest + httpx.AsyncClient | Happy paths críticos |
-| Load/Performance | Locust ou k6 | Production: NFRs do PRD |
+| E2E (HTTP) | pytest + httpx.AsyncClient | Critical happy paths |
+| Load/Performance | Locust or k6 | Production: PRD NFRs |
 
-### Estrutura
+### Structure
 
 ```
 tests/
@@ -243,12 +243,12 @@ tests/
 │   └── domain/
 ├── integration/
 │   ├── adapters/
-│   └── conftest.py             # fixtures compartilhadas
+│   └── conftest.py             # shared fixtures
 ├── e2e/
-└── fixtures/                   # dados de teste versionados
+└── fixtures/                   # versioned test data
 ```
 
-### Testcontainers para Postgres/Redis
+### Testcontainers for Postgres/Redis
 
 ```python
 import pytest
@@ -264,78 +264,78 @@ def postgres():
 
 ## Migrations
 
-### Alembic (com SQLAlchemy)
+### Alembic (with SQLAlchemy)
 
 ```bash
-# gerar migration baseada em mudança nos models
+# generate migration based on model changes
 alembic revision --autogenerate -m "add_users_table"
 
-# aplicar
+# apply
 alembic upgrade head
 
-# reverter
+# revert
 alembic downgrade -1
 ```
 
-### Regras
+### Rules
 
-- Toda migration reversível (down implementado e testado)
-- **Expand-contract** em breaking changes (Production)
-- Backup confirmado antes de migration destrutiva
-- Migration testada em staging com volume realista
-- Migration > 5min → janela de manutenção ou job em background
+- Every migration reversible (down implemented and tested)
+- **Expand-contract** for breaking changes (Production)
+- Backup confirmed before destructive migration
+- Migration tested on staging with realistic volume
+- Migration > 5min → maintenance window or background job
 
 ---
 
-## Logging e Observabilidade
+## Logging and Observability
 
-### structlog (estruturado)
+### structlog (structured)
 
 ```python
 import structlog
 
 logger = structlog.get_logger()
 
-# uso
+# usage
 logger.info("user_created", user_id=str(user.id), email=user.email)
 ```
 
-### Regras
+### Rules
 
-- **Sempre** estruturado (key-value), não f-string concatenada
+- **Always** structured (key-value), not concatenated f-strings
 - Correlation ID via middleware (FastAPI middleware)
-- Nunca logar dados sensíveis (PII, tokens, senhas)
-- OpenTelemetry para tracing distribuído em Production
+- Never log sensitive data (PII, tokens, passwords)
+- OpenTelemetry for distributed tracing in Production
 - Prometheus metrics via prometheus-client
 
 ---
 
 ## Performance
 
-- **Async I/O** sempre que possível (FastAPI)
-- **Connection pooling** no SQLAlchemy (configurar `pool_size`)
-- Cache via Redis para queries pesadas
-- **Workers** múltiplos via uvicorn `--workers N` (driblar GIL)
-- Para CPU-bound: ProcessPoolExecutor ou Celery workers
+- **Async I/O** whenever possible (FastAPI)
+- **Connection pooling** in SQLAlchemy (configure `pool_size`)
+- Cache via Redis for heavy queries
+- **Multiple workers** via uvicorn `--workers N` (work around the GIL)
+- For CPU-bound: ProcessPoolExecutor or Celery workers
 - Profiling: cProfile, py-spy, scalene
-- Polars > Pandas para datasets grandes
+- Polars > Pandas for large datasets
 
 ---
 
-## Segurança específica
+## Stack-specific security
 
-- `python-jose` ou `authlib` para JWT (validação rigorosa)
-- `passlib` com Argon2 para senhas
-- Pydantic Settings para validação de env (fail-fast)
-- `safety` ou `pip-audit` para CVEs (na pipeline)
-- `bandit` para SAST de código Python
-- CORS via FastAPI middleware (nunca `*` em produção com auth)
+- `python-jose` or `authlib` for JWT (rigorous validation)
+- `passlib` with Argon2 for passwords
+- Pydantic Settings for env validation (fail-fast)
+- `safety` or `pip-audit` for CVEs (in the pipeline)
+- `bandit` for SAST of Python code
+- CORS via FastAPI middleware (never `*` in production with auth)
 - Rate limiting via slowapi
-- SQL injection: SQLAlchemy parametriza queries — **nunca** concatenar SQL
+- SQL injection: SQLAlchemy parameterizes queries — **never** concatenate SQL
 
 ---
 
-## Comandos padrão
+## Standard commands
 
 ```bash
 # install (uv)
@@ -345,9 +345,9 @@ uv sync
 uvicorn src.main:app --reload --port 8000
 
 # test
-pytest                                      # tudo
-pytest tests/unit                           # só unit
-pytest --cov=src --cov-report=html          # com cobertura HTML
+pytest                                      # everything
+pytest tests/unit                           # unit only
+pytest --cov=src --cov-report=html          # with HTML coverage
 
 # lint + format
 ruff check .
@@ -358,30 +358,30 @@ mypy src/
 alembic revision --autogenerate -m "..."
 alembic upgrade head
 
-# CI (tudo de uma vez)
+# CI (everything at once)
 ruff check . && ruff format --check . && mypy src/ && pytest --cov=src --cov-fail-under=80
 ```
 
 ---
 
-## Anti-patterns (bloquear)
+## Anti-patterns (block)
 
-- Funções sem type hints em código novo
+- Functions without type hints in new code
 - `from module import *`
 - Mutable default args (`def f(x=[])`)
-- Captura de `Exception` genérico
-- `print()` em código de produção (use logger)
-- Lógica de negócio dentro de routes/views
-- Importar SQLAlchemy/Django ORM no domain
-- `time.sleep()` em código async (use `asyncio.sleep`)
-- Misturar Pydantic models com entidades de domínio (mapear)
-- Queries N+1 (usar `selectinload`, `joinedload`)
-- Magic numbers / strings — usar Enum ou constantes
-- Bare `try/except: pass` (silencia bugs)
+- Catching generic `Exception`
+- `print()` in production code (use the logger)
+- Business logic inside routes/views
+- Importing SQLAlchemy/Django ORM in the domain
+- `time.sleep()` in async code (use `asyncio.sleep`)
+- Mixing Pydantic models with domain entities (map them)
+- N+1 queries (use `selectinload`, `joinedload`)
+- Magic numbers / strings — use Enum or constants
+- Bare `try/except: pass` (silences bugs)
 
 ---
 
-## Referências
+## References
 
 - Python: <https://docs.python.org/3/>
 - FastAPI: <https://fastapi.tiangolo.com/>
