@@ -1,81 +1,81 @@
 # Stack Convention — Go
 
-> Frameworks suportados: **Gin** (preferencial — mais usado), **Echo** (alternativa idiomática), **Chi** (minimalista) ou **net/http** puro (microserviços minúsculos).
+> Supported frameworks: **Gin** (preferred — most adopted), **Echo** (idiomatic alternative), **Chi** (minimalist), or **plain net/http** (tiny microservices).
 
 ---
 
-## Quando usar esta stack
+## When to use this stack
 
-Escolher Go quando:
+Choose Go when:
 
-- **Performance crítica** — alto throughput, baixa latência (P99 ms)
-- **Microserviços** — startup rápido, footprint baixo, single binary
-- **Concorrência massiva** — goroutines + channels são sweet spot
-- **Tooling de infra** — CLIs, daemons, agents, sidecars (Docker, Kubernetes, Terraform são Go)
-- **Sistemas com limites de memória rígidos** — GC eficiente, no JVM overhead
-- **gRPC services** — protobuf + Go é combinação natural
-- **Cloud-native** — Kubernetes, Prometheus, Helm — todos Go
-- **APIs com tráfego massivo** — rápido como Node, mais previsível
-- **Single-binary deploys** — sem runtime, sem deps externas
+- **Performance-critical** — high throughput, low latency (P99 ms)
+- **Microservices** — fast startup, low footprint, single binary
+- **Massive concurrency** — goroutines + channels are a sweet spot
+- **Infra tooling** — CLIs, daemons, agents, sidecars (Docker, Kubernetes, Terraform are all Go)
+- **Strict memory limits** — efficient GC, no JVM overhead
+- **gRPC services** — protobuf + Go is a natural combination
+- **Cloud-native** — Kubernetes, Prometheus, Helm — all Go
+- **High-traffic APIs** — fast as Node, more predictable
+- **Single-binary deploys** — no runtime, no external deps
 
-## Quando NÃO usar
+## When NOT to use
 
-- **AI/ML** — ecosistema Python domina
-- **CRUD denso com Admin UI** — Go é verboso para CRUD; Laravel/Rails ganham produtividade
-- **Time sem experiência em sistemas concorrentes** — goroutines mal usadas viram race conditions
-- **Ecosistema de libraries para nicho específico** — Java/Python costumam ter mais opções maduras
-- **Domain modeling muito rico** — Go não tem generics expressivos como Java/Scala (melhorou com 1.18+ mas ainda limitado)
+- **AI/ML** — Python ecosystem dominates
+- **CRUD-dense with Admin UI** — Go is verbose for CRUD; Laravel/Rails win on productivity
+- **Team without concurrent systems experience** — misused goroutines become race conditions
+- **Niche library ecosystem** — Java/Python often have more mature options
+- **Very rich domain modeling** — Go lacks expressive generics (improved in 1.18+ but still limited)
 
 ---
 
-## Versões e dependências
+## Versions and dependencies
 
-| Item | Versão mínima |
-|------|---------------|
-| Go | ≥ 1.22 (preferencial 1.23+) |
-| go modules | nativo |
+| Item | Minimum version |
+|------|-----------------|
+| Go | ≥ 1.22 (prefer 1.23+) |
+| go modules | native |
 
 ### Frameworks
 
-| Framework | Quando usar |
+| Framework | When to use |
 |-----------|-------------|
-| **Gin** | APIs REST, middleware rico, comunidade maior |
-| **Echo** | Alternativa idiomática, performance similar |
-| **Chi** | Minimalista, alinhado com `net/http` |
-| **Fiber** | Inspirado em Express; performance via fasthttp (não-stdlib) |
-| **net/http** | Microserviços minúsculos, máximo controle |
+| **Gin** | REST APIs, rich middleware, larger community |
+| **Echo** | Idiomatic alternative, similar performance |
+| **Chi** | Minimalist, aligned with `net/http` |
+| **Fiber** | Inspired by Express; performance via fasthttp (non-stdlib) |
+| **net/http** | Tiny microservices, maximum control |
 
-### Bibliotecas padrão
+### Standard libraries
 
-| Necessidade | Biblioteca |
-|-------------|-----------|
-| ORM/Query | sqlc (preferencial — gera código), GORM (full ORM) ou sqlx |
-| Migrations | golang-migrate (preferencial), goose, atlas |
-| Validação | go-playground/validator |
-| HTTP client | net/http nativo (suficiente) ou resty |
-| Logging | log/slog (stdlib Go 1.21+) ou zerolog |
+| Need | Library |
+|------|---------|
+| ORM/Query | sqlc (preferred — generates code), GORM (full ORM), or sqlx |
+| Migrations | golang-migrate (preferred), goose, atlas |
+| Validation | go-playground/validator |
+| HTTP client | native net/http (sufficient) or resty |
+| Logging | log/slog (stdlib Go 1.21+) or zerolog |
 | Testing | testing (stdlib) + testify/assert + testcontainers-go |
 | Tracing/Metrics | OpenTelemetry Go SDK |
 | Auth | golang-jwt/jwt/v5 |
 | Queue | NATS, RabbitMQ (rabbitmq/amqp091-go), Kafka (segmentio/kafka-go) |
 | Cache | go-redis/redis/v9 |
-| DI | wire (preferencial — compile-time) ou fx (runtime) |
-| Mock | gomock ou mockery |
+| DI | wire (preferred — compile-time) or fx (runtime) |
+| Mock | gomock or mockery |
 
 ---
 
-## Tooling obrigatório
+## Required tooling
 
-| Tool | Propósito |
-|------|-----------|
-| **gofmt** + **goimports** | Formatter (não-negociável) |
-| **golangci-lint** | Meta-linter (config com 30+ linters) |
+| Tool | Purpose |
+|------|---------|
+| **gofmt** + **goimports** | Formatter (non-negotiable) |
+| **golangci-lint** | Meta-linter (config with 30+ linters) |
 | **go vet** | Static analysis (built-in) |
-| **staticcheck** | Linter avançado (incluído no golangci-lint) |
-| **govulncheck** | CVE scanning (oficial) |
-| **gocyclo** | Complexidade ciclomática |
+| **staticcheck** | Advanced linter (included in golangci-lint) |
+| **govulncheck** | CVE scanning (official) |
+| **gocyclo** | Cyclomatic complexity |
 
-### .golangci.yml mínimo
+### Minimum .golangci.yml
 
 ```yaml
 linters:
@@ -105,9 +105,9 @@ linters-settings:
 
 ---
 
-## Layout do projeto (Hexagonal)
+## Project layout (Hexagonal)
 
-Adotar layout `golang-standards/project-layout` adaptado para Hexagonal:
+Adopt `golang-standards/project-layout` adapted to Hexagonal:
 
 ```
 .
@@ -117,8 +117,8 @@ Adotar layout `golang-standards/project-layout` adaptado para Hexagonal:
 │   └── worker/
 │       └── main.go
 │
-├── internal/                     # código privado da aplicação
-│   ├── domain/                   # núcleo
+├── internal/                     # application-private code
+│   ├── domain/                   # core
 │   │   ├── user/
 │   │   │   ├── user.go           # entity
 │   │   │   ├── repository.go     # interface (port)
@@ -149,35 +149,35 @@ Adotar layout `golang-standards/project-layout` adaptado para Hexagonal:
 │       ├── observability/
 │       └── di/                   # wire generated code
 │
-├── pkg/                          # código exportável (raro — pensar bem)
+├── pkg/                          # exportable code (rare — think carefully)
 ├── api/                          # protobuf, OpenAPI specs
 ├── migrations/                   # SQL migrations
 ├── scripts/                      # build/deploy scripts
 └── go.mod
 ```
 
-### Internal package
+### internal package
 
-- Pacote `internal/` impede que código externo importe — isola implementação
-- `pkg/` apenas se realmente vai ser library reutilizável
+- `internal/` prevents external code from importing — isolates implementation
+- `pkg/` only if it's actually a reusable library
 
 ---
 
-## Convenções de código
+## Code conventions
 
-### Naming (idiomático Go)
+### Naming (idiomatic Go)
 
-- **camelCase** para variáveis, funções não-exportadas
-- **PascalCase** para exportadas (públicas)
-- **MixedCaps**, não snake_case
-- Pacotes em **lowercase** sem underscore (`userrepo`, não `user_repo`)
-- Receivers de método com inicial curta (`u *User`, não `user *User`)
-- Interfaces pequenas com sufixo `-er` quando faz sentido (`Reader`, `Repository`)
+- **camelCase** for variables and unexported functions
+- **PascalCase** for exported (public)
+- **MixedCaps**, not snake_case
+- Packages **lowercase** without underscore (`userrepo`, not `user_repo`)
+- Method receivers with short initials (`u *User`, not `user *User`)
+- Small interfaces with `-er` suffix when it makes sense (`Reader`, `Repository`)
 
-### Error handling idiomático
+### Idiomatic error handling
 
 ```go
-// retornar erro como último valor
+// return error as last value
 func (s *UserService) Create(ctx context.Context, dto CreateUserDTO) (*User, error) {
     if err := dto.Validate(); err != nil {
         return nil, fmt.Errorf("validate: %w", err)
@@ -189,14 +189,14 @@ func (s *UserService) Create(ctx context.Context, dto CreateUserDTO) (*User, err
     return user, nil
 }
 
-// uso: sempre verificar erro imediatamente
+// usage: always check error immediately
 user, err := svc.Create(ctx, dto)
 if err != nil {
     return fmt.Errorf("create user: %w", err)
 }
 ```
 
-### Erros tipados via `errors.Is` e `errors.As`
+### Typed errors via `errors.Is` and `errors.As`
 
 ```go
 var (
@@ -210,32 +210,32 @@ if errors.Is(err, ErrNotFound) {
 }
 ```
 
-### Context propagation obrigatório
+### Mandatory context propagation
 
-- **Toda função que faz I/O** recebe `ctx context.Context` como primeiro parâmetro
-- Propagar para downstream calls
-- Cancelamento via `ctx.Done()`
+- **Every function that does I/O** receives `ctx context.Context` as the first parameter
+- Propagate to downstream calls
+- Cancellation via `ctx.Done()`
 
-### Goroutines e channels
+### Goroutines and channels
 
-- **Sempre** ter dono claro do channel (quem fecha)
-- `sync.WaitGroup` para esperar conclusão
-- `errgroup.Group` (golang.org/x/sync/errgroup) para paralelismo com erro
-- **Nunca** vazar goroutines (sempre ter forma de finalizar)
-- Race detector em CI: `go test -race ./...`
+- **Always** have a clear channel owner (who closes it)
+- `sync.WaitGroup` to wait for completion
+- `errgroup.Group` (golang.org/x/sync/errgroup) for parallelism with errors
+- **Never** leak goroutines (always have a way to terminate)
+- Race detector in CI: `go test -race ./...`
 
 ### Pointers vs values
 
-- Slices, maps, channels: já são reference types — passar por valor
-- Structs grandes (>~100 bytes): passar pointer
-- Receivers: consistência (todos pointers ou todos values em uma struct)
-- Pequenos value types imutáveis: passar por valor
+- Slices, maps, channels: already reference types — pass by value
+- Large structs (>~100 bytes): pass pointer
+- Receivers: consistency (all pointers or all values within a struct)
+- Small immutable value types: pass by value
 
-### Validação
+### Validation
 
-- `go-playground/validator` para structs no adapter inbound
-- Validação **antes** do use case
-- Domain re-valida invariantes (defesa em profundidade)
+- `go-playground/validator` for structs in the inbound adapter
+- Validation **before** the use case
+- Domain re-validates invariants (defense in depth)
 
 ```go
 type CreateUserRequest struct {
@@ -246,24 +246,24 @@ type CreateUserRequest struct {
 
 ---
 
-## Padrão de testes
+## Testing standards
 
-### Pirâmide
+### Pyramid
 
-| Camada | Ferramenta | Cobertura por modo |
-|--------|-----------|--------------------|
-| Unit (domain + use cases) | testing + testify | MVP ≥60% críticas / Production ≥95% críticas |
+| Layer | Tool | Coverage by mode |
+|-------|------|------------------|
+| Unit (domain + use cases) | testing + testify | MVP ≥60% critical / Production ≥95% critical |
 | Integration (adapters + DB) | testcontainers-go | MVP ≥40% / Production ≥80% |
-| E2E (HTTP) | net/http/httptest | Happy paths críticos |
-| Race | `go test -race` | Sempre |
-| Load | k6 ou vegeta | Production: NFRs do PRD |
-| Fuzz | `go test -fuzz` (Go 1.18+) | Inputs com origem externa |
+| E2E (HTTP) | net/http/httptest | Critical happy paths |
+| Race | `go test -race` | Always |
+| Load | k6 or vegeta | Production: PRD NFRs |
+| Fuzz | `go test -fuzz` (Go 1.18+) | Inputs from external origin |
 
-### Estrutura
+### Structure
 
-- `*_test.go` ao lado do arquivo (mesma package — acesso a unexported)
-- Testes de package externo em `*_test.go` com `package x_test`
-- Table-driven tests preferenciais
+- `*_test.go` next to file (same package — access to unexported)
+- External-package tests in `*_test.go` with `package x_test`
+- Table-driven tests preferred
 
 ```go
 func TestUser_Rename(t *testing.T) {
@@ -294,27 +294,27 @@ func TestUser_Rename(t *testing.T) {
 ### golang-migrate
 
 ```bash
-# criar
+# create
 migrate create -ext sql -dir migrations -seq create_users_table
 
-# aplicar
+# apply
 migrate -path migrations -database "$DATABASE_URL" up
 
-# reverter
+# revert
 migrate -path migrations -database "$DATABASE_URL" down 1
 ```
 
-### Regras
+### Rules
 
-- Toda migration reversível (down testado)
-- **Expand-contract** em breaking changes (Production)
-- Migrations testadas em staging com volume realista
-- Backup confirmado antes de migration destrutiva
-- Migration > 5min → janela de manutenção ou online schema change
+- Every migration reversible (down tested)
+- **Expand-contract** for breaking changes (Production)
+- Migrations tested on staging with realistic volume
+- Backup confirmed before destructive migration
+- Migration > 5min → maintenance window or online schema change
 
 ---
 
-## Logging e Observabilidade
+## Logging and Observability
 
 ### log/slog (stdlib Go 1.21+)
 
@@ -328,44 +328,44 @@ logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 logger.Info("user created", "user_id", user.ID, "email", user.Email)
 ```
 
-### Regras
+### Rules
 
-- Sempre estruturado (JSON em produção)
+- Always structured (JSON in production)
 - Correlation ID via context.Context + middleware
-- Nunca logar dados sensíveis
-- OpenTelemetry para tracing distribuído em Production
-- Métricas via Prometheus client (`prometheus/client_golang`)
+- Never log sensitive data
+- OpenTelemetry for distributed tracing in Production
+- Metrics via Prometheus client (`prometheus/client_golang`)
 
 ---
 
 ## Performance
 
-- Goroutines são baratas mas **não infinitas** — usar pool quando faz sentido (ants, semaphore)
-- **sync.Pool** para reuso de objetos caros (buffers, etc.)
-- Connection pooling em DB (database/sql faz por padrão; ajustar `SetMaxOpenConns`)
-- **pprof** para profiling: `import _ "net/http/pprof"` em endpoint interno
+- Goroutines are cheap but **not infinite** — use a pool when it makes sense (ants, semaphore)
+- **sync.Pool** for reusing expensive objects (buffers, etc.)
+- Connection pooling in DB (database/sql does this by default; tune `SetMaxOpenConns`)
+- **pprof** for profiling: `import _ "net/http/pprof"` on an internal endpoint
 - Benchmarks: `go test -bench=. -benchmem`
-- Race detector em CI sem fail
-- Single binary statically linked: `CGO_ENABLED=0 go build -ldflags="-s -w"`
+- Race detector in CI without fail
+- Statically linked single binary: `CGO_ENABLED=0 go build -ldflags="-s -w"`
 
 ---
 
-## Segurança específica
+## Stack-specific security
 
-- `govulncheck` na pipeline (oficial Go)
-- `gosec` (incluído no golangci-lint)
-- bcrypt para senhas (`golang.org/x/crypto/bcrypt`)
-- JWT via `golang-jwt/jwt/v5` (validar todos claims, não só assinatura)
+- `govulncheck` in pipeline (official Go)
+- `gosec` (included in golangci-lint)
+- bcrypt for passwords (`golang.org/x/crypto/bcrypt`)
+- JWT via `golang-jwt/jwt/v5` (validate all claims, not only signature)
 - CORS via `rs/cors`
-- Rate limiting via `ulule/limiter` ou middleware custom (token bucket)
-- Headers de segurança via middleware
-- SQL injection: usar prepared statements (`?` placeholders), nunca `fmt.Sprintf`
+- Rate limiting via `ulule/limiter` or custom middleware (token bucket)
+- Security headers via middleware
+- SQL injection: use prepared statements (`?` placeholders), never `fmt.Sprintf`
 - TLS via `crypto/tls` — minimum version 1.2
-- Validar todos inputs antes de chegar ao domínio
+- Validate all inputs before reaching the domain
 
 ---
 
-## Comandos padrão
+## Standard commands
 
 ```bash
 # install deps
@@ -376,9 +376,9 @@ go mod tidy
 air                                          # github.com/cosmtrek/air
 
 # test
-go test ./...                                # tudo
-go test -race ./...                          # com race detector
-go test -cover ./...                         # com cobertura
+go test ./...                                # all
+go test -race ./...                          # with race detector
+go test -cover ./...                         # with coverage
 go test -coverprofile=coverage.out ./...
 go tool cover -html=coverage.out             # HTML report
 
@@ -407,25 +407,25 @@ go test -race -cover ./...
 
 ---
 
-## Anti-patterns (bloquear)
+## Anti-patterns (block)
 
-- Ignorar erro com `_` sem motivo claro
-- `panic` em código de produção (apenas em main para fatais de inicialização)
-- Goroutine sem mecanismo de cancelamento (vaza)
-- Channel sem dono claro (quem fecha?)
-- Receber `interface{}` quando tipo concreto serve
-- Usar `init()` para lógica complexa (dificulta testes)
-- Pacote `util` ou `helpers` (organizar por domínio)
-- Mutex em struct exportada (encapsular)
-- Lógica de negócio em handler HTTP
-- Importar `database/sql` direto no domain
-- Nomenclatura como `MyService`, `IRepository` (verboso, não-idiomático)
-- `time.Sleep` em testes ao invés de sincronização adequada
-- Embedding de struct para herdar comportamento (Go favorece composição explícita)
+- Ignoring error with `_` without clear reason
+- `panic` in production code (only in main for fatal init failures)
+- Goroutine without cancellation mechanism (leaks)
+- Channel without clear ownership (who closes?)
+- Receiving `interface{}` when a concrete type works
+- Using `init()` for complex logic (hurts tests)
+- `util` or `helpers` package (organize by domain)
+- Mutex on exported struct (encapsulate)
+- Business logic in HTTP handler
+- Importing `database/sql` directly in the domain
+- Naming like `MyService`, `IRepository` (verbose, non-idiomatic)
+- `time.Sleep` in tests instead of proper synchronization
+- Struct embedding to inherit behavior (Go favors explicit composition)
 
 ---
 
-## Referências
+## References
 
 - Effective Go: <https://go.dev/doc/effective_go>
 - Go Code Review Comments: <https://github.com/golang/go/wiki/CodeReviewComments>

@@ -1,100 +1,100 @@
 # Stack Convention — React + Next.js
 
-> Frameworks suportados: **Next.js** (SSR/SSG, app full-stack, SEO) ou **React + Vite** (SPA dashboard interno).
+> Supported frameworks: **Next.js** (SSR/SSG, full-stack app, SEO) or **React + Vite** (internal dashboard SPA).
 
 ---
 
-## Quando usar esta stack
+## When to use this stack
 
-Escolher React (com Next.js) quando:
+Choose React (with Next.js) when:
 
-- **SEO importa** — landing pages, blog, e-commerce, marketing site (Next.js SSR/SSG)
-- **Apps complexos com muitas telas** — ecosistema de libraries é o mais maduro
-- **Time já domina React** — pool de devs vasto
-- **Compartilhamento de tipos com backend Node.js** — TypeScript end-to-end
-- **Server Components + Server Actions** (Next.js App Router) — full-stack moderno
-- **App híbrido** com algumas páginas SSR e outras SPA
-- **Ecosistema rico necessário** — UI libs (shadcn/ui, Radix, MUI, Mantine), forms (React Hook Form), tables (TanStack Table)
-- **i18n e a11y maduros** — react-i18next, react-aria
+- **SEO matters** — landing pages, blog, e-commerce, marketing site (Next.js SSR/SSG)
+- **Complex apps with many screens** — most mature library ecosystem
+- **Team already fluent in React** — vast developer pool
+- **Type sharing with Node.js backend** — TypeScript end-to-end
+- **Server Components + Server Actions** (Next.js App Router) — modern full-stack
+- **Hybrid app** with some SSR pages and others SPA
+- **Need rich ecosystem** — UI libs (shadcn/ui, Radix, MUI, Mantine), forms (React Hook Form), tables (TanStack Table)
+- **Mature i18n and a11y** — react-i18next, react-aria
 
-Escolher React + Vite (sem Next.js) quando:
+Choose React + Vite (without Next.js) when:
 
-- **Dashboard interno / Admin panel** — sem necessidade de SSR/SEO
-- **SPA simples** com auth atrás de login
-- **Build ultra-rápido** durante desenvolvimento
-- **Embedded em outra app** (microfrontend)
+- **Internal dashboard / Admin panel** — no SSR/SEO needed
+- **Simple SPA** with auth behind login
+- **Ultra-fast dev build**
+- **Embedded in another app** (microfrontend)
 
-## Quando NÃO usar
+## When NOT to use
 
-- **Time pequeno sem experiência React** — curva de aprendizado é real
-- **Marketing site puramente estático sem interatividade** — Astro ou HTML puro são mais simples
-- **App com lógica simples e prazo curto** — Vue/Nuxt costuma ter menos boilerplate
+- **Small team without React experience** — learning curve is real
+- **Purely static marketing site without interactivity** — Astro or plain HTML are simpler
+- **Simple-logic app with tight deadline** — Vue/Nuxt usually has less boilerplate
 
 ---
 
-## Versões e dependências
+## Versions and dependencies
 
-| Item | Versão mínima |
-|------|---------------|
+| Item | Minimum version |
+|------|-----------------|
 | Node.js | ≥ 20 LTS |
 | TypeScript | ≥ 5.4 |
-| React | ≥ 18.3 (preferencial 19 quando estável) |
+| React | ≥ 18.3 (prefer 19 when stable) |
 | Next.js | ≥ 15 (App Router) |
 | pnpm | ≥ 9 |
 
-### Bibliotecas padrão
+### Standard libraries
 
-| Necessidade | Biblioteca |
-|-------------|-----------|
-| UI library | shadcn/ui (preferencial) ou Radix UI primitives |
-| Styling | Tailwind CSS (preferencial) ou CSS Modules |
-| State management | Zustand (simples) ou Redux Toolkit (complexo) |
-| Server state / data fetching | TanStack Query (preferencial) ou SWR |
+| Need | Library |
+|------|---------|
+| UI library | shadcn/ui (preferred) or Radix UI primitives |
+| Styling | Tailwind CSS (preferred) or CSS Modules |
+| State management | Zustand (simple) or Redux Toolkit (complex) |
+| Server state / data fetching | TanStack Query (preferred) or SWR |
 | Forms | React Hook Form + Zod resolver |
-| Validação | Zod |
-| HTTP client | fetch nativo + wrapper TS, ou ky (preferencial sobre axios) |
-| Testing | Vitest (preferencial) ou Jest + React Testing Library |
-| E2E | Playwright (preferencial) ou Cypress |
-| i18n | next-intl (Next.js) ou react-i18next |
-| Auth | NextAuth.js / Auth.js ou Clerk |
+| Validation | Zod |
+| HTTP client | native fetch + TS wrapper, or ky (preferred over axios) |
+| Testing | Vitest (preferred) or Jest + React Testing Library |
+| E2E | Playwright (preferred) or Cypress |
+| i18n | next-intl (Next.js) or react-i18next |
+| Auth | NextAuth.js / Auth.js or Clerk |
 | Tables | TanStack Table |
-| Date | date-fns ou Day.js (não Moment.js — abandonado) |
+| Date | date-fns or Day.js (not Moment.js — abandoned) |
 | Animations | Framer Motion |
 | Icons | lucide-react |
-| Feature flags | LaunchDarkly SDK ou Unleash Proxy SDK |
-| Analytics | Posthog ou Mixpanel |
+| Feature flags | LaunchDarkly SDK or Unleash Proxy SDK |
+| Analytics | Posthog or Mixpanel |
 | Observability | Sentry (errors) + Vercel Analytics |
 
 ---
 
-## Tooling obrigatório
+## Required tooling
 
-| Tool | Propósito |
-|------|-----------|
+| Tool | Purpose |
+|------|---------|
 | **ESLint** | Linter (`eslint-config-next` + `@typescript-eslint/strict`) |
 | **Prettier** | Formatter |
 | **TypeScript** | Type check (`tsc --noEmit`) |
 | **Vitest** + **React Testing Library** | Test runner |
 | **Playwright** | E2E |
-| **Storybook** | Documentação visual de componentes |
-| **lighthouse-ci** | Performance budget na pipeline |
-| **bundle-analyzer** | Análise de bundle size |
+| **Storybook** | Visual component documentation |
+| **lighthouse-ci** | Performance budget in pipeline |
+| **bundle-analyzer** | Bundle size analysis |
 | **husky + lint-staged** | Pre-commit hooks |
-| **commitlint** | Convenção de commits |
+| **commitlint** | Commit conventions |
 
 ---
 
-## Layout do projeto
+## Project layout
 
-### Next.js App Router (preferencial)
+### Next.js App Router (preferred)
 
 ```
 src/
-├── app/                              # App Router (rotas)
-│   ├── (marketing)/                  # grupo de rotas
+├── app/                              # App Router (routes)
+│   ├── (marketing)/                  # route group
 │   │   ├── layout.tsx
 │   │   └── page.tsx
-│   ├── (app)/                        # área autenticada
+│   ├── (app)/                        # authenticated area
 │   │   ├── layout.tsx
 │   │   ├── dashboard/
 │   │   └── settings/
@@ -119,15 +119,15 @@ src/
 │   └── orders/
 │       └── ...
 │
-├── hooks/                            # hooks compartilhados
+├── hooks/                            # shared hooks
 ├── lib/                              # utilities, helpers
-│   ├── api/                          # client HTTP
+│   ├── api/                          # HTTP client
 │   ├── auth/
 │   └── utils.ts
 ├── providers/                        # context providers (Query, Theme, etc.)
 ├── styles/                           # design tokens, globals
 ├── i18n/                             # locales
-└── types/                            # tipos compartilhados
+└── types/                            # shared types
 ```
 
 ### Vite SPA
@@ -138,29 +138,29 @@ src/
 ├── features/
 ├── hooks/
 ├── lib/
-├── pages/                            # rotas via React Router
+├── pages/                            # routes via React Router
 ├── providers/
 └── main.tsx
 ```
 
 ---
 
-## Convenções de código
+## Code conventions
 
 ### Naming
 
-- **PascalCase** para componentes e arquivos de componentes (`UserCard.tsx`)
-- **camelCase** para hooks (`useAuth`), utilities, props
-- **kebab-case** para folders (exceto componentes — usar PascalCase ou kebab consistente)
-- **PascalCase** para types e interfaces (sem prefix `I`)
-- **UPPER_SNAKE_CASE** para constantes globais
+- **PascalCase** for components and component files (`UserCard.tsx`)
+- **camelCase** for hooks (`useAuth`), utilities, props
+- **kebab-case** for folders (except components — use PascalCase or consistent kebab)
+- **PascalCase** for types and interfaces (no `I` prefix)
+- **UPPER_SNAKE_CASE** for global constants
 
-### Componentes
+### Components
 
 ```tsx
-// 1 componente por arquivo
-// componente é function, não class
-// props tipadas com interface ou type
+// 1 component per file
+// component is a function, not a class
+// props typed with interface or type
 
 interface UserCardProps {
   user: User;
@@ -182,21 +182,21 @@ export function UserCard({ user, onEdit }: UserCardProps) {
 
 ### Atomic Design
 
-| Camada | Exemplo |
-|--------|---------|
+| Layer | Example |
+|-------|---------|
 | **Atoms** | Button, Input, Label, Icon |
 | **Molecules** | FormField (Label + Input + Error), SearchBox |
 | **Organisms** | Header, UserCard, OrderTable |
 | **Templates** | DashboardLayout, AuthLayout |
-| **Pages** | route components em `app/` |
+| **Pages** | route components in `app/` |
 
-Lógica de negócio **nunca** em atoms/molecules. Hooks ou organisms orquestram.
+Business logic **never** in atoms/molecules. Hooks or organisms orchestrate.
 
 ### Server vs Client Components (Next.js App Router)
 
-- **Default:** Server Component (sem JS no cliente)
-- **`'use client'`** apenas quando há: interatividade, hooks de estado, browser APIs
-- Evitar marcar componente parent como client se children podem ser server
+- **Default:** Server Component (no JS on client)
+- **`'use client'`** only when there's interactivity, state hooks, or browser APIs
+- Avoid marking parent component as client if children can be server
 
 ```tsx
 // page.tsx — Server Component (default)
@@ -215,15 +215,15 @@ export function DashboardClient({ data }) {
 
 ### State management
 
-- **Server state:** TanStack Query (cache, revalidação, mutations)
-- **Client state global:** Zustand (Redux só em casos complexos com time-travel)
-- **Component state local:** useState, useReducer
-- **URL state:** searchParams (Next.js) ou React Router
+- **Server state:** TanStack Query (cache, revalidation, mutations)
+- **Global client state:** Zustand (Redux only in complex cases with time-travel)
+- **Local component state:** useState, useReducer
+- **URL state:** searchParams (Next.js) or React Router
 
 ### Data fetching (Next.js App Router)
 
 ```tsx
-// Server Component — fetch direto
+// Server Component — direct fetch
 async function UsersPage() {
   const users = await fetch('https://api.example.com/users', {
     next: { revalidate: 60 }
@@ -267,15 +267,15 @@ function UserForm() {
 
 ### Error handling
 
-- Error Boundaries para falhas de render
-- `error.tsx` em rotas Next.js para erros de loading/server
-- TanStack Query: `onError` ou `error` do hook
-- Toasts para feedback (sonner ou react-hot-toast)
+- Error Boundaries for render failures
+- `error.tsx` in Next.js routes for loading/server errors
+- TanStack Query: `onError` or hook's `error`
+- Toasts for feedback (sonner or react-hot-toast)
 
 ### Imports
 
 ```tsx
-// ordem: react/next → externos → internos absolutos → relativos
+// order: react/next → external → absolute internal → relative
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -285,26 +285,26 @@ import { UserCard } from './UserCard';
 
 ---
 
-## Padrão de testes
+## Testing standards
 
-### Pirâmide
+### Pyramid
 
-| Camada | Ferramenta | Cobertura por modo |
-|--------|-----------|--------------------|
-| Unit (utils, hooks) | Vitest | MVP ≥60% críticas / Production ≥80% |
+| Layer | Tool | Coverage by mode |
+|-------|------|------------------|
+| Unit (utils, hooks) | Vitest | MVP ≥60% critical / Production ≥80% |
 | Component | Vitest + Testing Library | MVP ≥50% / Production ≥80% |
 | Integration | Vitest + MSW (mock API) | Production ≥70% |
-| E2E | Playwright | Happy paths críticos |
-| Visual regression | Chromatic ou Percy | Production: opcional |
-| Accessibility | axe-core via Playwright | Obrigatório em features críticas |
+| E2E | Playwright | Critical happy paths |
+| Visual regression | Chromatic or Percy | Production: optional |
+| Accessibility | axe-core via Playwright | Required in critical features |
 
-### Estrutura
+### Structure
 
-- `*.test.tsx` ao lado do componente
-- MSW para mockar APIs em testes
-- Storybook para documentação visual + smoke testing
+- `*.test.tsx` next to the component
+- MSW to mock APIs in tests
+- Storybook for visual documentation + smoke testing
 
-### Acessibilidade no teste
+### Accessibility in tests
 
 ```tsx
 import { axe } from 'jest-axe';
@@ -318,14 +318,14 @@ it('should have no a11y violations', async () => {
 
 ---
 
-## State management detalhado
+## State management in detail
 
 ### Server state (TanStack Query)
 
-- Cache automático
-- Revalidação inteligente (focus, reconnect, interval)
+- Automatic cache
+- Smart revalidation (focus, reconnect, interval)
 - Optimistic updates via `onMutate`
-- Não duplicar server state em Zustand/Redux
+- Don't duplicate server state in Zustand/Redux
 
 ### Client global state (Zustand)
 
@@ -345,21 +345,21 @@ export const useAuth = create<AuthStore>((set) => ({
 
 ---
 
-## Acessibilidade (WCAG 2.1 AA — obrigatório)
+## Accessibility (WCAG 2.1 AA — required)
 
-- Labels semânticos em todos elementos interativos
-- Contraste mínimo 4.5:1 (texto normal), 3:1 (texto grande)
-- Navegação por teclado em todos fluxos
-- Focus visível e ordenado
-- ARIA apenas quando HTML semântico não dá conta
-- Screen reader testado em features críticas
-- Não depender só de cor para comunicar estado
-- Forms com `<label>` associado a `<input>`
-- `<button>` para ações, `<a>` para navegação
+- Semantic labels on all interactive elements
+- Minimum contrast 4.5:1 (normal text), 3:1 (large text)
+- Keyboard navigation in all flows
+- Visible and ordered focus
+- ARIA only when semantic HTML isn't sufficient
+- Screen reader tested in critical features
+- Don't rely on color alone to convey state
+- Forms with `<label>` associated to `<input>`
+- `<button>` for actions, `<a>` for navigation
 
 ---
 
-## Internacionalização (i18n)
+## Internationalization (i18n)
 
 ### next-intl (App Router)
 
@@ -367,7 +367,7 @@ export const useAuth = create<AuthStore>((set) => ({
 // messages/pt-BR.json
 { "greeting": "Olá, {name}" }
 
-// componente
+// component
 import { useTranslations } from 'next-intl';
 
 export function Greeting({ name }: { name: string }) {
@@ -376,21 +376,21 @@ export function Greeting({ name }: { name: string }) {
 }
 ```
 
-### Regras
+### Rules
 
-- **Nenhuma string hardcoded** em componentes
-- Idiomas declarados no PRD (ver `docs/PRD-template.md`)
-- Considerar RTL (árabe, hebraico) em projetos globais
-- Formatadores nativos: `Intl.DateTimeFormat`, `Intl.NumberFormat`
+- **No hardcoded strings** in components
+- Languages declared in PRD (see `docs/PRD-template.md`)
+- Consider RTL (Arabic, Hebrew) in global projects
+- Native formatters: `Intl.DateTimeFormat`, `Intl.NumberFormat`
 
 ---
 
 ## Design Tokens
 
-- **Tailwind config** centralizada (cores, espaçamentos, tipografia)
-- **shadcn/ui** baseado em CSS variables — fácil tematizar
-- Em projetos multi-plataforma (Web + Mobile), tokens vêm de fonte única (Style Dictionary) — Frontend mantém, Mobile valida paridade
-- Nada hardcoded em componentes (cores, tamanhos)
+- **Tailwind config** centralized (colors, spacing, typography)
+- **shadcn/ui** based on CSS variables — easy theming
+- In multi-platform projects (Web + Mobile), tokens come from a single source (Style Dictionary) — Frontend maintains, Mobile validates parity
+- Nothing hardcoded in components (colors, sizes)
 
 ---
 
@@ -398,50 +398,50 @@ export function Greeting({ name }: { name: string }) {
 
 ### Web Vitals (Production Mode)
 
-| Métrica | Target |
-|---------|--------|
+| Metric | Target |
+|--------|--------|
 | LCP | ≤ 2.5s |
 | INP | ≤ 200ms |
 | CLS | ≤ 0.1 |
 
-### Técnicas
+### Techniques
 
 - **Image optimization** — `next/image` (lazy, responsive, AVIF/WebP)
 - **Font optimization** — `next/font` (no FOIT/FOUT, self-hosted)
-- **Code splitting** — `dynamic()` para componentes pesados
-- **Server Components** sempre que possível (zero JS shipped)
-- **Streaming** com Suspense para conteúdo lento
-- **Bundle analyzer** — monitorar bundle size na pipeline
-- **Lighthouse CI** com budget na pipeline
-- **Memoization** judiciosa (`useMemo`, `useCallback`, `memo`) — não usar profilaticamente
+- **Code splitting** — `dynamic()` for heavy components
+- **Server Components** whenever possible (zero JS shipped)
+- **Streaming** with Suspense for slow content
+- **Bundle analyzer** — monitor bundle size in pipeline
+- **Lighthouse CI** with budget in pipeline
+- **Judicious memoization** (`useMemo`, `useCallback`, `memo`) — don't use prophylactically
 
 ---
 
 ## Feature Flags
 
-Ver `memory/ADR/ADR-003-feature-flags.md` e `agents/frontend-engineer.md`.
+See `memory/ADR/ADR-003-feature-flags.md` and `agents/frontend-engineer.md`.
 
-- Flag check em **rota** ou **organism**, nunca em atoms
-- Cache local + fallback determinístico
-- Loading state enquanto carrega flag
-- SDK do provedor (LaunchDarkly React SDK, Unleash Proxy SDK)
+- Flag check at the **route** or **organism** level, never in atoms
+- Local cache + deterministic fallback
+- Loading state while flag loads
+- Provider SDK (LaunchDarkly React SDK, Unleash Proxy SDK)
 
 ---
 
-## Segurança específica
+## Stack-specific security
 
-- **CSP** (Content Security Policy) configurada (`next.config.js` headers)
-- **HTTPS** obrigatório em produção (Next.js + Vercel default)
-- **httpOnly cookies** para tokens de sessão (não localStorage)
-- **CSRF** mitigado por SameSite=Lax cookies + verificação Origin
-- Sanitizar HTML antes de `dangerouslySetInnerHTML` (DOMPurify) — preferir não usar
-- Variáveis públicas: prefix `NEXT_PUBLIC_` (Next.js) — auditar para não vazar secrets
-- Server Actions: validar input com Zod antes de processar
+- **CSP** (Content Security Policy) configured (`next.config.js` headers)
+- **HTTPS** required in production (Next.js + Vercel default)
+- **httpOnly cookies** for session tokens (not localStorage)
+- **CSRF** mitigated by SameSite=Lax cookies + Origin verification
+- Sanitize HTML before `dangerouslySetInnerHTML` (DOMPurify) — prefer not using it
+- Public variables: prefix `NEXT_PUBLIC_` (Next.js) — audit so secrets don't leak
+- Server Actions: validate input with Zod before processing
 - Headers: X-Frame-Options, X-Content-Type-Options, Referrer-Policy
 
 ---
 
-## Comandos padrão
+## Standard commands
 
 ```bash
 # install
@@ -480,27 +480,27 @@ pnpm typecheck && pnpm lint && pnpm test:cov && pnpm build && pnpm test:e2e
 
 ---
 
-## Anti-patterns (bloquear)
+## Anti-patterns (block)
 
-- Lógica de negócio em componente UI
-- Estado global para coisa local (`useState` vs Zustand)
-- Server state duplicado em store cliente
-- `any` sem justificativa
-- `useEffect` para data fetching (use TanStack Query)
-- `any` em props
-- Componentes gigantes (> 200 linhas) — extrair
-- Inline styles para coisas que deveriam ser tokens
-- `dangerouslySetInnerHTML` sem sanitização
-- Texto hardcoded (sem i18n)
-- Fetch sem tratamento de erro/loading
-- `key={index}` em listas dinâmicas
-- `useMemo`/`useCallback` profiláticos (criar overhead)
-- Acessibilidade ignorada (sem labels, sem contraste, sem keyboard nav)
-- Bundle bloated (importar lib inteira ao invés de funções específicas)
+- Business logic in UI component
+- Global state for something local (`useState` vs Zustand)
+- Server state duplicated in client store
+- `any` without justification
+- `useEffect` for data fetching (use TanStack Query)
+- `any` in props
+- Giant components (> 200 lines) — extract
+- Inline styles for things that should be tokens
+- `dangerouslySetInnerHTML` without sanitization
+- Hardcoded text (no i18n)
+- Fetch without error/loading handling
+- `key={index}` in dynamic lists
+- Prophylactic `useMemo`/`useCallback` (overhead)
+- Accessibility ignored (no labels, no contrast, no keyboard nav)
+- Bloated bundle (importing entire lib instead of specific functions)
 
 ---
 
-## Referências
+## References
 
 - React: <https://react.dev/>
 - Next.js: <https://nextjs.org/docs>
