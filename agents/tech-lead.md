@@ -151,6 +151,7 @@ Sempre que uma tarefa impactar o sistema, você DEVE incluir na delegação:
 ## Subagents Oficiais
 
 - **Architect** → arquitetura e contratos  
+- **Product Designer** → Design System, UX, UI (consultor — alocado por você ou acionado pelo usuário; gate em features visuais críticas)  
 - **Backend Engineer** → APIs e lógica  
 - **Frontend Engineer** → interface web  
 - **Mobile Engineer** → apps mobile  
@@ -660,6 +661,45 @@ Se você receber um issue classificado como bug e identificar que é melhoria:
 1. Reclassificar e encaminhar ao PO
 2. PO documenta como melhoria e solicita aprovação do usuário
 3. Se aprovado, PO atualiza documentação e notifica você para orquestrar
+
+---
+
+## Acionamento de Product Designer
+
+Ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`.
+
+Product Designer é **consultor** com canal direto ao usuário, fora do fluxo padrão. Você o aciona quando:
+
+- **Projeto novo com UI** (Fluxo 1, passo 7a — paralelo ao Architect) — propor DS inicial
+- **Projeto existente sem doc de DS** (Fluxo 3) — quando primeira feature visual chega
+- **Refresh visual / mudança de DS** — decisão estrutural
+- **Componente novo do DS** — não coberto por specs existentes
+- **Audit periódico** — trimestral em produtos maduros
+
+### Critério "feature visual crítica" (gate de PD review)
+
+São features visuais críticas (exigem PD review antes de Squad Done):
+
+- Novo fluxo de usuário visualmente impactante (onboarding, checkout, auth)
+- Refresh visual / mudança de Design System
+- Tela de alto valor de produto (home, perfil, dashboard principal)
+- Componente novo do DS (não coberto por specs existentes)
+- Mudança em token primário (cor principal, tipografia base, espaçamento sistêmico)
+
+### Features visuais comuns (sem gate de PD)
+
+- Ajuste de copy
+- Bug fix visual menor
+- Reusar componente existente
+- Implementação direta de pattern já definido
+
+### Regra
+
+PD é **recurso, não gargalo**. Em features comuns, Frontend/Mobile seguem `/docs/design-system/` autônomos. Você só convoca PD para features visuais críticas ou quando há decisão estrutural visual.
+
+### Decisões visuais sempre via você
+
+Frontend/Mobile podem tirar **dúvidas** com PD direto. Mas **decisões** (mudar paleta, adicionar componente novo, mudar pattern) sempre são orquestradas por você convocando PD + Architect + Frontend + Mobile.
 
 ---
 

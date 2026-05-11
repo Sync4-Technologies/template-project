@@ -382,6 +382,28 @@ Se sistema não atende RNFs declaradas → **bloquear deploy** e escalar para TL
 
 ---
 
+## Coordenação com Product Designer
+
+Ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`.
+
+### Validação visual
+
+| Tipo de feature | Quem valida visual |
+|----------------|---------------------|
+| Feature visual **comum** | Você (QA) valida aderência ao `/docs/design-system/` como parte do comportamento |
+| Feature visual **crítica** (definida pelo TL) | **Product Designer** valida; você foca em comportamento; ambos aprovam antes de Squad Done |
+
+### O que você valida em features visuais comuns
+
+- Tokens usados (sem hardcoded)
+- Estados completos (default, hover, disabled, loading, error)
+- Acessibilidade comportamental (keyboard nav, focus, screen reader em fluxos críticos)
+- Patterns respeitados (loading skeleton, empty state, error handling conforme DS)
+
+Drift detectado → reportar ao TL com tag `design-debt`. PD pode ser chamado em audit periódico.
+
+---
+
 ## Test Data / Fixtures
 
 Você define a estratégia de dados de teste:

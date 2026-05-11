@@ -19,6 +19,7 @@ Squad de engenharia de software baseada em agentes especializados. O objetivo é
 | Tech Lead | [`agents/tech-lead.md`](agents/tech-lead.md) | Opus | Orquestração, governança técnica, plano de execução |
 | Architect | [`agents/architect.md`](agents/architect.md) | Opus | Arquitetura, domínio (DDD), contratos, decisão de stack |
 | Security Engineer | [`agents/security-engineer.md`](agents/security-engineer.md) | Opus | Threat modeling, compliance, auth/authz, pentest review |
+| Product Designer | [`agents/product-designer.md`](agents/product-designer.md) | Opus | Design System, UX, UI, acessibilidade visual (consultor com canal direto ao usuário) |
 | Backend Engineer | [`agents/backend-engineer.md`](agents/backend-engineer.md) | Sonnet | APIs, lógica de negócio, persistência |
 | Frontend Engineer | [`agents/frontend-engineer.md`](agents/frontend-engineer.md) | Sonnet | Interface web, Atomic Design, integração com backend |
 | Mobile Engineer | [`agents/mobile-engineer.md`](agents/mobile-engineer.md) | Sonnet | Apps iOS/Android, Clean Architecture mobile |
@@ -53,10 +54,14 @@ Usuário (autoridade máxima)
     └── todos os outros agentes
 ```
 
-- Apenas PO e TL interagem diretamente com o usuário
+- **PO, TL e Product Designer** podem interagir diretamente com o usuário
+  - PO: o quê construir, regras de negócio
+  - TL: orquestração técnica, status
+  - Product Designer: questões visuais e UX (quando alocado ou acionado pelo usuário)
 - Demais agentes respondem ao TL (orquestrador único)
 - Support Engineer escala issues via TL; TL roteia: bug fica com TL, melhoria é encaminhada ao PO
-- Divergências entre PO e TL são resolvidas pelo usuário
+- Frontend/Mobile podem tirar **dúvidas pontuais** com Product Designer (canal aberto); **decisões** visuais são orquestradas via TL
+- Divergências entre PO/TL/PD são resolvidas pelo usuário
 
 ---
 

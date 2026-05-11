@@ -1,0 +1,196 @@
+---
+name: squad-design-audit
+description: Conduz Product Designer em audit periódico de consistência visual em produto maduro. Compara telas atuais com docs do DS, identifica drift e propõe priorização. Use trimestralmente em produtos com >6 meses em produção.
+---
+
+# Skill — Design Audit (Drift Detection)
+
+> **Owner:** Product Designer | **Revisão:** 90 dias | **Obsolescência:** processo de audit mudar significativamente
+
+Conduz o PD em audit periódico de consistência visual de um produto.
+
+---
+
+## Quando usar
+
+- Cadência sugerida: **trimestral** em produtos maduros (>6 meses em produção)
+- Quando TL detectar reclamações de inconsistência visual
+- Antes de release significativa (limpar drift acumulado)
+- Após período de alta velocidade (muitas features visuais em pouco tempo)
+
+## Quando NÃO usar
+
+- Produto novo (sem histórico para auditar)
+- Sem `/docs/design-system/` populado → use `/squad-design-extract` primeiro
+- Decisão pontual sobre componente → não exige audit
+
+---
+
+## Sua tarefa como Claude (atuando como Product Designer)
+
+### 1. Coletar baseline
+
+- **DS docs:** `/docs/design-system/` (estado atual da documentação)
+- **Codebase:** theme files, design tokens em código, componentes implementados
+- **Telas em produção:** lista priorizada pelo TL/PO (foco em fluxos críticos)
+- **Issues visuais reportadas:** issues no tracker com label `visual` / `ui` / `design-debt`
+
+### 2. Inspeção por categoria
+
+#### Tokens em uso
+
+- Comparar tokens declarados em `/docs/design-system/tokens/` com tokens efetivamente usados no código
+- Detectar:
+  - **Tokens documentados mas não usados** — candidatos a remoção
+  - **Valores hardcoded** que deveriam ser tokens — drift
+  - **Tokens "fantasma"** usados no código mas não documentados — drift
+
+#### Componentes
+
+Comparar specs em `/docs/design-system/components/` com implementações:
+
+- Estados faltando (componente documenta hover mas implementação não tem)
+- Variantes não documentadas (implementação tem variante "compact" não documentada)
+- Drift de propriedades (padding, altura, border-radius diferentes da spec)
+
+#### Patterns
+
+- Empty states uniformes entre telas?
+- Error handling consistente?
+- Loading skeleton vs spinner usado de forma coerente?
+- Navegação respeita pattern documentado?
+
+#### Acessibilidade
+
+- Contraste em texto secundário ainda OK?
+- Focus visível em todos os componentes interativos?
+- Tap targets respeitados em mobile?
+- Suporte a `prefers-reduced-motion` implementado em animações novas?
+
+#### Telas similares com look diferente
+
+Detectar inconsistências entre telas que deveriam ser similares:
+
+- Lista de pedidos vs lista de produtos — usam mesmo pattern de Card?
+- Modal de confirmação vs modal de input — mesmo header style?
+- Form de cadastro vs form de edição — mesmo layout?
+
+### 3. Priorizar drift detectado
+
+Para cada item de drift:
+
+| Severidade | Critério | Ação |
+|-----------|---------|------|
+| **Crítica** | Quebra de identidade, acessibilidade comprometida, confusão para usuário | Correção priorizada (próxima sprint) |
+| **Alta** | Inconsistência visível, drift em componente-base | Tag `design-debt`, próximas 1-2 sprints |
+| **Média** | Drift menor, afeta poucas telas | Tag `design-debt`, backlog |
+| **Baixa** | Token não usado, polish | Tag `design-debt`, sem urgência |
+
+### 4. Reportar ao Tech Lead
+
+Formato:
+
+```
+DESIGN AUDIT — [projeto]
+Data: YYYY-MM-DD
+Período coberto: [último audit / desde início se primeiro]
+Telas auditadas: N
+
+Resumo:
+- Drift crítico: N itens
+- Drift alto: N itens
+- Drift médio: N itens
+- Drift baixo: N itens
+
+Drift crítico (correção priorizada):
+1. [item] — [tela/componente] — [proposta de correção]
+2. ...
+
+Drift alto:
+1. ...
+
+Drift médio:
+1. ...
+
+Drift baixo:
+1. ...
+
+Tokens não usados (candidatos a remoção): [lista]
+
+Variantes não documentadas (drift de spec): [lista]
+
+Acessibilidade — pontos de atenção: [lista]
+
+Telas inconsistentes entre si: [lista de pares]
+
+Próximo audit sugerido: [data — 3 meses]
+
+Tarefas adicionadas ao TASK_BOARD: [N tarefas com tag `design-debt`]
+```
+
+### 5. Registrar tarefas no TASK_BOARD
+
+Para cada drift de severidade média ou superior:
+
+```
+### [DESIGN-AUDIT-NN] Corrigir drift: [descrição]
+- **Agente:** Frontend Engineer / Mobile Engineer
+- **Prioridade:** Alta / Média / Baixa
+- **Tag:** design-debt
+- **Contexto:** Audit YYYY-MM-DD — [tela/componente]
+- **Spec correta:** [link para `/docs/design-system/...`]
+- **Bloqueios:** Nenhum
+```
+
+### 6. Atualizar agent-memory
+
+Em `memory/agent-memory/product-designer.md`, registrar:
+
+```
+## Audit [data]
+
+Cobertura: N telas
+Drift total: N itens (crítico: X, alto: Y, médio: Z, baixo: W)
+
+Padrões recorrentes de drift detectados:
+- [padrão 1]
+- [padrão 2]
+
+Ações no DS doc:
+- Documentar variante "compact" do Button (descoberta no codebase)
+- Remover tokens não-usados: ...
+
+Lessons:
+- Próximo audit: focar mais em telas X, Y (acumularam drift)
+```
+
+### 7. Propor melhorias no DS (se aplicável)
+
+Audit pode revelar necessidade de:
+
+- Adicionar variantes oficiais (drift comum vira spec)
+- Atualizar tokens (modo escuro incompleto, paleta ampliada)
+- Adicionar patterns (caso de uso recorrente sem pattern)
+
+Estas mudanças no DS são **decisões estruturais** — você propõe ao TL, TL orquestra (Architect + Frontend + Mobile).
+
+---
+
+## Anti-patterns (rejeitar)
+
+- Audit sem priorização (todo drift é igual? não)
+- Propor mudanças no DS sem orquestração do TL
+- Listar inconsistência sem proposta de correção
+- Ignorar issues reportadas pelo time/usuário
+- Audit que vira lista interminável que ninguém prioriza (foque em crítico + alto)
+- Audit sem registrar próxima data (cadência se perde)
+
+---
+
+## Referências
+
+- Product Designer: `agents/product-designer.md`
+- DS doc: `docs/design-system/`
+- ADR-005: `memory/ADR/ADR-005-design-system.md`
+- TASK_BOARD: `memory/TASK_BOARD.md`
+- Tag `design-debt` documentada em `memory/TASK_BOARD.md` → "Tags"

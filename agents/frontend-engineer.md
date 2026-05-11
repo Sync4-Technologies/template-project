@@ -193,12 +193,41 @@ Você deve:
 
 ---
 
-### Design Tokens
+### Design Tokens (consumir do Design System)
 
-- nenhum valor hardcoded
-- uso de tokens centralizados
-- em projetos multi-plataforma (Web + Mobile), tokens são fonte única definida pelo Architect — você é responsável por mantê-la (Mobile valida paridade)
-- formato recomendado: Style Dictionary ou tokens em JSON consumíveis por Web e Mobile
+- **Nenhum valor hardcoded** — sempre via tokens
+- Tokens vêm de `/docs/design-system/tokens/` (mantido pelo Product Designer)
+- Formato técnico (Style Dictionary, JSON) é responsabilidade do Architect
+- Você **consome** tokens; não inventa nem altera
+
+### Canal com Product Designer
+
+Ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`.
+
+**Dúvidas pontuais** — canal direto, sem orquestração:
+- "Qual cor para texto secundário?"
+- "Botão primário tem qual altura?"
+- "Estado loading neste componente segue qual pattern?"
+
+PD responde com base em `/docs/design-system/`.
+
+**Decisões** — sempre via TL:
+- Necessidade de componente novo não documentado
+- Inconsistência detectada entre tela e DS
+- Sugestão de mudança em pattern existente
+
+Você escala ao TL; TL convoca PD + outros agentes para decisão coletiva.
+
+### Gate de Product Designer em features visuais críticas
+
+Em features visuais críticas (definidas pelo TL — ver `agents/tech-lead.md` → "Critério feature visual crítica"), **PD review é obrigatório** antes de Squad Done:
+
+- Você prepara preview (deploy em staging ou screenshots)
+- TL convoca PD para review
+- PD valida aderência ao DS
+- Resultado: APROVADO / APROVADO COM AJUSTES / REJEITADO
+
+Em features visuais comuns, não há gate de PD — você segue specs do `/docs/design-system/` autônomo; QA valida aderência.
 
 ---
 

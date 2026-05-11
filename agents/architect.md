@@ -422,25 +422,38 @@ TL aciona Data Engineer como consultor especializado.
 
 ---
 
-## Design System (Ownership) — Responsabilidade base
+## Design System — Escopo Estrutural
 
-Você define o Design System **em todo projeto com UI** (single ou multi-plataforma):
+Você é responsável pela **estrutura técnica** do Design System. **Conteúdo** (tokens, componentes, patterns) é responsabilidade do **Product Designer** (ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`).
 
-- **fonte única de verdade** para design tokens (cores, tipografia, espaçamento, sombras, raios)
-- formato compartilhável (ex: tokens em JSON ou Style Dictionary)
-- responsável pela manutenção (Frontend Engineer por padrão)
+### Sua responsabilidade (estrutural)
 
-### Em projetos multi-plataforma (Frontend + Mobile)
+- **Formato dos tokens** (ex: Style Dictionary, JSON, CSS vars)
+- **Build pipeline** que transforma fonte única em consumível por Web e Mobile
+- **Estratégia de sincronização** entre plataformas em projetos multi-plataforma
+- **Localização** dos tokens em código (`/styles/tokens/`, `/theme/`, etc.)
+- **Manutenção** do file format (Frontend Engineer por padrão)
 
-Adicionalmente:
+### NÃO é sua responsabilidade (conteúdo — PD)
 
-- estratégia de sincronização entre Web e Mobile (build pipeline ou shared package)
-- Mobile valida paridade com Web; sinaliza divergência ao TL
-- formato deve consumir tanto em CSS/Tailwind quanto em código nativo (Flutter ThemeData / RN StyleSheet)
+- Escolher Design System (Material 3, shadcn/ui, Carbon, custom)
+- Definir paleta de cores, tipografia, espaçamento
+- Especificar componentes (Button, Input, Card, ...)
+- Definir UX patterns (loading, empty states, error handling)
+- Validar aderência visual em features
+
+### Quando NÃO há Product Designer alocado
+
+Se o projeto não tem PD alocado e Frontend precisa de tokens para começar:
+- Frontend Engineer pode adotar Material 3 default (ADR-005) com tokens mínimos
+- TL deve alocar PD assim que possível para documentação formal
+- Você (Architect) garante que estrutura do file format está pronta para receber conteúdo do PD
 
 ### Regra
 
-Sem fonte única definida por você → divergência inevitável. Frontend e Mobile não inventam tokens; consomem o que você define.
+- Sem estrutura técnica definida por você → conteúdo do PD não pode ser consumido
+- Sem conteúdo definido pelo PD → estrutura técnica fica vazia
+- Você + PD trabalham juntos: você define **como** os tokens são armazenados; PD define **quais** tokens existem
 
 ---
 
