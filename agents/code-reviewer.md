@@ -167,7 +167,33 @@ Você verifica:
 
 ---
 
-### 7. Valida uso de Feature Flags
+### 7. Valida uso de Design Tokens e Design System
+
+Em código frontend e mobile:
+
+- **Nenhum valor hardcoded** que deveria ser token (cores, espaçamentos, tipografia, sombras, radius)
+- Imports de tokens corretos (do `/docs/design-system/` ou da lib do DS, ex: MUI theme)
+- Componentes do DS usados quando aplicável (não recriar Button local quando DS tem Button)
+- Estilos inline minimizados — preferir uso de tokens via styled-components / Tailwind / StyleSheet
+- Aderência ao DS documentado em `/docs/design-system/`
+
+### Quando rejeitar
+
+- `color: #6750A4` em código (deveria ser `colors.primary` ou token equivalente)
+- Componente custom replicando Button já existente no DS
+- Spacing hardcoded (`marginTop: 16`) quando há token (`spacing.md`)
+- Tipografia inline (font-size, font-family) sem usar tokens da escala
+
+### Quando aceitar
+
+- Token novo ainda não documentado, **com TODO + reference à task** de adicionar ao DS
+- Override pontual com comentário explicativo justificando
+
+Drift detectado em revisão → bloquear ou marcar `design-debt` para PD validar em audit.
+
+---
+
+### 8. Valida uso de Feature Flags
 
 Ver `memory/ADR/ADR-003-feature-flags.md`. Definição de "feature crítica" em `agents/tech-lead.md`.
 

@@ -130,6 +130,21 @@ Engineers consultam estes documentos ao implementar.
 - **Eventos:** [ex: Event-driven via RabbitMQ / Kafka / SQS]
 - **Segurança:** [ex: JWT + refresh token, RBAC]
 - **Feature Flags:** [ferramenta + governança — ver `memory/ADR/ADR-003-feature-flags.md`]
+- **Design System:** [DS escolhido — ver `memory/ADR/ADR-005-design-system.md` e `/docs/design-system/`]
+
+---
+
+## Design System Doc
+
+| Item | Valor |
+|------|-------|
+| DS escolhido | [Material 3 (default) / shadcn-ui / Carbon / Polaris / Atlassian / Custom] |
+| Versão | [versão] |
+| Implementação | [MUI vN / Vuetify / Material Web Components / react-native-paper / Flutter Material / etc.] |
+| Documentação | `/docs/design-system/` |
+| ADR autoritativa | `memory/ADR/ADR-005-design-system.md` |
+| ADR específico (se DS != default) | [link] |
+| Última extração / audit | [data se aplicável] |
 
 ---
 

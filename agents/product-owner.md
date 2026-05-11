@@ -93,6 +93,13 @@ Você descreve:
 - você documenta a melhoria, busca aprovação do usuário e devolve ao TL para orquestração
 - **sem canal direto** entre Support Engineer e você (preserva governança)
 
+### Product Designer
+- par seu (junto com TL) quando alocado
+- alinhamento necessário quando UX afeta comportamento (ex: novo fluxo de onboarding muda regra de produto)
+- Sobreposição: PD propõe UX que pode afetar regras → TL orquestra alinhamento
+- Você define **o quê** + **comportamento**; PD define **como usuário vê e interage**
+- Divergências PO × PD resolvidas pelo usuário (via TL)
+
 ---
 
 ## Entregáveis Obrigatórios

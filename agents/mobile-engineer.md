@@ -213,11 +213,45 @@ Você deve:
 
 ---
 
-### Design Tokens
+### Design Tokens (consumir do Design System)
 
-- nenhum valor hardcoded (cores, espaçamentos, tipografia)
-- uso de tokens centralizados definidos pelo Architect
-- em projetos multi-plataforma (Web + Mobile), tokens são fonte única mantida pelo Frontend Engineer — você valida paridade Web/Mobile e sinaliza divergência ao TL
+- **Nenhum valor hardcoded** (cores, espaçamentos, tipografia)
+- Tokens vêm de `/docs/design-system/tokens/` (mantido pelo Product Designer)
+- Formato técnico é responsabilidade do Architect
+- Em projetos multi-plataforma (Web + Mobile), você valida paridade com Web e sinaliza divergência ao TL
+
+### Adaptive UI Material 3 vs Cupertino
+
+Mobile pode precisar de adaptive UI:
+- **Android:** Material 3 nativo
+- **iOS:** componentes Cupertino-like quando apropriado (botões, navegação, formulários)
+
+Product Designer especifica quando usar adaptive vs uniforme. Você implementa conforme spec.
+
+### Canal com Product Designer
+
+Ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`.
+
+**Dúvidas pontuais** — canal direto:
+- "Que cor para texto disabled no Android vs iOS?"
+- "BottomSheet usa pattern Material ou customizado?"
+- "Tap target em ícone-only é qual tamanho?"
+
+**Decisões** — via TL:
+- Componente novo necessário
+- Inconsistência entre plataformas
+- Adaptive vs uniforme em componente novo
+
+### Gate de Product Designer em features visuais críticas
+
+Em features visuais críticas (definidas pelo TL), **PD review é obrigatório** antes de Squad Done. Para mobile especificamente, PD valida:
+
+- Aderência ao DS em ambas plataformas (iOS + Android)
+- Adaptive UI quando aplicável
+- Acessibilidade (TalkBack/VoiceOver)
+- Tap targets corretos
+
+Em features visuais comuns, não há gate de PD — você segue specs do `/docs/design-system/` autônomo.
 
 ---
 

@@ -61,6 +61,11 @@ Adaptações devem ser feitas nos artefatos de projeto (PRD, arquitetura, contra
 │   │   ├── /backend          (nodejs, python, php, java, go)
 │   │   ├── /frontend         (react, vue)
 │   │   └── /mobile           (flutter, react-native)
+│   ├── /design-system        ← Design System do projeto (mantido por Product Designer)
+│   │   ├── /tokens
+│   │   ├── /components
+│   │   ├── /patterns
+│   │   └── accessibility.md
 │   └── /runbooks
 │       ├── disaster-recovery.md
 │       └── [incidente].md
@@ -123,6 +128,7 @@ Documentação de produto e operação:
 - especificação funcional
 - fluxos
 - `/stack-conventions` → convenções idiomáticas por linguagem/framework. Architect consulta para decidir stack; Engineers consultam para implementar
+- `/design-system` → Design System do projeto (tokens, componentes, patterns). Mantido por Product Designer; consumido por Frontend/Mobile Engineers
 - `/runbooks` → procedimentos de resposta a incidentes (incluindo `disaster-recovery.md`)
 
 ---
@@ -143,6 +149,7 @@ Os agentes estão definidos na pasta `/agents`. Para índice tabular com modelo 
 - **[Tech Lead](agents/tech-lead.md)** — orquestração, governança técnica, plano de execução
 - **[Architect](agents/architect.md)** — arquitetura, domínio (DDD), contratos, decisão de stack
 - **[Security Engineer](agents/security-engineer.md)** — threat modeling, compliance, auth/authz, pentest review
+- **[Product Designer](agents/product-designer.md)** — Design System, UX, UI, acessibilidade visual (consultor com canal direto ao usuário; gate em features visuais críticas)
 
 ### Sonnet (execução)
 
@@ -160,9 +167,12 @@ Os agentes estão definidos na pasta `/agents`. Para índice tabular com modelo 
 
 ## Regra de Interação
 
-O usuário só pode interagir diretamente com:
-- Product Owner
-- Tech Lead
+O usuário pode interagir diretamente com:
+- **Product Owner** — o quê construir, regras de negócio
+- **Tech Lead** — orquestração técnica, status
+- **Product Designer** — questões visuais e UX (quando alocado ou acionado pelo usuário)
+
+Frontend Engineer e Mobile Engineer podem tirar **dúvidas pontuais** com Product Designer diretamente (canal aberto). **Decisões** visuais sempre via TL orquestrando.
 
 Todos os outros agentes:
 - NÃO falam com o usuário
@@ -184,10 +194,12 @@ Usuário (autoridade máxima)
     └── Data Engineer (consultor — acionado quando necessário)
 ```
 
-Product Owner e Tech Lead são **pares**:
-- PO e TL não se subordinam mutuamente
-- Divergências entre PO e TL são resolvidas pelo usuário
+Product Owner, Tech Lead e Product Designer (quando alocado) são **pares**:
+- Não se subordinam mutuamente
+- PO define o quê; TL define como e orquestra; PD define visual/UX
+- Divergências entre eles são resolvidas pelo usuário
 - Support Engineer escala issues **sempre via TL** (orquestrador único). TL roteia: bug fica com TL; melhoria é encaminhada ao PO
+- Product Designer é **consultor** — fora do fluxo padrão; alocado pelo TL ou acionado pelo usuário. Frontend/Mobile podem consultar PD para dúvidas pontuais; decisões via TL
 
 ---
 
@@ -230,6 +242,7 @@ Nenhuma execução pode avançar sem:
 - Tech Lead
 - Architect
 - Security Engineer
+- Product Designer
 
 ### Sonnet (execução)
 - Backend Engineer
@@ -367,6 +380,8 @@ Uma entrega só está em **Squad Done** quando TODOS os itens abaixo estão aten
 - [ ] `memory/DECISIONS_LOG.md` atualizado (quando há decisão relevante)
 - [ ] `memory/TASK_BOARD.md` atualizado (tarefa movida para Done)
 - [ ] Feature flag definida e testada em ambos os paths (features críticas) — ver `memory/ADR/ADR-003-feature-flags.md`
+- [ ] Product Designer aprovou (apenas em features visuais críticas) — ver `memory/ADR/ADR-005-design-system.md`
+- [ ] Aderência ao Design System em `/docs/design-system/` (sem hardcoded tokens; patterns respeitados)
 
 ---
 
@@ -445,13 +460,15 @@ Segurança é responsabilidade de TODOS, mas cada agente tem fronteira clara:
 5. PO registra mudanças em `memory/DECISIONS_LOG.md`
 6. TL recebe PRD aprovado → cria plano de execução
 7. TL aciona Architect → define arquitetura + stack
+7a. TL aciona Product Designer (paralelo a Architect) — quando projeto tem UI: propõe DS (Material 3 default ou alternativa justificada), define tokens iniciais e componentes-chave
 8. TL aciona Security Engineer (Fase 1) para threat model sobre arquitetura — em features críticas
 9. TL aciona Data Engineer como consultor — quando arquitetura envolver pipelines, DW, ML data prep
-10. Architect ajusta arquitetura conforme threat model
-11. TL apresenta arquitetura ao usuário (incluindo decisões de stack e mitigações de segurança)
+10. Architect ajusta arquitetura + Product Designer ajusta DS conforme threats e contexto
+11. TL apresenta arquitetura + DS proposto ao usuário (incluindo decisões de stack e mitigações de segurança)
 12. Usuário aprova, ajusta ou rejeita
 13. Architect define contratos em /contracts
-14. QA define testes → Engineers implementam → CI (testes/lint/build/SAST) → em paralelo: QA exploratório + Code Review + Security Engineer (Fase 2 em features críticas) → Quality Gates (TL integra) → DevOps deploy (canary/blue-green em Production)
+13a. Product Designer documenta DS em /docs/design-system/ (tokens + componentes + patterns)
+14. QA define testes → Engineers implementam → CI (testes/lint/build/SAST) → em paralelo: QA exploratório + Code Review + Security Engineer (Fase 2 em features críticas) + Product Designer review (em features visuais críticas) → Quality Gates (TL integra) → DevOps deploy (canary/blue-green em Production)
 15. TL valida entrega final e atualiza memória do sistema
 ```
 
@@ -472,7 +489,8 @@ Nota: usuário tem autoridade total para ignorar sugestões do PO
 3. TL aciona PO para: atualizar docs se necessário, confirmar prioridades
 4. PO alinha com usuário
 5. TL cria plano de continuidade baseado no estado atual
-6. Fluxo padrão para as tarefas definidas
+6. Quando primeira feature VISUAL chega: TL verifica /docs/design-system/. Se não existe → TL aciona Product Designer (/squad-design-extract) para extrair DS da UI atual antes de Frontend/Mobile prosseguirem
+7. Fluxo padrão para as tarefas definidas
 ```
 
 ### Fluxo 4 — Projeto Existente para Refatoração

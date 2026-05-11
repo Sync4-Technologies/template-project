@@ -84,6 +84,10 @@ Severidades: Sev1 (sistema fora) / Sev2 (degradação) / Sev3+ (não crítico). 
 │   │   ├── backend/      (nodejs, python, php, java, go)
 │   │   ├── frontend/     (react, vue)
 │   │   └── mobile/       (flutter, react-native)
+│   ├── /design-system    ← DS do projeto (mantido pelo Product Designer)
+│   │   ├── tokens/
+│   │   ├── components/
+│   │   └── patterns/
 │   └── /runbooks         ← procedimentos de incidente, DR
 │
 └── .claude
@@ -106,6 +110,7 @@ Treze agentes com fronteiras claras. Modelos por agente:
 | [Tech Lead](agents/tech-lead.md) | Orquestração, governança técnica, plano de execução |
 | [Architect](agents/architect.md) | Arquitetura, domínio (DDD), contratos, decisão de stack |
 | [Security Engineer](agents/security-engineer.md) | Threat modeling, compliance, auth/authz, pentest |
+| [Product Designer](agents/product-designer.md) | Design System, UX, UI, acessibilidade visual (consultor — canal direto ao usuário) |
 
 ### Sonnet (execução)
 
@@ -125,15 +130,17 @@ Treze agentes com fronteiras claras. Modelos por agente:
 
 ```
 Usuário (autoridade máxima)
-├── Product Owner — define o QUÊ (par do Tech Lead)
-└── Tech Lead — define o COMO e orquestra
-    └── todos os outros agentes
+├── Product Owner — define o QUÊ (par do Tech Lead e Product Designer)
+├── Tech Lead — define o COMO e orquestra
+├── Product Designer — define visual/UX (consultor; quando alocado é peer)
+└── Demais agentes — respondem ao Tech Lead
 ```
 
-- **Apenas PO e TL** interagem diretamente com o usuário
+- **PO, TL e Product Designer** podem interagir diretamente com o usuário
 - **Demais agentes** respondem ao Tech Lead
-- **Exceção:** Support Engineer pode escalar **melhorias** direto para PO (bugs vão para TL)
-- **Divergências PO ↔ TL** → resolvidas pelo usuário
+- **Frontend/Mobile** podem tirar **dúvidas pontuais** com Product Designer (canal aberto); **decisões** visuais sempre via TL
+- **Support Engineer** escala issues via TL (canal único); TL roteia bugs/melhorias
+- **Divergências PO/TL/PD** → resolvidas pelo usuário
 
 ---
 
@@ -186,6 +193,18 @@ adapters/
   └── outbound/ → DB repositories, LLM clients, external APIs
 ```
 
+### Design System (Material 3 default)
+
+Documentação viva do DS em `/docs/design-system/`. Mantido pelo **Product Designer**; consumido por Frontend/Mobile.
+
+**Default:** Material Design 3 (cross-platform Web + Mobile, open source, maduro)
+
+**Alternativas suportadas:** shadcn/ui, Carbon (IBM), Polaris (Shopify), Atlassian DS, Custom — PD justifica em ADR específico do projeto.
+
+**Em projetos existentes sem doc:** PD extrai DS da UI atual quando primeira feature visual chega (skill `/squad-design-extract`).
+
+Ver [`memory/ADR/ADR-005-design-system.md`](memory/ADR/ADR-005-design-system.md).
+
 ### Stack Conventions
 
 Convenções idiomáticas por linguagem/framework em `/docs/stack-conventions/`. Cada documento define **quando usar**, **tooling**, **layout**, **padrões idiomáticos**, **comandos** e **anti-patterns**.
@@ -213,6 +232,9 @@ A squad inclui automações opcionais via Claude Code. Ver [`memory/ADR/ADR-004-
 | `/squad-scope-change` | Mudança de escopo durante execução |
 | `/squad-stack-decision` | Architect decide stack do projeto |
 | `/squad-incident` | Resposta a Sev1/Sev2 em produção |
+| `/squad-design-system-new` | Product Designer propõe DS para projeto novo com UI |
+| `/squad-design-extract` | Product Designer extrai DS da UI de projeto existente sem doc |
+| `/squad-design-audit` | Product Designer audita consistência visual em produto maduro |
 
 **Hooks ativos (opt-in via `.claude/settings.json`):**
 

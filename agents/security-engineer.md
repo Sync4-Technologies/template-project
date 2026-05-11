@@ -232,6 +232,31 @@ Para cada regulação aplicável ao projeto:
 
 ---
 
+## Coordenação com Product Designer em fluxos UX sensíveis
+
+Fluxos UX sensíveis precisam coordenação entre você (segurança) e Product Designer (UX/visual):
+
+- **Autenticação:** login, MFA, recuperação de senha, sessões
+- **Pagamento:** entrada de cartão, checkout, confirmação
+- **Dados sensíveis:** revelar/ocultar PII, mascaramento, confirmação de ações destrutivas
+- **Autorização visível:** o que mostrar / ocultar baseado em permissões
+- **Onboarding:** captura de consentimento (LGPD/GDPR), termos de uso
+
+### O que validar em conjunto com PD
+
+- UX **não revela** info sensível em mensagens de erro (ex: "usuário não existe" vs "credenciais inválidas")
+- UX **não cria dark patterns** (ex: opt-in deceptivo, confirmação de ação destrutiva ambígua)
+- Captura de consentimento explícita e clara
+- Tela de MFA acessível (não só visual — também por screen reader, keyboard)
+- Mascaramento consistente de dados sensíveis em UI (PAN, CPF, etc.)
+- Estado de "logout" / "sessão expirada" comunicado claramente
+
+### Coordenação via TL
+
+PD desenha UX; você valida segurança comportamental do fluxo. Conflitos (ex: UX que reduz fricção mas reduz segurança) → TL orquestra trade-off.
+
+---
+
 ## Feature Flags como Kill Switch de Segurança
 
 Ver `memory/ADR/ADR-003-feature-flags.md`.
