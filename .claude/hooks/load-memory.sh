@@ -1,62 +1,84 @@
 #!/usr/bin/env bash
 # Hook: SessionStart
 # Carrega memória viva da squad no contexto inicial da sessão.
-# Falha silenciosa se arquivos não existirem (template novo sem memória ainda).
+# Falha silenciosa se arquivos não existirem (template novo sem estado ainda).
 
 set -u
 
 PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(pwd)}"
-MEMORY_DIR="${PROJECT_ROOT}/memory"
+PROJECT_DIR="${PROJECT_ROOT}/.claude/squad/project"
+TEMPLATE_ADR_DIR="${PROJECT_ROOT}/.claude/squad/template/memory/ADR"
 
-# Falha silenciosa: se memory/ não existe ainda (projeto recém-criado), não há nada a carregar
-if [[ ! -d "${MEMORY_DIR}" ]]; then
+# Se project/ não existe (template recém-clonado), retornar contexto vazio
+if [[ ! -d "${PROJECT_DIR}" ]]; then
   echo "{}"
   exit 0
 fi
 
-OUTPUT="=== SQUAD MEMORY LOADED (SessionStart) ===\n"
+# Gerar contexto via Python para garantir JSON válido
+python3 <<EOF
+import json
+import os
+from pathlib import Path
 
-# ARCHITECTURE.md (visão atual)
-if [[ -f "${MEMORY_DIR}/ARCHITECTURE.md" ]]; then
-  OUTPUT+="\n--- memory/ARCHITECTURE.md (head) ---\n"
-  OUTPUT+="$(head -50 "${MEMORY_DIR}/ARCHITECTURE.md" 2>/dev/null || echo "(empty)")\n"
-fi
+project_dir = Path("${PROJECT_DIR}")
+template_adr_dir = Path("${TEMPLATE_ADR_DIR}")
 
-# TASK_BOARD.md (tarefas em andamento — Doing/Review/Blocked)
-if [[ -f "${MEMORY_DIR}/TASK_BOARD.md" ]]; then
-  OUTPUT+="\n--- memory/TASK_BOARD.md (Doing/Review/Blocked) ---\n"
-  awk '
-    /^## (🔄 Doing|👀 Review|🚫 Blocked)/{flag=1; print; next}
-    /^## /{flag=0}
-    flag
-  ' "${MEMORY_DIR}/TASK_BOARD.md" 2>/dev/null | head -50 >&2 || true
-  OUTPUT+="$(awk '
-    /^## (🔄 Doing|👀 Review|🚫 Blocked)/{flag=1; print; next}
-    /^## /{flag=0}
-    flag
-  ' "${MEMORY_DIR}/TASK_BOARD.md" 2>/dev/null | head -50)\n"
-fi
+parts = ["=== SQUAD MEMORY LOADED (SessionStart) ==="]
 
-# DECISIONS_LOG.md (decisões recentes — últimas 10 linhas de tabela)
-if [[ -f "${MEMORY_DIR}/DECISIONS_LOG.md" ]]; then
-  OUTPUT+="\n--- memory/DECISIONS_LOG.md (recent) ---\n"
-  OUTPUT+="$(grep -E '^\|.*\|' "${MEMORY_DIR}/DECISIONS_LOG.md" 2>/dev/null | tail -10)\n"
-fi
+# ARCHITECTURE.md (head)
+arch = project_dir / "ARCHITECTURE.md"
+if arch.exists():
+    content = arch.read_text(errors="replace").splitlines()[:50]
+    parts.append("\n--- project/ARCHITECTURE.md (head) ---")
+    parts.extend(content)
 
-# ADRs ativos (lista)
-if [[ -d "${MEMORY_DIR}/ADR" ]]; then
-  OUTPUT+="\n--- memory/ADR/ (active ADRs) ---\n"
-  OUTPUT+="$(ls "${MEMORY_DIR}/ADR" 2>/dev/null | grep -v template | sort)\n"
-fi
+# TASK_BOARD.md (Doing/Review/Blocked)
+tb = project_dir / "TASK_BOARD.md"
+if tb.exists():
+    lines = tb.read_text(errors="replace").splitlines()
+    flag = False
+    section_lines = []
+    for line in lines:
+        if line.startswith("## ") and any(s in line for s in ("Doing", "Review", "Blocked")):
+            flag = True
+            section_lines.append(line)
+        elif line.startswith("## "):
+            flag = False
+        elif flag:
+            section_lines.append(line)
+    if section_lines:
+        parts.append("\n--- project/TASK_BOARD.md (Doing/Review/Blocked) ---")
+        parts.extend(section_lines[:50])
 
-# Output JSON for Claude Code hook protocol
-# additionalContext is appended to system context; suppressOutput hides this from user
-printf '%s' "$(cat <<EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "SessionStart",
-    "additionalContext": "$(echo -e "${OUTPUT}" | sed 's/"/\\"/g' | tr '\n' ' ' | tr -s ' ')"
-  }
-}
+# DECISIONS_LOG.md (last 10 table rows)
+dl = project_dir / "DECISIONS_LOG.md"
+if dl.exists():
+    lines = [l for l in dl.read_text(errors="replace").splitlines() if l.startswith("|")]
+    if lines:
+        parts.append("\n--- project/DECISIONS_LOG.md (recent) ---")
+        parts.extend(lines[-10:])
+
+# Project-specific ADRs
+project_adr = project_dir / "ADR"
+if project_adr.exists():
+    adrs = sorted(p.name for p in project_adr.glob("*.md"))
+    if adrs:
+        parts.append("\n--- project/ADR/ (project-specific) ---")
+        parts.extend(adrs)
+
+# Template ADRs (squad defaults)
+if template_adr_dir.exists():
+    adrs = sorted(p.name for p in template_adr_dir.glob("*.md") if "template" not in p.name)
+    if adrs:
+        parts.append("\n--- template/ADR/ (squad defaults) ---")
+        parts.extend(adrs)
+
+context = "\n".join(parts)
+print(json.dumps({
+    "hookSpecificOutput": {
+        "hookEventName": "SessionStart",
+        "additionalContext": context
+    }
+}))
 EOF
-)"
