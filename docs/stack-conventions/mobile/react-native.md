@@ -1,103 +1,103 @@
 # Stack Convention — React Native (TypeScript)
 
-> Frameworks suportados: **Expo** (preferencial — managed workflow + EAS) ou **bare React Native** (controle total, plugins nativos custom).
+> Supported frameworks: **Expo** (preferred — managed workflow + EAS) or **bare React Native** (full control, custom native plugins).
 
 ---
 
-## Quando usar esta stack
+## When to use this stack
 
-Escolher React Native quando:
+Choose React Native when:
 
-- **Time já domina React/JS** — reúso massivo de skill
-- **Compartilhamento de código com web** — TypeScript end-to-end (mas UI compartilhada é limitada — preferir lógica/types/clients)
-- **Ecosistema JS rico necessário** — npm packages, libs maduras
-- **Iteração rápida** — Hot Reload, OTA updates via CodePush/EAS Update
-- **Plugins nativos custom relativamente simples** — escrita em Swift/Kotlin se necessário
-- **Times híbridos web/mobile** — devs trabalham em ambos
-- **Apps com UI majoritariamente padrão** (sem necessidade de UI ultra-custom)
-- **Need for OTA updates** — push de JS sem passar pela store
+- **Team already fluent in React/JS** — massive skill reuse
+- **Code sharing with web** — TypeScript end-to-end (but shared UI is limited — prefer logic/types/clients)
+- **Rich JS ecosystem needed** — npm packages, mature libs
+- **Fast iteration** — Hot Reload, OTA updates via CodePush/EAS Update
+- **Relatively simple custom native plugins** — written in Swift/Kotlin if needed
+- **Hybrid web/mobile teams** — devs work on both
+- **Apps with mostly standard UI** (no need for ultra-custom UI)
+- **Need for OTA updates** — push JS without going through the store
 
-## Quando NÃO usar
+## When NOT to use
 
-- **Performance crítica** com animações complexas — Flutter geralmente vence
-- **UI ultra-customizada e única** — Flutter renderiza tudo nativamente
-- **Time já experiente em Flutter/Dart** — sem motivo de mudar
-- **Restrições rigorosas de tamanho de app** — RN bridge adiciona overhead
-- **Integrações nativas profundas e custom** — possível mas penoso (mitigado por New Architecture)
-- **Background services pesados** — limitações em ambas plataformas
+- **Critical performance** with complex animations — Flutter usually wins
+- **Ultra-customized and unique UI** — Flutter renders everything natively
+- **Team already experienced in Flutter/Dart** — no reason to switch
+- **Strict app size restrictions** — RN bridge adds overhead
+- **Deep custom native integrations** — possible but painful (mitigated by New Architecture)
+- **Heavy background services** — limitations on both platforms
 
 ---
 
-## Versões e dependências
+## Versions and dependencies
 
-| Item | Versão mínima |
-|------|---------------|
+| Item | Minimum version |
+|------|-----------------|
 | Node.js | ≥ 20 LTS |
 | TypeScript | ≥ 5.4 |
-| React Native | ≥ 0.74 (preferencial 0.75+ com New Architecture) |
-| Expo SDK | ≥ 51 (se Expo) |
+| React Native | ≥ 0.74 (prefer 0.75+ with New Architecture) |
+| Expo SDK | ≥ 51 (if Expo) |
 | iOS deployment target | 13.4 |
 | Android: minSdkVersion | 24 (Android 7.0) |
 
 ### Expo vs Bare
 
-| Cenário | Escolha |
-|---------|---------|
-| App padrão sem plugins nativos custom | **Expo Managed** |
-| Necessidade de plugins nativos custom | **Expo + Dev Client** ou **Bare** |
-| Migração de RN existente | Avaliar caso-a-caso |
-| Time iniciante | **Expo** (curva muito mais suave) |
-| OTA updates | **Expo + EAS Update** ou **CodePush** (bare) |
+| Scenario | Choice |
+|----------|--------|
+| Standard app without custom native plugins | **Expo Managed** |
+| Need for custom native plugins | **Expo + Dev Client** or **Bare** |
+| Migration from existing RN | Evaluate case-by-case |
+| Beginner team | **Expo** (much smoother curve) |
+| OTA updates | **Expo + EAS Update** or **CodePush** (bare) |
 
-### Bibliotecas padrão
+### Standard libraries
 
-| Necessidade | Biblioteca |
-|-------------|-----------|
-| Navigation | **react-navigation** ou **expo-router** (file-based, preferencial em Expo) |
-| State management | **Zustand** (preferencial) ou **Redux Toolkit** |
+| Need | Library |
+|------|---------|
+| Navigation | **react-navigation** or **expo-router** (file-based, preferred in Expo) |
+| State management | **Zustand** (preferred) or **Redux Toolkit** |
 | Server state | **TanStack Query** |
 | Forms | **React Hook Form** + Zod |
-| Validação | **Zod** |
-| HTTP | **fetch** + ofetch (ou **axios**) |
-| Storage local | **react-native-mmkv** (preferencial — fast) ou AsyncStorage |
-| Secure storage | **expo-secure-store** ou **react-native-keychain** |
-| Database | **drizzle-orm** + expo-sqlite (preferencial) ou WatermelonDB |
-| UI library | **gluestack-ui**, **tamagui** (preferencial cross-platform) ou **react-native-paper** |
-| Icons | **lucide-react-native** ou **expo-symbols** |
+| Validation | **Zod** |
+| HTTP | **fetch** + ofetch (or **axios**) |
+| Local storage | **react-native-mmkv** (preferred — fast) or AsyncStorage |
+| Secure storage | **expo-secure-store** or **react-native-keychain** |
+| Database | **drizzle-orm** + expo-sqlite (preferred) or WatermelonDB |
+| UI library | **gluestack-ui**, **tamagui** (preferred cross-platform), or **react-native-paper** |
+| Icons | **lucide-react-native** or **expo-symbols** |
 | Animations | **react-native-reanimated** (v3) + react-native-gesture-handler |
 | Testing | **Jest** + React Native Testing Library |
-| E2E | **Detox** ou **Maestro** |
+| E2E | **Detox** or **Maestro** |
 | i18n | **i18next** + react-i18next |
-| Auth | Custom JWT ou **Clerk Expo** |
-| Crash reporting | **Sentry** ou **Firebase Crashlytics** |
-| Analytics | **Posthog** ou **firebase_analytics** |
-| Image | **expo-image** (preferencial — caching, modern formats) |
-| Lists performantes | **FlashList** (Shopify) ou FlatList |
-| Feature flags | **LaunchDarkly RN SDK** ou **Unleash Proxy** |
+| Auth | Custom JWT or **Clerk Expo** |
+| Crash reporting | **Sentry** or **Firebase Crashlytics** |
+| Analytics | **Posthog** or **firebase_analytics** |
+| Image | **expo-image** (preferred — caching, modern formats) |
+| Performant lists | **FlashList** (Shopify) or FlatList |
+| Feature flags | **LaunchDarkly RN SDK** or **Unleash Proxy** |
 
 ---
 
-## Tooling obrigatório
+## Required tooling
 
-| Tool | Propósito |
-|------|-----------|
+| Tool | Purpose |
+|------|---------|
 | **ESLint** | Linter (config: `@react-native`) |
 | **Prettier** | Formatter |
 | **TypeScript** | Type check (`tsc --noEmit`) |
 | **Jest** + RN Testing Library | Test runner |
-| **Detox** ou **Maestro** | E2E |
-| **Reactotron** ou Flipper (em projetos antigos) | DevTools |
-| **EAS** (Expo) | Build e submit |
+| **Detox** or **Maestro** | E2E |
+| **Reactotron** or Flipper (in older projects) | DevTools |
+| **EAS** (Expo) | Build and submit |
 | **Husky + lint-staged** | Pre-commit |
 
 ---
 
-## Layout do projeto (Clean Architecture)
+## Project layout (Clean Architecture)
 
 ```
 src/
-├── app/                                  # Expo Router (file-based) ou screens
-│   ├── (auth)/                           # grupo de rotas
+├── app/                                  # Expo Router (file-based) or screens
+│   ├── (auth)/                           # route group
 │   │   ├── login.tsx
 │   │   └── register.tsx
 │   ├── (app)/
@@ -113,7 +113,7 @@ src/
 │   │   │   ├── storage/                  # local persistence
 │   │   │   └── repositories/             # impl
 │   │   │
-│   │   ├── domain/                       # núcleo
+│   │   ├── domain/                       # core
 │   │   │   ├── entities/
 │   │   │   ├── repositories/             # interfaces (ports)
 │   │   │   └── usecases/
@@ -127,7 +127,7 @@ src/
 │       └── ...
 │
 ├── shared/
-│   ├── components/                       # Atomic Design compartilhado
+│   ├── components/                       # shared Atomic Design
 │   ├── hooks/
 │   └── utils/
 │
@@ -144,19 +144,19 @@ src/
 
 ---
 
-## Convenções de código
+## Code conventions
 
 ### Naming
 
-- **PascalCase** para componentes e arquivos (`UserCard.tsx`)
-- **camelCase** para hooks (`useAuth`), utilities, props
-- **kebab-case** para folders
-- **PascalCase** para types/interfaces (sem prefix `I`)
+- **PascalCase** for components and files (`UserCard.tsx`)
+- **camelCase** for hooks (`useAuth`), utilities, props
+- **kebab-case** for folders
+- **PascalCase** for types/interfaces (no `I` prefix)
 
-### Componentes (function + TypeScript)
+### Components (function + TypeScript)
 
 ```tsx
-// 1 componente por arquivo
+// 1 component per file
 import { View, Text, Pressable } from 'react-native';
 
 interface UserCardProps {
@@ -182,20 +182,20 @@ export function UserCard({ user, onPress }: UserCardProps) {
 
 ### Atomic Design + Platform-Adaptive
 
-| Camada | Exemplo |
-|--------|---------|
+| Layer | Example |
+|-------|---------|
 | **Atoms** | Button, Input, Text, Icon |
 | **Molecules** | FormField, Card |
 | **Organisms** | Header, UserList |
-| **Templates** | layouts em `app/` |
-| **Pages/Screens** | screens dentro de features |
+| **Templates** | layouts in `app/` |
+| **Pages/Screens** | screens inside features |
 
-Plataforma-específico via `Platform.OS` ou suffixed files (`Component.ios.tsx`, `Component.android.tsx`).
+Platform-specific via `Platform.OS` or suffixed files (`Component.ios.tsx`, `Component.android.tsx`).
 
 ### State management
 
 - **Server state:** TanStack Query
-- **Global client state:** Zustand (Redux Toolkit em casos complexos)
+- **Global client state:** Zustand (Redux Toolkit in complex cases)
 - **Local component state:** useState, useReducer
 - **Forms:** React Hook Form + Zod
 
@@ -250,10 +250,10 @@ function LoginScreen() {
 
 ### Error handling
 
-- Error Boundaries para falhas de render (react-error-boundary)
-- TanStack Query: `onError` ou `error`
-- Toasts para feedback (react-native-toast-message ou nativos)
-- Sentry captura crashes em produção
+- Error Boundaries for render failures (react-error-boundary)
+- TanStack Query: `onError` or `error`
+- Toasts for feedback (react-native-toast-message or native)
+- Sentry captures crashes in production
 
 ### Platform-Adaptive UI
 
@@ -266,14 +266,14 @@ const styles = StyleSheet.create({
   },
 });
 
-// OU usar SafeAreaView (preferencial)
+// OR use SafeAreaView (preferred)
 import { SafeAreaView } from 'react-native-safe-area-context';
 ```
 
 ### Imports
 
 ```tsx
-// ordem: react/react-native → externos → absolutos → relativos
+// order: react/react-native → external → absolute → relative
 import { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
@@ -283,17 +283,17 @@ import { fetchUsers } from '@/features/users/data/api';
 
 ---
 
-## Padrão de testes
+## Testing standards
 
-### Pirâmide
+### Pyramid
 
-| Camada | Ferramenta | Cobertura por modo |
-|--------|-----------|--------------------|
-| Unit (utils, hooks, use cases) | Jest | MVP ≥60% críticas / Production ≥95% críticas |
+| Layer | Tool | Coverage by mode |
+|-------|------|------------------|
+| Unit (utils, hooks, use cases) | Jest | MVP ≥60% critical / Production ≥95% critical |
 | Component | RN Testing Library | MVP ≥50% / Production ≥80% |
 | Integration | Jest + MSW | Production ≥70% |
-| E2E | Detox ou Maestro | Happy paths críticos |
-| Snapshot (cuidado!) | Jest | Apenas componentes muito estáveis |
+| E2E | Detox or Maestro | Critical happy paths |
+| Snapshot (careful!) | Jest | Only very stable components |
 
 ### React Native Testing Library
 
@@ -310,7 +310,7 @@ it('calls onPress when tapped', () => {
 });
 ```
 
-### E2E (Detox preferencial em iOS+Android)
+### E2E (Detox preferred for iOS+Android)
 
 ```js
 describe('Login flow', () => {
@@ -325,16 +325,16 @@ describe('Login flow', () => {
 
 ---
 
-## Acessibilidade (WCAG 2.1 AA)
+## Accessibility (WCAG 2.1 AA)
 
 - `accessibilityLabel`, `accessibilityRole`, `accessibilityHint`
-- `accessibilityState` para estados (selected, disabled, expanded)
-- Tap targets mínimos: 44x44 (iOS) / 48x48 (Android)
-- Contraste mínimo 4.5:1
-- Suporte a tamanho de fonte do sistema (`PixelRatio`, `useWindowDimensions`)
-- Não depender só de cor para informação
-- Teste com VoiceOver (iOS) e TalkBack (Android) em features críticas
-- `accessibilityViewIsModal` para modais
+- `accessibilityState` for states (selected, disabled, expanded)
+- Minimum tap targets: 44x44 (iOS) / 48x48 (Android)
+- Minimum contrast 4.5:1
+- Support system font size (`PixelRatio`, `useWindowDimensions`)
+- Don't rely on color alone for information
+- Test with VoiceOver (iOS) and TalkBack (Android) in critical features
+- `accessibilityViewIsModal` for modals
 
 ```tsx
 <Pressable
@@ -349,7 +349,7 @@ describe('Login flow', () => {
 
 ---
 
-## Internacionalização (i18next)
+## Internationalization (i18next)
 
 ```tsx
 // i18n/index.ts
@@ -375,76 +375,76 @@ function Greeting({ name }: { name: string }) {
 }
 ```
 
-### Regras
+### Rules
 
-- **Nenhuma string hardcoded**
-- Idiomas declarados no PRD
-- RTL: `I18nManager.isRTL` + estilos lógicos (start/end vs left/right)
+- **No hardcoded strings**
+- Languages declared in PRD
+- RTL: `I18nManager.isRTL` + logical styles (start/end vs left/right)
 
 ---
 
 ## Design Tokens
 
-- Centralizados em `core/theme/`
-- Em projetos multi-plataforma (Web + Mobile), tokens vêm de fonte única (Style Dictionary) — Mobile valida paridade com Frontend
-- StyleSheet imutáveis (`StyleSheet.create`)
-- Tamagui ou gluestack-ui acomodam tokens nativamente
-- Nada hardcoded em componentes
+- Centralized in `core/theme/`
+- In multi-platform projects (Web + Mobile), tokens come from a single source (Style Dictionary) — Mobile validates parity with Frontend
+- Immutable StyleSheets (`StyleSheet.create`)
+- Tamagui or gluestack-ui accommodate tokens natively
+- Nothing hardcoded in components
 
 ---
 
 ## Performance
 
-### Targets (obrigatório)
+### Targets (required)
 
-- **60fps** em listas e animações críticas
-- **JS thread** sem bloqueios (não fazer trabalho pesado em handler)
-- **App start** ≤ 3s frio em dispositivo médio
+- **60fps** in critical lists and animations
+- **JS thread** without blocks (don't do heavy work in handler)
+- **App start** ≤ 3s cold on mid-range device
 
-### Técnicas
+### Techniques
 
-- **FlashList** ou **FlatList** com `getItemLayout`, `keyExtractor`, `removeClippedSubviews`
-- **react-native-reanimated** v3 para animações (roda na UI thread)
-- **expo-image** com cache de disco
-- **Image resize** correto
-- **InteractionManager.runAfterInteractions** para tarefas que podem esperar
-- **Memo cuidadoso** (React.memo, useMemo) — não profilático
-- **New Architecture** (Fabric + TurboModules) habilitada quando possível
-- **Hermes** habilitado em produção (default em Expo)
-- **ProGuard/R8** para Android release
+- **FlashList** or **FlatList** with `getItemLayout`, `keyExtractor`, `removeClippedSubviews`
+- **react-native-reanimated** v3 for animations (runs on UI thread)
+- **expo-image** with disk cache
+- **Correct image resize**
+- **InteractionManager.runAfterInteractions** for tasks that can wait
+- **Careful memo** (React.memo, useMemo) — not prophylactic
+- **New Architecture** (Fabric + TurboModules) enabled when possible
+- **Hermes** enabled in production (default in Expo)
+- **ProGuard/R8** for Android release
 - Profiling: Flipper, RN DevTools, Hermes profiler
 
 ---
 
 ## Feature Flags (offline-aware)
 
-Ver `memory/ADR/ADR-003-feature-flags.md` e `agents/mobile-engineer.md`.
+See `memory/ADR/ADR-003-feature-flags.md` and `agents/mobile-engineer.md`.
 
-- Cache local persistente (MMKV)
-- TTL razoável + uso de cache se offline
-- Fallback determinístico
-- Default-deny em features críticas se flag indisponível
-- Considerar versão mínima de app (flags antigas em apps antigos não atualizáveis)
-- SDK do provedor (LaunchDarkly RN SDK)
+- Persistent local cache (MMKV)
+- Reasonable TTL + use cache if offline
+- Deterministic fallback
+- Default-deny in critical features if flag unavailable
+- Consider minimum app version (old flags in non-updatable old apps)
+- Provider SDK (LaunchDarkly RN SDK)
 
 ---
 
-## Segurança específica
+## Stack-specific security
 
-- **Secure storage** para tokens (expo-secure-store / react-native-keychain) — nunca AsyncStorage para sensíveis
-- **Certificate pinning** em produção (react-native-ssl-pinning)
+- **Secure storage** for tokens (expo-secure-store / react-native-keychain) — never AsyncStorage for sensitive
+- **Certificate pinning** in production (react-native-ssl-pinning)
 - **Hermes obfuscation** + ProGuard/R8
-- **No screenshots** em telas sensíveis (`flag_secure` Android, `applicationDidEnterBackground` iOS)
-- **Root/jailbreak detection** em apps financeiros (jail-monkey)
-- **Não** logar dados sensíveis (Sentry: configurar `beforeSend` para redact)
-- **HTTPS only** (ATS no iOS, network_security_config no Android)
-- **Variáveis públicas:** `EXPO_PUBLIC_*` (Expo) — auditar para não vazar secrets
-- **Deep link validation** — não confiar em parâmetros sem validar
-- `npm audit` ou `pnpm audit` na pipeline
+- **No screenshots** on sensitive screens (`flag_secure` Android, `applicationDidEnterBackground` iOS)
+- **Root/jailbreak detection** in financial apps (jail-monkey)
+- **Don't** log sensitive data (Sentry: configure `beforeSend` for redaction)
+- **HTTPS only** (ATS on iOS, network_security_config on Android)
+- **Public variables:** `EXPO_PUBLIC_*` (Expo) — audit so secrets don't leak
+- **Deep link validation** — don't trust parameters without validation
+- `npm audit` or `pnpm audit` in pipeline
 
 ---
 
-## Comandos padrão
+## Standard commands
 
 ### Expo
 
@@ -491,35 +491,35 @@ pnpm ios
 # Android
 pnpm android
 
-# build release
+# release build
 cd ios && fastlane build_release
 cd android && ./gradlew assembleRelease
 ```
 
 ---
 
-## Anti-patterns (bloquear)
+## Anti-patterns (block)
 
-- Lógica de negócio em componente
-- `setState` em features grandes (use Zustand/Redux)
-- AsyncStorage para tokens (use Secure Storage)
-- Cores e espaçamentos hardcoded
-- Texto hardcoded
-- `console.log` em produção (use logger ou Sentry)
-- Listas longas sem FlashList/FlatList
-- Imagens sem cache (use expo-image)
-- Animações no JS thread (use Reanimated)
-- Bridge calls síncronas em handler (bloqueia UI)
-- Componentes gigantes
+- Business logic in component
+- `setState` in large features (use Zustand/Redux)
+- AsyncStorage for tokens (use Secure Storage)
+- Hardcoded colors and spacings
+- Hardcoded text
+- `console.log` in production (use logger or Sentry)
+- Long lists without FlashList/FlatList
+- Images without cache (use expo-image)
+- Animations on JS thread (use Reanimated)
+- Synchronous bridge calls in handler (blocks UI)
+- Giant components
 - Tap target < 44/48
-- Acessibilidade ignorada
-- Memo profilático (overhead sem ganho)
-- `any` sem justificativa
-- Falta de tratamento de offline em features críticas
+- Accessibility ignored
+- Prophylactic memo (overhead without gain)
+- `any` without justification
+- Missing offline handling in critical features
 
 ---
 
-## Referências
+## References
 
 - React Native: <https://reactnative.dev/docs/getting-started>
 - Expo: <https://docs.expo.dev/>

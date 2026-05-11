@@ -1,78 +1,78 @@
 # Stack Convention — Flutter (Dart)
 
-> Framework oficial Google para apps multiplataforma com renderização própria (Skia/Impeller) — performance nativa.
+> Google's official framework for cross-platform apps with own rendering (Skia/Impeller) — native performance.
 
 ---
 
-## Quando usar esta stack
+## When to use this stack
 
-Escolher Flutter quando:
+Choose Flutter when:
 
-- **Performance nativa é prioridade** — 60fps consistente em listas, animações, transições
-- **Código único para iOS + Android** — máximo reúso (90%+)
-- **UI customizada e rica** — Flutter renderiza tudo, sem limitações de widgets nativos
-- **Animações complexas** — AnimationController, Hero transitions, custom painters
-- **Time disposto a aprender Dart** — linguagem fácil mas diferente
-- **Multi-plataforma adicional** (Web, Desktop) com mesma codebase
-- **Apps com identidade visual única** (não Material/Cupertino padrão)
-- **Builds reprodutíveis e CI/CD limpo**
-- **Hot reload e DX excelentes**
+- **Native performance is priority** — consistent 60fps in lists, animations, transitions
+- **Single codebase for iOS + Android** — maximum reuse (90%+)
+- **Rich custom UI** — Flutter renders everything, no native widget limitations
+- **Complex animations** — AnimationController, Hero transitions, custom painters
+- **Team willing to learn Dart** — easy language but different
+- **Additional cross-platform** (Web, Desktop) with same codebase
+- **Apps with unique visual identity** (not standard Material/Cupertino)
+- **Reproducible builds and clean CI/CD**
+- **Excellent hot reload and DX**
 
-## Quando NÃO usar
+## When NOT to use
 
-- **Time já experiente em React Native** — sem motivo de mudar
-- **Reúso massivo de código JS com web** — RN comparte React/JS
-- **Integração profunda com SDKs nativos não cobertos por plugins** — possível mas custoso
-- **App pequeno integrado em app nativo existente** — overhead de embedding Flutter
-- **Restrições de tamanho de app extremas** — Flutter adiciona ~5MB ao APK
+- **Team already experienced in React Native** — no reason to switch
+- **Massive JS code reuse with web** — RN shares React/JS
+- **Deep native SDK integrations not covered by plugins** — possible but costly
+- **Small app embedded in existing native app** — Flutter embedding overhead
+- **Extreme app size restrictions** — Flutter adds ~5MB to APK
 
 ---
 
-## Versões e dependências
+## Versions and dependencies
 
-| Item | Versão mínima |
-|------|---------------|
-| Flutter | ≥ 3.22 (preferencial 3.24+) |
-| Dart | vem com Flutter (≥ 3.4) |
+| Item | Minimum version |
+|------|-----------------|
+| Flutter | ≥ 3.22 (prefer 3.24+) |
+| Dart | ships with Flutter (≥ 3.4) |
 | Android: minSdkVersion | 21 (Android 5.0) |
 | iOS deployment target | 12.0 |
 
-### Bibliotecas padrão
+### Standard libraries
 
-| Necessidade | Biblioteca |
-|-------------|-----------|
-| State management | **BLoC** (preferencial — escalável) ou **Riverpod** (moderno) |
-| Routing | **go_router** (oficial) |
-| HTTP | **dio** (preferencial) ou http nativo |
-| Validação | dart_either + manual ou form_validator |
-| Local storage | **drift** (SQLite ORM tipado) ou **isar** (NoSQL rápido) |
-| Key-value | **shared_preferences** (simples) ou **flutter_secure_storage** (sensível) |
+| Need | Library |
+|------|---------|
+| State management | **BLoC** (preferred — scalable) or **Riverpod** (modern) |
+| Routing | **go_router** (official) |
+| HTTP | **dio** (preferred) or native http |
+| Validation | dart_either + manual or form_validator |
+| Local storage | **drift** (typed SQLite ORM) or **isar** (fast NoSQL) |
+| Key-value | **shared_preferences** (simple) or **flutter_secure_storage** (sensitive) |
 | DI | **get_it** + **injectable** (codegen) |
 | Testing | flutter_test, mocktail, bloc_test |
 | Code gen | freezed (data classes), json_serializable |
-| Logging | logger ou talker |
+| Logging | logger or talker |
 | i18n | **flutter_localizations** + intl + ARB files |
-| Feature flags | LaunchDarkly Flutter SDK ou Unleash Proxy |
-| Analytics | firebase_analytics ou mixpanel_flutter |
-| Crash reporting | sentry_flutter ou firebase_crashlytics |
+| Feature flags | LaunchDarkly Flutter SDK or Unleash Proxy |
+| Analytics | firebase_analytics or mixpanel_flutter |
+| Crash reporting | sentry_flutter or firebase_crashlytics |
 | Image cache | cached_network_image |
-| Animations | flutter_animate (preferencial) |
+| Animations | flutter_animate (preferred) |
 
 ---
 
-## Tooling obrigatório
+## Required tooling
 
-| Tool | Propósito |
-|------|-----------|
+| Tool | Purpose |
+|------|---------|
 | **dart format** | Formatter (built-in) |
 | **dart analyze** | Static analysis (built-in) |
-| **very_good_analysis** ou **lints** | Lint rules pack |
+| **very_good_analysis** or **lints** | Lint rules pack |
 | **build_runner** | Code generation (freezed, injectable, drift) |
 | **flutter_gen** | Asset generation |
 | **flutter_test** | Test runner |
 | **integration_test** | E2E |
 
-### analysis_options.yaml mínimo
+### Minimum analysis_options.yaml
 
 ```yaml
 include: package:very_good_analysis/analysis_options.yaml
@@ -98,7 +98,7 @@ linter:
 
 ---
 
-## Layout do projeto (Clean Architecture)
+## Project layout (Clean Architecture)
 
 ```
 lib/
@@ -120,10 +120,10 @@ lib/
 │   │   ├── data/                        # outbound adapters
 │   │   │   ├── datasources/             # remote (API), local (DB)
 │   │   │   ├── models/                  # DTOs
-│   │   │   └── repositories/            # impl de domain repository
+│   │   │   └── repositories/            # impl of domain repository
 │   │   │
-│   │   ├── domain/                      # núcleo da feature
-│   │   │   ├── entities/                # entidades de domínio
+│   │   ├── domain/                      # feature core
+│   │   │   ├── entities/                # domain entities
 │   │   │   ├── repositories/            # interfaces (ports)
 │   │   │   └── usecases/                # use cases
 │   │   │
@@ -135,37 +135,37 @@ lib/
 │   └── orders/
 │       └── ...
 │
-├── shared/                              # widgets/utilities reusados entre features
+├── shared/                              # widgets/utilities reused across features
 │   ├── widgets/
 │   └── extensions/
 │
 └── l10n/                                # ARB files (i18n)
 
-test/                                    # unit + widget tests (espelha lib/)
+test/                                    # unit + widget tests (mirrors lib/)
 integration_test/                        # E2E
 ```
 
-### Mapeamento Hexagonal → Clean Architecture mobile
+### Hexagonal → Mobile Clean Architecture mapping
 
 | Hexagonal | Flutter |
 |-----------|---------|
 | Domain | `features/<f>/domain/` |
 | Application (use cases) | `features/<f>/domain/usecases/` |
-| Adapters inbound | `features/<f>/presentation/` |
-| Adapters outbound | `features/<f>/data/` |
+| Inbound adapters | `features/<f>/presentation/` |
+| Outbound adapters | `features/<f>/data/` |
 
 ---
 
-## Convenções de código
+## Code conventions
 
 ### Naming (Effective Dart)
 
-- **lowerCamelCase** para variáveis, funções, métodos, parâmetros
-- **UpperCamelCase** para classes, enums, typedefs, mixins
-- **lowercase_with_underscores** para nomes de arquivo e diretórios
-- **SCREAMING_CAPS** apenas para constantes verdadeiramente globais
+- **lowerCamelCase** for variables, functions, methods, parameters
+- **UpperCamelCase** for classes, enums, typedefs, mixins
+- **lowercase_with_underscores** for filenames and directories
+- **SCREAMING_CAPS** only for truly global constants
 
-### Imutabilidade obrigatória em entidades
+### Required immutability in entities
 
 ```dart
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -185,19 +185,19 @@ class User with _$User {
 
 ### Const constructors
 
-- **Sempre** usar `const` quando possível (otimiza rebuilds)
-- Linter `prefer_const_constructors` enforce
+- **Always** use `const` when possible (optimizes rebuilds)
+- Linter `prefer_const_constructors` enforces it
 
-### Null safety estrito
+### Strict null safety
 
-- Modo `strict-casts`, `strict-inference`, `strict-raw-types`
-- Evitar `!` (force unwrap) — usar guard clauses
+- Mode `strict-casts`, `strict-inference`, `strict-raw-types`
+- Avoid `!` (force unwrap) — use guard clauses
 
 ```dart
-// RUIM
+// BAD
 final email = user!.email;
 
-// BOM
+// GOOD
 if (user == null) return;
 final email = user.email;
 ```
@@ -264,11 +264,11 @@ class LoginUseCase {
 }
 ```
 
-### Error handling com Either (dartz ou fpdart)
+### Error handling with Either (dartz or fpdart)
 
-- Domain expressa falha como tipo (`Either<Failure, T>`)
-- Adapters traduzem exceptions de baixo nível para `Failure`
-- UI consome resultado
+- Domain expresses failure as a type (`Either<Failure, T>`)
+- Adapters translate low-level exceptions to `Failure`
+- UI consumes the result
 
 ### Dependency Injection (get_it + injectable)
 
@@ -286,19 +286,19 @@ abstract class AppModule {
 
 ---
 
-## Padrão de testes
+## Testing standards
 
-### Pirâmide
+### Pyramid
 
-| Camada | Ferramenta | Cobertura por modo |
-|--------|-----------|--------------------|
-| Unit (domain + use cases) | flutter_test + mocktail | MVP ≥60% críticas / Production ≥95% críticas |
+| Layer | Tool | Coverage by mode |
+|-------|------|------------------|
+| Unit (domain + use cases) | flutter_test + mocktail | MVP ≥60% critical / Production ≥95% critical |
 | BLoC | bloc_test | Production ≥80% |
 | Widget | flutter_test | MVP ≥50% / Production ≥80% |
-| Integration | integration_test | Happy paths críticos |
-| Golden tests | flutter_test (matchesGoldenFile) | Componentes visuais críticos |
+| Integration | integration_test | Critical happy paths |
+| Golden tests | flutter_test (matchesGoldenFile) | Critical visual components |
 
-### Estrutura
+### Structure
 
 ```
 test/
@@ -315,7 +315,7 @@ integration_test/
 └── checkout_flow_test.dart
 ```
 
-### Mocktail (preferencial sobre mockito)
+### Mocktail (preferred over mockito)
 
 ```dart
 class MockAuthRepository extends Mock implements AuthRepository {}
@@ -342,15 +342,15 @@ void main() {
 
 ---
 
-## Acessibilidade (WCAG 2.1 AA)
+## Accessibility (WCAG 2.1 AA)
 
-- **Semantics widget** para screen readers (TalkBack, VoiceOver)
-- **Tap targets** mínimos 48x48 (Material) / 44x44 (Cupertino)
-- Contraste mínimo 4.5:1
-- Suporte a tamanho de fonte do sistema (`MediaQuery.textScaleFactor`)
-- Não depender só de cor para informação
-- Teste com TalkBack/VoiceOver em features críticas
-- `excludeSemantics: false` em widgets decorativos
+- **Semantics widget** for screen readers (TalkBack, VoiceOver)
+- **Tap targets** minimum 48x48 (Material) / 44x44 (Cupertino)
+- Minimum contrast 4.5:1
+- Support system font size (`MediaQuery.textScaleFactor`)
+- Don't rely on color alone for information
+- Test with TalkBack/VoiceOver in critical features
+- `excludeSemantics: false` in decorative widgets
 
 ```dart
 Semantics(
@@ -365,7 +365,7 @@ Semantics(
 
 ---
 
-## Internacionalização (Flutter Localizations)
+## Internationalization (Flutter Localizations)
 
 ```yaml
 # pubspec.yaml
@@ -395,16 +395,16 @@ output-localization-file: app_localizations.dart
 }
 ```
 
-### Regras
+### Rules
 
-- **Nenhuma string hardcoded** em widgets
-- ARB files versionados
-- Idiomas declarados no PRD
-- RTL via `Directionality` (suportado nativo)
+- **No hardcoded strings** in widgets
+- Versioned ARB files
+- Languages declared in PRD
+- RTL via `Directionality` (natively supported)
 
 ---
 
-## Design Tokens e Tema
+## Design Tokens and Theme
 
 ```dart
 class AppTheme {
@@ -425,61 +425,61 @@ class AppTheme {
 }
 ```
 
-- Tokens centralizados em `core/theme/`
-- Em projetos multi-plataforma (Web + Mobile), tokens vêm de fonte única (Style Dictionary) — Mobile valida paridade
-- Nada hardcoded em widgets
+- Tokens centralized in `core/theme/`
+- In multi-platform projects (Web + Mobile), tokens come from a single source (Style Dictionary) — Mobile validates parity
+- Nothing hardcoded in widgets
 
 ---
 
 ## Performance
 
-### Targets (obrigatório)
+### Targets (required)
 
-- **60fps** em listas e animações críticas
-- **Sem jank** perceptível em dispositivo de referência (médio Android e iOS)
-- **App start** ≤ 2s frio em dispositivo médio
+- **60fps** in critical lists and animations
+- **No perceptible jank** on reference device (mid-range Android and iOS)
+- **App start** ≤ 2s cold on mid-range device
 
-### Técnicas
+### Techniques
 
-- **`const` constructors** em todo widget que pode ser const
-- **`ListView.builder`** ou `SliverList` para listas longas (lazy)
-- **`cached_network_image`** com cache de disco
-- **Image resize** correto (não baixar 4K para mostrar 200x200)
-- **Animations** via `AnimationController` ou `flutter_animate`
-- **Avoid rebuild waste** — usar `BlocSelector`, `select` em Riverpod, `const` widgets
-- **Profile mode** para medir performance real (`flutter run --profile`)
-- **DevTools Performance** para identificar jank
+- **`const` constructors** in every widget that can be const
+- **`ListView.builder`** or `SliverList` for long lists (lazy)
+- **`cached_network_image`** with disk cache
+- **Correct image resize** (don't download 4K to display 200x200)
+- **Animations** via `AnimationController` or `flutter_animate`
+- **Avoid rebuild waste** — use `BlocSelector`, `select` in Riverpod, `const` widgets
+- **Profile mode** to measure real performance (`flutter run --profile`)
+- **DevTools Performance** to identify jank
 
 ---
 
 ## Feature Flags (offline-aware)
 
-Ver `memory/ADR/ADR-003-feature-flags.md` e `agents/mobile-engineer.md`.
+See `memory/ADR/ADR-003-feature-flags.md` and `agents/mobile-engineer.md`.
 
-- Cache local persistente (shared_preferences ou flutter_secure_storage)
-- TTL razoável + uso de cache se offline
-- Fallback determinístico
-- Default-deny em features críticas se flag indisponível
-- Considerar versão mínima de app (flags antigas em apps antigos não atualizáveis)
-- SDK do provedor (LaunchDarkly Flutter SDK)
-
----
-
-## Segurança específica
-
-- **flutter_secure_storage** para tokens (Keychain/EncryptedSharedPreferences)
-- **Certificate pinning** em produção (dio_certificate_pinning)
-- **Obfuscação** no build release (`flutter build --obfuscate --split-debug-info=...`)
-- **No screenshots** em telas sensíveis (`SystemChrome.setEnabledSystemUIMode`)
-- **Root/jailbreak detection** em apps financeiros (flutter_jailbreak_detection)
-- **Não** logar dados sensíveis
-- **Validação de input** em forms antes de enviar
-- **Dependency check** com `flutter pub outdated --mode=null-safety`
-- **HTTPS only** (não permitir cleartext em iOS Info.plist e Android network_security_config.xml)
+- Persistent local cache (shared_preferences or flutter_secure_storage)
+- Reasonable TTL + use cache if offline
+- Deterministic fallback
+- Default-deny in critical features if flag unavailable
+- Consider minimum app version (old flags in non-updatable old apps)
+- Provider SDK (LaunchDarkly Flutter SDK)
 
 ---
 
-## Comandos padrão
+## Stack-specific security
+
+- **flutter_secure_storage** for tokens (Keychain/EncryptedSharedPreferences)
+- **Certificate pinning** in production (dio_certificate_pinning)
+- **Obfuscation** in release build (`flutter build --obfuscate --split-debug-info=...`)
+- **No screenshots** on sensitive screens (`SystemChrome.setEnabledSystemUIMode`)
+- **Root/jailbreak detection** in financial apps (flutter_jailbreak_detection)
+- **Don't** log sensitive data
+- **Input validation** in forms before sending
+- **Dependency check** with `flutter pub outdated --mode=null-safety`
+- **HTTPS only** (don't allow cleartext in iOS Info.plist and Android network_security_config.xml)
+
+---
+
+## Standard commands
 
 ```bash
 # install
@@ -494,12 +494,12 @@ flutter gen-l10n
 
 # dev
 flutter run                              # debug
-flutter run --profile                    # profile (perf real)
-flutter run --release                    # release local
+flutter run --profile                    # profile (real perf)
+flutter run --release                    # local release
 
 # test
 flutter test                             # unit + widget
-flutter test --coverage                  # com cobertura
+flutter test --coverage                  # with coverage
 flutter test integration_test/           # integration
 
 # lint + format
@@ -520,26 +520,26 @@ dart format --set-exit-if-changed .
 
 ---
 
-## Anti-patterns (bloquear)
+## Anti-patterns (block)
 
-- Lógica de negócio dentro de widget (extrair para BLoC/use case)
-- `setState` em features grandes (use BLoC/Riverpod)
-- `BuildContext` async (após `await` sem checar `mounted`)
-- Texto hardcoded
-- Cores e espaçamentos hardcoded
-- `print()` em código de produção (usar logger)
-- Force unwrap (`!`) sem necessidade
-- Listas longas sem `ListView.builder`
-- Imagens grandes sem resize
-- StatefulWidget quando StatelessWidget basta
-- Falta de `const` em widgets candidatos
-- Importar pacote de UI no domain
-- Memory leaks (listeners não dispose, controllers não dispose)
+- Business logic inside widget (extract to BLoC/use case)
+- `setState` in large features (use BLoC/Riverpod)
+- Async `BuildContext` (after `await` without checking `mounted`)
+- Hardcoded text
+- Hardcoded colors and spacings
+- `print()` in production code (use logger)
+- Force unwrap (`!`) without need
+- Long lists without `ListView.builder`
+- Large images without resize
+- StatefulWidget when StatelessWidget suffices
+- Missing `const` on candidate widgets
+- Importing UI package in domain
+- Memory leaks (listeners not disposed, controllers not disposed)
 - Tap target < 48px
 
 ---
 
-## Referências
+## References
 
 - Flutter: <https://docs.flutter.dev/>
 - Dart: <https://dart.dev/guides>

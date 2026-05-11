@@ -1,74 +1,74 @@
 # Stack Convention — PHP
 
-> Frameworks suportados: **Laravel** (preferencial para web apps e APIs full-stack) ou **Symfony** (preferencial para projetos enterprise modulares).
+> Supported frameworks: **Laravel** (preferred for full-stack web apps and APIs) or **Symfony** (preferred for modular enterprise projects).
 
 ---
 
-## Quando usar esta stack
+## When to use this stack
 
-Escolher PHP quando:
+Choose PHP when:
 
-- **CMS e e-commerce** — ecosistema maduro (Magento, WooCommerce, Shopware)
-- **Apps com Admin/CRUD pesado** — Laravel Nova, Filament aceleram dramaticamente
-- **Time já domina PHP** — produtividade alta com Laravel/Symfony
-- **Hospedagem barata e vasta** — qualquer shared hosting roda PHP
-- **APIs com necessidade de Eloquent/Doctrine ORM** maduro
-- **Projetos com prazo agressivo e CRUD denso** — Laravel é "batteries included"
-- **Integração com WordPress** ou ecosistemas legados PHP
+- **CMS and e-commerce** — mature ecosystem (Magento, WooCommerce, Shopware)
+- **Apps with heavy Admin/CRUD** — Laravel Nova, Filament dramatically accelerate delivery
+- **Team already fluent in PHP** — high productivity with Laravel/Symfony
+- **Cheap and widespread hosting** — any shared hosting runs PHP
+- **APIs needing mature Eloquent/Doctrine ORM**
+- **Aggressive deadline projects with dense CRUD** — Laravel is "batteries included"
+- **WordPress integration** or legacy PHP ecosystems
 
-## Quando NÃO usar
+## When NOT to use
 
-- **Real-time/WebSockets de alto volume** — Node.js/Go superam
-- **AI/ML** — ecosistema Python é incomparável
-- **Microserviços com altíssima concorrência** — preferir Go
-- **Sistemas com necessidade de threads ou concorrência nativa robusta** — workers PHP-FPM têm modelo limitado
+- **High-volume real-time/WebSockets** — Node.js/Go outperform
+- **AI/ML** — Python ecosystem is incomparable
+- **Microservices with extreme concurrency** — prefer Go
+- **Systems needing native threads or robust concurrency** — PHP-FPM workers have a limited model
 
 ---
 
-## Versões e dependências
+## Versions and dependencies
 
-| Item | Versão mínima |
-|------|---------------|
-| PHP | ≥ 8.3 (preferencial 8.4 quando estável) |
+| Item | Minimum version |
+|------|-----------------|
+| PHP | ≥ 8.3 (prefer 8.4 when stable) |
 | Composer | ≥ 2.7 |
 | Frameworks: Laravel ≥ 11 | Symfony ≥ 7.1 |
 
 ### Frameworks
 
-| Framework | Quando usar |
+| Framework | When to use |
 |-----------|-------------|
-| **Laravel** | Projetos web full-stack, APIs com Admin, prototipagem rápida, e-commerce |
-| **Symfony** | Projetos enterprise modulares, microserviços, máxima customização |
-| **Slim / Lumen** | Microserviços minimalistas (raro hoje em dia) |
+| **Laravel** | Full-stack web projects, APIs with Admin, fast prototyping, e-commerce |
+| **Symfony** | Modular enterprise projects, microservices, maximum customization |
+| **Slim / Lumen** | Minimalist microservices (rare today) |
 
-### Bibliotecas padrão
+### Standard libraries
 
-| Necessidade | Biblioteca |
-|-------------|-----------|
-| ORM | Eloquent (Laravel) ou Doctrine (Symfony) |
-| Migrations | Laravel Migrations ou Doctrine Migrations |
-| Validação | Laravel Validation ou Symfony Validator |
-| HTTP client | Guzzle ou Symfony HttpClient |
-| Logging | Monolog (padrão de facto) |
-| Testing | Pest (preferencial) ou PHPUnit |
+| Need | Library |
+|------|---------|
+| ORM | Eloquent (Laravel) or Doctrine (Symfony) |
+| Migrations | Laravel Migrations or Doctrine Migrations |
+| Validation | Laravel Validation or Symfony Validator |
+| HTTP client | Guzzle or Symfony HttpClient |
+| Logging | Monolog (de facto standard) |
+| Testing | Pest (preferred) or PHPUnit |
 | Tracing | OpenTelemetry PHP |
-| Auth | Laravel Sanctum/Passport ou LexikJWTAuthenticationBundle |
-| Queue | Laravel Queue (Redis/SQS) ou Symfony Messenger |
-| Cache | Redis via predis ou phpredis |
+| Auth | Laravel Sanctum/Passport or LexikJWTAuthenticationBundle |
+| Queue | Laravel Queue (Redis/SQS) or Symfony Messenger |
+| Cache | Redis via predis or phpredis |
 
 ---
 
-## Tooling obrigatório
+## Required tooling
 
-| Tool | Propósito |
-|------|-----------|
-| **PHPStan** (level 8 ou 9) ou **Psalm** | Static analysis |
-| **PHP-CS-Fixer** ou **Laravel Pint** | Formatter (PSR-12) |
-| **Rector** | Refactoring automático e upgrades |
-| **Pest** ou **PHPUnit** | Test runner |
+| Tool | Purpose |
+|------|---------|
+| **PHPStan** (level 8 or 9) or **Psalm** | Static analysis |
+| **PHP-CS-Fixer** or **Laravel Pint** | Formatter (PSR-12) |
+| **Rector** | Automated refactoring and upgrades |
+| **Pest** or **PHPUnit** | Test runner |
 | **Composer audit** | CVE scanning |
 
-### phpstan.neon mínimo
+### Minimum phpstan.neon
 
 ```yaml
 parameters:
@@ -81,13 +81,13 @@ parameters:
 
 ---
 
-## Layout do projeto (Hexagonal)
+## Project layout (Hexagonal)
 
 ### Laravel
 
 ```
 src/
-├── Domain/                      # núcleo
+├── Domain/                      # core
 │   ├── User/
 │   │   ├── Entity/
 │   │   ├── Repository/          # interfaces (ports)
@@ -107,20 +107,20 @@ src/
 │   ├── Persistence/
 │   │   └── Eloquent/            # Eloquent repositories (impl)
 │   ├── Http/
-│   │   ├── Controllers/         # adapters inbound
+│   │   ├── Controllers/         # inbound adapters
 │   │   └── Requests/            # form requests (validation)
 │   └── Messaging/
 │
-app/                             # padrão Laravel (mantido para framework)
+app/                             # standard Laravel (kept for framework)
 ├── Console/
 ├── Exceptions/
 ├── Http/
-└── Providers/                   # binding de DI: ports → adapters
+└── Providers/                   # DI binding: ports → adapters
 ```
 
 ### Symfony
 
-Symfony naturalmente acomoda Hexagonal:
+Symfony naturally accommodates Hexagonal:
 
 ```
 src/
@@ -131,22 +131,22 @@ src/
 └── Infrastructure/
     ├── Doctrine/
     ├── Http/
-    └── Symfony/                # bundles, configs específicas
+    └── Symfony/                # bundles, framework-specific configs
 ```
 
 ---
 
-## Convenções de código
+## Code conventions
 
 ### Naming (PSR-1, PSR-4, PSR-12)
 
-- **PascalCase** para classes
-- **camelCase** para métodos e properties
-- **UPPER_SNAKE_CASE** para constantes
-- **snake_case** para tabelas e colunas em DB (Eloquent converte)
-- 1 classe por arquivo, namespace casado com path
+- **PascalCase** for classes
+- **camelCase** for methods and properties
+- **UPPER_SNAKE_CASE** for constants
+- **snake_case** for DB tables and columns (Eloquent converts)
+- 1 class per file, namespace matching path
 
-### Strict types obrigatório
+### Strict types required
 
 ```php
 <?php
@@ -173,43 +173,43 @@ final class User
 }
 ```
 
-### Imutabilidade onde possível
+### Immutability where possible
 
 - `readonly` properties (PHP 8.1+)
-- Value Objects imutáveis
-- Entities mutáveis apenas via métodos de domínio
+- Immutable Value Objects
+- Entities mutable only via domain methods
 
-### Type hints em tudo
+### Type hints everywhere
 
-- Parâmetros, retornos, properties
-- Generics via PHPDoc (`@param array<int, User>`) — PHPStan valida
+- Parameters, return types, properties
+- Generics via PHPDoc (`@param array<int, User>`) — PHPStan validates
 
 ### Error handling
 
-- Exceções tipadas (`DomainException`, `NotFoundException`, `ValidationException`)
-- **Nunca** `catch (\Exception $e)` genérico sem rethrow
-- Adapter inbound traduz exceção em HTTP (Laravel: handler global; Symfony: ExceptionListener)
+- Typed exceptions (`DomainException`, `NotFoundException`, `ValidationException`)
+- **Never** generic `catch (\Exception $e)` without rethrow
+- Inbound adapter translates exception to HTTP (Laravel: global handler; Symfony: ExceptionListener)
 
-### Validação
+### Validation
 
-- Form Requests no Laravel ou Symfony Validator
-- Validação **antes** do use case
-- Domain re-valida invariantes (defesa em profundidade)
+- Laravel Form Requests or Symfony Validator
+- Validation **before** the use case
+- Domain re-validates invariants (defense in depth)
 
 ---
 
-## Padrão de testes
+## Testing standards
 
-### Pirâmide
+### Pyramid
 
-| Camada | Ferramenta | Cobertura por modo |
-|--------|-----------|--------------------|
-| Unit (domain + use cases) | Pest/PHPUnit | MVP ≥60% críticas / Production ≥95% críticas |
+| Layer | Tool | Coverage by mode |
+|-------|------|------------------|
+| Unit (domain + use cases) | Pest/PHPUnit | MVP ≥60% critical / Production ≥95% critical |
 | Integration (adapters + DB) | Pest + RefreshDatabase | MVP ≥40% / Production ≥80% |
-| E2E (HTTP) | Pest + Laravel TestCase | Happy paths críticos |
-| Load | k6 | Production: NFRs do PRD |
+| E2E (HTTP) | Pest + Laravel TestCase | Critical happy paths |
+| Load | k6 | Production: PRD NFRs |
 
-### Estrutura
+### Structure
 
 ```
 tests/
@@ -220,7 +220,7 @@ tests/
 └── fixtures/
 ```
 
-### Pest preferencial sobre PHPUnit clássico
+### Pest preferred over classic PHPUnit
 
 ```php
 it('creates a user with valid data', function () {
@@ -253,19 +253,19 @@ php bin/console doctrine:migrations:diff
 php bin/console doctrine:migrations:migrate
 ```
 
-### Regras
+### Rules
 
-- Toda migration reversível (`down()` testado)
-- **Expand-contract** em breaking changes (Production)
-- Backup confirmado antes de migration destrutiva
-- Foreign keys explícitas
-- Migrations testadas em staging com volume realista
+- Every migration reversible (`down()` tested)
+- **Expand-contract** for breaking changes (Production)
+- Backup confirmed before destructive migration
+- Foreign keys explicit
+- Migrations tested on staging with realistic volume
 
 ---
 
-## Logging e Observabilidade
+## Logging and Observability
 
-### Monolog estruturado
+### Structured Monolog
 
 ```php
 use Monolog\Logger;
@@ -279,43 +279,43 @@ $logger = new Logger('app');
 $logger->pushHandler($handler);
 ```
 
-### Regras
+### Rules
 
-- Sempre JSON estruturado em produção
+- Always JSON-structured in production
 - Correlation ID via middleware
-- Nunca logar dados sensíveis (use `processors` para redaction)
-- OpenTelemetry para tracing em Production
-- Métricas via Prometheus PHP exporter ou pushgateway
+- Never log sensitive data (use `processors` for redaction)
+- OpenTelemetry for tracing in Production
+- Metrics via Prometheus PHP exporter or pushgateway
 
 ---
 
 ## Performance
 
-- **OPcache** habilitado em produção (obrigatório)
-- **Preloading** (PHP 7.4+) para frameworks (Symfony preload, Laravel Octane)
-- **Laravel Octane** com Swoole/RoadRunner para cargas altas
-- **Workers** múltiplos via PHP-FPM (configurar `pm`)
-- Cache via Redis para queries e responses
-- Queues (Laravel Queue, Symfony Messenger) para tarefas pesadas
-- Profiling: Blackfire ou Tideways
+- **OPcache** enabled in production (mandatory)
+- **Preloading** (PHP 7.4+) for frameworks (Symfony preload, Laravel Octane)
+- **Laravel Octane** with Swoole/RoadRunner for high loads
+- **Multiple workers** via PHP-FPM (configure `pm`)
+- Cache via Redis for queries and responses
+- Queues (Laravel Queue, Symfony Messenger) for heavy tasks
+- Profiling: Blackfire or Tideways
 
 ---
 
-## Segurança específica
+## Stack-specific security
 
-- **CSRF** ativo (Laravel/Symfony fazem por padrão; manter)
-- **XSS**: usar `e()` (Laravel) ou Twig escape (Symfony)
-- **SQL Injection**: ORM parametriza — nunca concatenar SQL
-- **Mass Assignment**: `$fillable` ou `$guarded` em Eloquent; DTOs em Symfony
-- Argon2id para senhas (Laravel/Symfony default)
-- `composer audit` na pipeline
-- Roave/SecurityAdvisories no composer.json (bloqueia deps com CVE)
-- HTTPS obrigatório (force_https em produção)
-- Headers de segurança via middleware (`secure_headers/middleware`)
+- **CSRF** active (Laravel/Symfony default; keep it)
+- **XSS:** use `e()` (Laravel) or Twig escape (Symfony)
+- **SQL Injection:** ORM parameterizes — never concatenate SQL
+- **Mass Assignment:** `$fillable` or `$guarded` in Eloquent; DTOs in Symfony
+- Argon2id for passwords (Laravel/Symfony default)
+- `composer audit` in pipeline
+- Roave/SecurityAdvisories in composer.json (blocks deps with CVEs)
+- HTTPS required (force_https in production)
+- Security headers via middleware (`secure_headers/middleware`)
 
 ---
 
-## Comandos padrão
+## Standard commands
 
 ### Laravel
 
@@ -327,7 +327,7 @@ composer install
 php artisan serve
 
 # test
-./vendor/bin/pest                           # ou phpunit
+./vendor/bin/pest                           # or phpunit
 
 # lint + analysis
 ./vendor/bin/pint                           # formatter
@@ -349,7 +349,7 @@ composer install && \
 
 ```bash
 composer install
-symfony serve                               # ou php -S
+symfony serve                               # or php -S
 ./vendor/bin/pest
 ./vendor/bin/phpstan analyse
 php bin/console doctrine:migrations:migrate
@@ -357,23 +357,23 @@ php bin/console doctrine:migrations:migrate
 
 ---
 
-## Anti-patterns (bloquear)
+## Anti-patterns (block)
 
-- Sem `declare(strict_types=1)` em arquivos novos
-- `mixed` ou ausência de type hint
-- Lógica de negócio em controller
-- Eloquent/Doctrine no domain (importar ORM)
-- `dd()` ou `var_dump()` em produção
-- Mass Assignment sem `$fillable` definido
-- Capturar `\Exception` sem rethrow
-- Magic methods abusados (`__call`, `__get`)
-- Service Container resolvido em runtime no domínio (DI explícita)
-- Queries N+1 (usar `with()` em Eloquent, joins em Doctrine)
-- `env()` direto fora de configs (em Laravel) — usar `config()`
+- No `declare(strict_types=1)` in new files
+- `mixed` or no type hint
+- Business logic in controller
+- Eloquent/Doctrine in the domain (importing ORM)
+- `dd()` or `var_dump()` in production
+- Mass Assignment without `$fillable` defined
+- Catching `\Exception` without rethrow
+- Abused magic methods (`__call`, `__get`)
+- Service Container resolved at runtime in the domain (explicit DI)
+- N+1 queries (use `with()` in Eloquent, joins in Doctrine)
+- `env()` outside configs (in Laravel) — use `config()`
 
 ---
 
-## Referências
+## References
 
 - PHP: <https://www.php.net/manual/en/>
 - Laravel: <https://laravel.com/docs/>
