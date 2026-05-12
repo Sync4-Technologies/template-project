@@ -1,5 +1,41 @@
 # Sistema de Engenharia com Agentes
 
+## Precedência sobre CLAUDE.md global
+
+Este arquivo (`CLAUDE.md` do projeto) **tem precedência** sobre qualquer `CLAUDE.md` global em `~/.claude/CLAUDE.md` quando há **conflito de governance, papéis, fluxos ou regras**.
+
+### Regras de precedência
+
+| Tópico | Fonte autoritativa |
+|--------|---------------------|
+| **Papéis, identidade, fronteiras de agentes** | Este arquivo + `.claude/squad/template/agents/{name}.md` |
+| **Fluxos de projeto (Fluxos 1-5)** | Este arquivo → "Fluxos de Projeto" |
+| **Gates obrigatórios** | Este arquivo → "Gate Obrigatórios" |
+| **Modos MVP/Production** | Este arquivo → "MVP vs Production Mode" |
+| **Hierarquia e canais** | Este arquivo → "Hierarquia" e "Regra de Interação" |
+| **Stack do projeto** | Architect via `docs/stack-conventions/` + ADR específico (NÃO o stack default global) |
+| **Disciplina de testes (cobertura)** | Modo do projeto definido aqui (não baseline pessoal global) |
+| **Continuidade multi-usuário** | Este arquivo → "Multi-user Continuity" |
+
+### O que vem do CLAUDE.md global (sem conflito)
+
+- **Idioma e estilo** de comunicação (ex: pt-BR)
+- **Preferências pessoais** de tooling
+- **Princípios genéricos** (Clean Code, SOLID) quando este arquivo não especifica
+- **Stack default** APENAS se Architect ainda não decidiu (durante exploração inicial)
+
+### Em caso de ambiguidade
+
+**Este arquivo vence.** Squad governance é detalhada e específica; preferências globais são fallback.
+
+Em particular:
+
+- **Não há "Tech Lead global"** com autoridade própria — TL é papel definido em `.claude/squad/template/agents/tech-lead.md` e segue regras deste arquivo
+- **Stack não é hardcoded** — Architect decide consultando `docs/stack-conventions/` e registra em ADR
+- **Regras absolutas globais** (ex: "nunca escreva código") são relaxadas pela governance da squad (TL pode escrever ≤5 linhas em correção crítica)
+
+---
+
 ## Objetivo
 
 Este repositório define um sistema de desenvolvimento de software baseado em agentes especializados.
@@ -271,6 +307,17 @@ Não construir o que não está no escopo atual. Sem abstração para "casos fut
 - Cada componente independente e testável isoladamente
 - Design tokens centralizados; nenhum valor mágico inline
 
+### Acessibilidade (WCAG 2.1 AA — mínimo, obrigatório em features visuais)
+- Contraste 4.5:1 texto normal / 3:1 texto grande e elementos UI
+- Navegação por teclado em todos os fluxos
+- Labels semânticos + ARIA quando HTML semântico não basta
+- Suporte a screen readers (VoiceOver, TalkBack, NVDA)
+- Tap targets mínimos: 44x44 (iOS) / 48x48 (Android/Web)
+- Suporte a `prefers-reduced-motion`
+- Não depender de cor para comunicar estado
+- Validação automatizada: axe-core (web) ou Semantics widgets (mobile)
+- Arquitetura por design (PD) + comportamento testado (QA) + código (Frontend/Mobile)
+
 ### Hexagonal (Backend / AI — quando couber)
 - Domain isolado de adapters externos (HTTP, DB, LLM, queue)
 - Default em features críticas e domínio rico
@@ -443,7 +490,7 @@ Segurança é responsabilidade de TODOS, mas cada agente tem fronteira clara:
 ### Fluxo 1 — Projeto Novo (sem artefatos)
 ```
 1. Usuário aciona PO com briefing
-2. PO cria: PRD + Spec Funcional + Histórias com critérios de aceite (incluindo RNFs)
+2. PO cria: PRD + Spec Funcional + Histórias com critérios de aceite (incluindo RNFs) — via skill `/squad-prd-template`, que oferece **Modo Briefing** (usuário cola briefing pronto) ou **Modo Entrevista** (PO conduz entrevista do zero), conforme escolha do usuário
 3. PO apresenta ao usuário
 4. Usuário aprova, ajusta ou rejeita
 5. PO registra mudanças em `.claude/squad/project/DECISIONS_LOG.md`
@@ -625,6 +672,13 @@ Para continuidade funcionar:
 | Pre-commit hook local (opt-in) | Aviso antes de commit |
 
 Hooks e CI são **não-bloqueantes por default** (apenas warning). Projeto pode endurecer em Production Mode.
+
+**Templates de CI opt-in:** `.claude/squad/template/ci/`
+- `memory-check.yml.example` — GitHub Actions workflow
+- `pre-commit.example` — git hook local
+- `README.md` — instalação e customização
+
+Projeto copia templates para localização ativa (`.github/workflows/`, `.githooks/`) quando decide adotar enforcement automatizado.
 
 ### Limitação conhecida
 
