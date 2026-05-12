@@ -99,7 +99,7 @@ Code Reviewer **detalhado** pode ser pulado em Sev1 (responsabilidade sua de TL 
 
 ### 6. COMUNICAR durante incidente
 
-#### Cadência mínima (conforme `agents/devops-engineer.md`)
+#### Cadência mínima (conforme `.claude/squad/template/agents/devops-engineer.md`)
 
 | Severidade | Update interno | Update externo (status page) |
 |-----------|---------------|------------------------------|
@@ -134,9 +134,9 @@ Antes de declarar resolvido:
 #### Prazos obrigatórios
 - **Sev1:** ≤ 48h após resolução
 - **Sev2:** ≤ 72h após resolução
-- **Sev3+:** opcional; registrar decisão em `memory/DECISIONS_LOG.md`
+- **Sev3+:** opcional; registrar decisão em `.claude/squad/project/DECISIONS_LOG.md`
 
-#### Estrutura (formato em `agents/devops-engineer.md`)
+#### Estrutura (formato em `.claude/squad/template/agents/devops-engineer.md`)
 
 ```
 POST-MORTEM — [título]
@@ -173,11 +173,11 @@ Lições aprendidas:
 
 ### 9. PROPAGAR aprendizados
 
-- Adicionar runbook em `/docs/runbooks/[tipo].md` se incidente é recorrente ou tem mitigação repetível
-- Atualizar `memory/ARCHITECTURE.md` se há mudança estrutural
+- Adicionar runbook em `/.claude/squad/project/runbooks/[tipo].md` se incidente é recorrente ou tem mitigação repetível
+- Atualizar `.claude/squad/project/ARCHITECTURE.md` se há mudança estrutural
 - Criar ADR se decisão técnica relevante foi tomada
-- Atualizar `memory/DECISIONS_LOG.md` com tag `post-mortem`
-- Adicionar ações corretivas em `memory/TASK_BOARD.md`
+- Atualizar `.claude/squad/project/DECISIONS_LOG.md` com tag `post-mortem`
+- Adicionar ações corretivas em `.claude/squad/project/TASK_BOARD.md`
 
 ### 10. RATIFICAR com usuário (se autoridade temporária foi assumida)
 
@@ -201,7 +201,7 @@ Conforme política de indisponibilidade do usuário (`CLAUDE.md`):
 
 ## Referências
 
-- TL flow Sev1/Sev2/Sev3+: `agents/tech-lead.md` → "Fluxo de Bug em Produção"
-- DevOps incident comm: `agents/devops-engineer.md` → "Comunicação Durante Incidente"
-- Post-mortem template: `agents/devops-engineer.md` → "Post-Mortem Blameless"
+- TL flow Sev1/Sev2/Sev3+: `.claude/squad/template/agents/tech-lead.md` → "Fluxo de Bug em Produção"
+- DevOps incident comm: `.claude/squad/template/agents/devops-engineer.md` → "Comunicação Durante Incidente"
+- Post-mortem template: `.claude/squad/template/agents/devops-engineer.md` → "Post-Mortem Blameless"
 - CLAUDE.md: "Fluxo de Bug em Produção"

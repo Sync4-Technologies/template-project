@@ -18,8 +18,8 @@ except Exception:
     print('')
 " 2>/dev/null)"
 
-# Só dispara se o arquivo é memory/ARCHITECTURE.md
-if [[ "${FILE_PATH}" != *"memory/ARCHITECTURE.md" ]]; then
+# Só dispara se o arquivo é .claude/squad/project/ARCHITECTURE.md
+if [[ "${FILE_PATH}" != *".claude/squad/project/ARCHITECTURE.md" ]]; then
   exit 0
 fi
 
@@ -29,7 +29,7 @@ cat <<'EOF'
 {
   "hookSpecificOutput": {
     "hookEventName": "PostToolUse",
-    "additionalContext": "Reminder: memory/ARCHITECTURE.md foi atualizado. Considere registrar a decisão em memory/DECISIONS_LOG.md (ou ADR se for decisão estrutural significativa). Atualize a data de 'Última atualização' no header de ARCHITECTURE.md."
+    "additionalContext": "Reminder: .claude/squad/project/ARCHITECTURE.md foi atualizado. Considere registrar a decisão em .claude/squad/project/DECISIONS_LOG.md (ou ADR específico do projeto em .claude/squad/project/ADR/ se for decisão estrutural significativa). Atualize a data de 'Última atualização' no header de ARCHITECTURE.md."
   }
 }
 EOF

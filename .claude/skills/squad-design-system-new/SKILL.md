@@ -44,7 +44,7 @@ Perguntas-chave para o usuário (via TL ou direto):
 
 ### 2. Propor DS
 
-#### Default: Material 3 (ver `memory/ADR/ADR-005-design-system.md`)
+#### Default: Material 3 (ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md`)
 
 Use Material 3 como ponto de partida sempre que possível:
 
@@ -107,9 +107,9 @@ Pra cada um, indicar:
 - Variantes (filled, outlined, text para Button, etc.)
 - Estados padrão (default, hover, active, disabled, loading, error, focused)
 
-### 5. Documentar em `/docs/design-system/`
+### 5. Documentar em `/.claude/squad/project/design-system/`
 
-Popular estrutura conforme `docs/design-system/README.md`:
+Popular estrutura conforme `.claude/squad/template/docs/design-system/README.md`:
 
 - `tokens/colors.md`, `typography.md`, `spacing.md`, `shadows.md`, `radius.md`, `motion.md`
 - `components/{button,input,card,modal,...}.md`
@@ -145,7 +145,7 @@ Patterns documentados: [lista]
 Acessibilidade: WCAG 2.1 AA garantida via [...]
 
 ADR-005 referência: [confirmar aderência ou justificar desvio]
-ADR específico do projeto: [criar `memory/ADR/ADR-NNN-stack-projeto-design.md` se DS != default]
+ADR específico do projeto: [criar `.claude/squad/project/ADR/ADR-NNN-stack-projeto-design.md` se DS != default]
 
 Próximo passo: TL apresenta ao usuário para aprovação (gate).
 ```
@@ -154,13 +154,13 @@ Próximo passo: TL apresenta ao usuário para aprovação (gate).
 
 DS proposto vai ao usuário via TL. Possíveis resultados:
 
-- **Aprovado** — popular `/docs/design-system/` em detalhe; Frontend/Mobile podem começar
+- **Aprovado** — popular `/.claude/squad/project/design-system/` em detalhe; Frontend/Mobile podem começar
 - **Aprovado com ajustes** — incorporar mudanças (paleta, tipografia) antes de detalhar
 - **Rejeitado** — voltar para proposta alternativa (raro)
 
 ### 8. Documentação final
 
-Com aprovação, populá-la em `/docs/design-system/` em nível adequado para Frontend/Mobile consumirem:
+Com aprovação, populá-la em `/.claude/squad/project/design-system/` em nível adequado para Frontend/Mobile consumirem:
 
 - Cada token doc com tabela completa
 - Cada componente com todos os estados + exemplo de uso
@@ -185,9 +185,9 @@ Notificar TL que DS está pronto para consumo.
 
 ## Referências
 
-- Product Designer: `agents/product-designer.md`
-- ADR-005 (DS default): `memory/ADR/ADR-005-design-system.md`
-- Estrutura do DS doc: `docs/design-system/README.md`
+- Product Designer: `.claude/squad/template/agents/product-designer.md`
+- ADR-005 (DS default): `.claude/squad/template/memory/ADR/ADR-005-design-system.md`
+- Estrutura do DS doc: `.claude/squad/template/docs/design-system/README.md`
 - Material 3: <https://m3.material.io/>
 - shadcn/ui: <https://ui.shadcn.com/>
 - Carbon: <https://carbondesignsystem.com/>

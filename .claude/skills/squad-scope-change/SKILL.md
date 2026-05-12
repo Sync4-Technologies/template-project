@@ -7,7 +7,7 @@ description: Conduz Tech Lead em fluxo de mudança de escopo durante execução 
 
 > **Owner:** Tech Lead | **Revisão:** 90 dias | **Obsolescência:** processo de scope-change mudar significativamente
 
-Esta skill conduz o TL no fluxo de **mudança de escopo durante execução**, conforme `agents/tech-lead.md` → "Gestão de Mudança de Escopo".
+Esta skill conduz o TL no fluxo de **mudança de escopo durante execução**, conforme `.claude/squad/template/agents/tech-lead.md` → "Gestão de Mudança de Escopo".
 
 ---
 
@@ -42,7 +42,7 @@ Documente:
 Análise estruturada:
 
 #### Contratos
-- [ ] Contratos em `/contracts/` afetados? Quais?
+- [ ] Contratos em `/.claude/squad/project/contracts/` afetados? Quais?
 - [ ] Mudança breaking ou non-breaking?
 - [ ] Backend, Frontend, Mobile, AI afetados?
 
@@ -164,7 +164,7 @@ Tag: `scope-change`
 
 ## Referências
 
-- TL processo: `agents/tech-lead.md` → "Gestão de Mudança de Escopo"
-- PO recebimento: `agents/product-owner.md` → "Gestão de Mudança de Escopo (Recebimento)"
-- DECISIONS_LOG.md: `memory/DECISIONS_LOG.md`
-- TASK_BOARD.md: `memory/TASK_BOARD.md`
+- TL processo: `.claude/squad/template/agents/tech-lead.md` → "Gestão de Mudança de Escopo"
+- PO recebimento: `.claude/squad/template/agents/product-owner.md` → "Gestão de Mudança de Escopo (Recebimento)"
+- DECISIONS_LOG.md: `.claude/squad/project/DECISIONS_LOG.md`
+- TASK_BOARD.md: `.claude/squad/project/TASK_BOARD.md`

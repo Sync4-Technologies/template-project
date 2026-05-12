@@ -37,131 +37,117 @@ Adaptações devem ser feitas nos artefatos de projeto (PRD, arquitetura, contra
 
 ## Estrutura de Pastas
 
-/ai-software-house
+```
+/ (raiz do projeto — livre para arquivos do produto)
 │
-├── AGENTS.md             ← índice de agentes (tool-agnostic)
-├── CLAUDE.md             ← este arquivo (governança e fluxos)
+├── README.md                  ← entrada principal
+├── AGENTS.md                  ← índice de agentes (tool-agnostic)
+├── CLAUDE.md                  ← este arquivo (governança e fluxos)
 │
-├── /agents               ← definições por agente (ver AGENTS.md para índice)
-│
-├── /memory
-│   ├── ARCHITECTURE.md
-│   ├── DECISIONS_LOG.md
-│   ├── TASK_BOARD.md
-│   ├── /ADR
-│   └── /agent-memory     ← memória especializada por agente
-│
-├── /contracts            ← APIs, schemas, interfaces
-│
-├── /tests                ← testes definidos pelo QA
-│
-├── /docs
-│   ├── PRD.md
-│   ├── /stack-conventions    ← convenções idiomáticas por linguagem/framework
-│   │   ├── /backend          (nodejs, python, php, java, go)
-│   │   ├── /frontend         (react, vue)
-│   │   └── /mobile           (flutter, react-native)
-│   ├── /design-system        ← Design System do projeto (mantido por Product Designer)
-│   │   ├── /tokens
-│   │   ├── /components
-│   │   ├── /patterns
-│   │   └── accessibility.md
-│   └── /runbooks
-│       ├── disaster-recovery.md
-│       └── [incidente].md
-│
-├── .claude
-│   ├── settings.json         ← config de hooks (opt-in)
-│   ├── skills/               ← skills da squad (workflows automatizados)
-│   └── hooks/                ← scripts de hooks
-
+└── .claude/
+    ├── settings.json          ← config de hooks (opt-in)
+    ├── skills/                ← skills Claude Code (workflows automatizados)
+    ├── hooks/                 ← scripts de hooks (SessionStart, PostToolUse)
+    └── squad/
+        ├── template/          ← imutável (sobrescrito em update do template)
+        │   ├── agents/                  ← definições dos 14 agentes
+        │   ├── docs/
+        │   │   ├── PRD-template.md
+        │   │   ├── stack-conventions/   (backend, frontend, mobile)
+        │   │   └── design-system/README.md
+        │   ├── memory/
+        │   │   ├── ADR/                 ← ADR-template + defaults 001-005
+        │   │   └── agent-memory/README.md   ← governança
+        │   └── contracts/               ← README + example.openapi.yaml
+        │
+        └── project/           ← estado vivo (preservado em update)
+            ├── ARCHITECTURE.md
+            ├── DECISIONS_LOG.md
+            ├── TASK_BOARD.md
+            ├── PRD.md                   ← criado durante uso
+            ├── ADR/                     ← ADRs específicos do projeto
+            ├── agent-memory/            ← 14 skeletons populados
+            ├── contracts/               ← contratos reais
+            ├── design-system/           ← tokens, componentes, patterns
+            ├── docs/                    ← specs funcionais, fluxos
+            └── runbooks/                ← procedimentos de incidente, DR
+```
 
 ---
 
 ## O que vai em cada pasta
 
-### /agents
-Definição de cada agente do sistema.
+### `.claude/squad/template/` (imutável)
 
-Cada arquivo contém:
-- identidade
-- responsabilidades
-- regras
-- comportamento
+Contém o template estático da squad. **Sobrescrito** em updates futuros do template.
 
----
+- `agents/` — 14 specs de agentes (roles conceituais; **não** subagents Claude Code)
+- `docs/PRD-template.md` — template para PRD do projeto
+- `docs/stack-conventions/` — convenções idiomáticas por linguagem (Architect consulta; Engineers consultam)
+- `docs/design-system/README.md` — índice/governança do DS (PD popula `project/design-system/`)
+- `memory/ADR/` — ADR-template + 5 ADRs default da squad (001-005)
+- `memory/agent-memory/README.md` — governança de agent memory
+- `contracts/README.md` + `example.openapi.yaml` — convenções de contratos
 
-### /memory
-Fonte de verdade do sistema.
+### `.claude/squad/project/` (estado vivo)
 
-Contém:
-- ARCHITECTURE.md → visão atual da arquitetura
-- ADR/ → decisões técnicas versionadas
-- DECISIONS_LOG.md → decisões rápidas
-- TASK_BOARD.md → estado das tarefas
-- agent-memory/ → memória especializada por agente (padrões, learnings, decisões pequenas) — ver README de governança
+Contém o **estado** populado durante execução. **Preservado** em updates.
 
-Regra:
-Se não está aqui, não existe.
+- `ARCHITECTURE.md` — visão atual da arquitetura
+- `DECISIONS_LOG.md` — decisões rápidas
+- `TASK_BOARD.md` — kanban de tarefas
+- `PRD.md` — PRD real do projeto (criado pelo PO)
+- `ADR/` — ADRs específicos do projeto (ADR-NNN+)
+- `agent-memory/` — 14 skeletons populados pelos agentes
+- `contracts/` — APIs reais (OpenAPI, JSON Schema, Zod)
+- `design-system/` — tokens, componentes, patterns (mantido pelo PD)
+- `docs/` — specs funcionais, fluxos específicos
+- `runbooks/` — procedimentos de incidente, DR
 
----
+### `.claude/skills/` e `.claude/hooks/`
 
-### /contracts
-Contratos do sistema:
-- APIs (OpenAPI)
-- schemas (JSON Schema / Zod)
-- interfaces
+Semântica oficial Claude Code:
+- `skills/` — 10 skills da squad (`/squad-new-project`, `/squad-prd-template`, etc.)
+- `hooks/` — `load-memory.sh` (SessionStart), `architecture-reminder.sh` (PostToolUse)
+- `settings.json` — configuração opt-in dos hooks
 
----
+### Regra
 
-### /tests
-Testes definidos pelo QA:
-- unitários
-- integração
-- E2E
+Se não está documentado nas pastas acima → **não existe**.
 
----
-
-### /docs
-Documentação de produto e operação:
-- PRD
-- especificação funcional
-- fluxos
-- `/stack-conventions` → convenções idiomáticas por linguagem/framework. Architect consulta para decidir stack; Engineers consultam para implementar
-- `/design-system` → Design System do projeto (tokens, componentes, patterns). Mantido por Product Designer; consumido por Frontend/Mobile Engineers
-- `/runbooks` → procedimentos de resposta a incidentes (incluindo `disaster-recovery.md`)
+A raiz do projeto fica **livre** para arquivos do produto (`src/`, `tests/`, `package.json`, etc.).
 
 ---
 
 ## Estrutura de Agentes
 
-Os agentes estão definidos na pasta `/agents`. Para índice tabular com modelo de cada um, ver [AGENTS.md](AGENTS.md).
+Os agentes estão definidos em `.claude/squad/template/agents/`. Para índice tabular com modelo de cada um, ver [AGENTS.md](AGENTS.md).
 
 ---
 
 ## Papéis dos Agentes
 
-> Resumo. Definição completa de cada agente em `/agents/{name}.md`. Índice tabular em [AGENTS.md](AGENTS.md).
+> Resumo. Definição completa de cada agente em `/.claude/squad/template/agents/{name}.md`. Índice tabular em [AGENTS.md](AGENTS.md).
 
 ### Opus (decisão e raciocínio sistêmico)
 
-- **[Product Owner](agents/product-owner.md)** — define o quê construir, regras de negócio, critérios de aceite
-- **[Tech Lead](agents/tech-lead.md)** — orquestração, governança técnica, plano de execução
-- **[Architect](agents/architect.md)** — arquitetura, domínio (DDD), contratos, decisão de stack
-- **[Security Engineer](agents/security-engineer.md)** — threat modeling, compliance, auth/authz, pentest review
-- **[Product Designer](agents/product-designer.md)** — Design System, UX, UI, acessibilidade visual (consultor com canal direto ao usuário; gate em features visuais críticas)
+- **[Product Owner](.claude/squad/template/agents/product-owner.md)** — define o quê construir, regras de negócio, critérios de aceite
+- **[Tech Lead](.claude/squad/template/agents/tech-lead.md)** — orquestração, governança técnica, plano de execução
+- **[Architect](.claude/squad/template/agents/architect.md)** — arquitetura, domínio (DDD), contratos, decisão de stack
+- **[Security Engineer](.claude/squad/template/agents/security-engineer.md)** — threat modeling, compliance, auth/authz, pentest review
+- **[Product Designer](.claude/squad/template/agents/product-designer.md)** — Design System, UX, UI, acessibilidade visual (consultor com canal direto ao usuário; gate em features visuais críticas)
 
 ### Sonnet (execução)
 
-- **[Backend Engineer](agents/backend-engineer.md)** — APIs, lógica de negócio, persistência
-- **[Frontend Engineer](agents/frontend-engineer.md)** — interface web, Atomic Design, integração com backend
-- **[Mobile Engineer](agents/mobile-engineer.md)** — apps iOS/Android, Clean Architecture mobile
-- **[AI Engineer](agents/ai-engineer.md)** — agentes de IA, prompts, MCP, tools
-- **[QA Engineer](agents/qa-engineer.md)** — testes (TDD), validação de comportamento
-- **[Code Reviewer](agents/code-reviewer.md)** — qualidade do código, OWASP no código
-- **[DevOps Engineer](agents/devops-engineer.md)** — CI/CD, infra, observabilidade, SRE
-- **[Support Engineer](agents/support-engineer.md)** — monitoramento de issues, triagem (bug vs melhoria)
-- **[Data Engineer](agents/data-engineer.md)** — pipelines, modelagem analítica (consultor)
+- **[Backend Engineer](.claude/squad/template/agents/backend-engineer.md)** — APIs, lógica de negócio, persistência
+- **[Frontend Engineer](.claude/squad/template/agents/frontend-engineer.md)** — interface web, Atomic Design, integração com backend
+- **[Mobile Engineer](.claude/squad/template/agents/mobile-engineer.md)** — apps iOS/Android, Clean Architecture mobile
+- **[AI Engineer](.claude/squad/template/agents/ai-engineer.md)** — agentes de IA, prompts, MCP, tools
+- **[QA Engineer](.claude/squad/template/agents/qa-engineer.md)** — testes (TDD), validação de comportamento
+- **[Code Reviewer](.claude/squad/template/agents/code-reviewer.md)** — qualidade do código, OWASP no código
+- **[DevOps Engineer](.claude/squad/template/agents/devops-engineer.md)** — CI/CD, infra, observabilidade, SRE
+- **[Support Engineer](.claude/squad/template/agents/support-engineer.md)** — monitoramento de issues, triagem (bug vs melhoria)
+- **[Data Engineer](.claude/squad/template/agents/data-engineer.md)** — pipelines, modelagem analítica (consultor)
 
 ---
 
@@ -285,13 +271,13 @@ Não construir o que não está no escopo atual. Sem abstração para "casos fut
 ### Hexagonal (Backend / AI — quando couber)
 - Domain isolado de adapters externos (HTTP, DB, LLM, queue)
 - Default em features críticas e domínio rico
-- Ver `memory/ADR/ADR-002-arquitetura-hexagonal.md` para critérios
+- Ver `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md` para critérios
 
 ### Feature Flags (default em features críticas)
 - Toda feature crítica nova entra atrás de flag por padrão
 - Governança rígida: dono, prazo 90 dias, kill switch testado, review mensal
 - Combina com Hexagonal (adapter trocável por flag)
-- Ver `memory/ADR/ADR-003-feature-flags.md` para regras completas
+- Ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md` para regras completas
 
 ---
 
@@ -345,10 +331,10 @@ A definição de modo é responsabilidade do **Tech Lead** com base no contexto 
 ## Memória do Sistema
 
 Arquivos obrigatórios:
-- /memory/ARCHITECTURE.md
-- /memory/ADR/
-- /memory/TASK_BOARD.md
-- /contracts/
+- /.claude/squad/project/ARCHITECTURE.md
+- /.claude/squad/project/ADR/
+- /.claude/squad/project/TASK_BOARD.md
+- /.claude/squad/project/contracts/
 
 Regra:
 Se não está documentado, não existe.
@@ -358,7 +344,7 @@ Se não está documentado, não existe.
 ## Definition of Done Global
 
 > **Engineer Done** vs **Squad Done** (esta lista):
-> - **Engineer Done** = código pronto para revisão (definido em cada `agents/{engineer}.md`). Inclui: implementação, testes verdes localmente e no CI, contratos respeitados, README, metadata de feature flag.
+> - **Engineer Done** = código pronto para revisão (definido em cada `.claude/squad/template/agents/{engineer}.md`). Inclui: implementação, testes verdes localmente e no CI, contratos respeitados, README, metadata de feature flag.
 > - **Squad Done** (esta lista) = entregue em produção. Inclui Engineer Done + revisões + deploy + observabilidade + memória atualizada.
 >
 > Engineers entregam **Engineer Done**; pipeline + DevOps + TL fecham para **Squad Done**.
@@ -376,12 +362,12 @@ Uma entrega só está em **Squad Done** quando TODOS os itens abaixo estão aten
 - [ ] Sistema monitorado (logs disponíveis; alertas ativos em Production)
 - [ ] Rollback testado (Production Mode)
 - [ ] README do módulo atualizado
-- [ ] `memory/ARCHITECTURE.md` atualizado (quando há mudança estrutural)
-- [ ] `memory/DECISIONS_LOG.md` atualizado (quando há decisão relevante)
-- [ ] `memory/TASK_BOARD.md` atualizado (tarefa movida para Done)
-- [ ] Feature flag definida e testada em ambos os paths (features críticas) — ver `memory/ADR/ADR-003-feature-flags.md`
-- [ ] Product Designer aprovou (apenas em features visuais críticas) — ver `memory/ADR/ADR-005-design-system.md`
-- [ ] Aderência ao Design System em `/docs/design-system/` (sem hardcoded tokens; patterns respeitados)
+- [ ] `.claude/squad/project/ARCHITECTURE.md` atualizado (quando há mudança estrutural)
+- [ ] `.claude/squad/project/DECISIONS_LOG.md` atualizado (quando há decisão relevante)
+- [ ] `.claude/squad/project/TASK_BOARD.md` atualizado (tarefa movida para Done)
+- [ ] Feature flag definida e testada em ambos os paths (features críticas) — ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`
+- [ ] Product Designer aprovou (apenas em features visuais críticas) — ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md`
+- [ ] Aderência ao Design System em `/.claude/squad/project/design-system/` (sem hardcoded tokens; patterns respeitados)
 
 ---
 
@@ -457,7 +443,7 @@ Segurança é responsabilidade de TODOS, mas cada agente tem fronteira clara:
 2. PO cria: PRD + Spec Funcional + Histórias com critérios de aceite (incluindo RNFs)
 3. PO apresenta ao usuário
 4. Usuário aprova, ajusta ou rejeita
-5. PO registra mudanças em `memory/DECISIONS_LOG.md`
+5. PO registra mudanças em `.claude/squad/project/DECISIONS_LOG.md`
 6. TL recebe PRD aprovado → cria plano de execução
 7. TL aciona Architect → define arquitetura + stack
 7a. TL aciona Product Designer (paralelo a Architect) — quando projeto tem UI: propõe DS (Material 3 default ou alternativa justificada), define tokens iniciais e componentes-chave
@@ -467,7 +453,7 @@ Segurança é responsabilidade de TODOS, mas cada agente tem fronteira clara:
 11. TL apresenta arquitetura + DS proposto ao usuário (incluindo decisões de stack e mitigações de segurança)
 12. Usuário aprova, ajusta ou rejeita
 13. Architect define contratos em /contracts
-13a. Product Designer documenta DS em /docs/design-system/ (tokens + componentes + patterns)
+13a. Product Designer documenta DS em /.claude/squad/project/design-system/ (tokens + componentes + patterns)
 14. QA define testes → Engineers implementam → CI (testes/lint/build/SAST) → em paralelo: QA exploratório + Code Review + Security Engineer (Fase 2 em features críticas) + Product Designer review (em features visuais críticas) → Quality Gates (TL integra) → DevOps deploy (canary/blue-green em Production)
 15. TL valida entrega final e atualiza memória do sistema
 ```
@@ -489,7 +475,7 @@ Nota: usuário tem autoridade total para ignorar sugestões do PO
 3. TL aciona PO para: atualizar docs se necessário, confirmar prioridades
 4. PO alinha com usuário
 5. TL cria plano de continuidade baseado no estado atual
-6. Quando primeira feature VISUAL chega: TL verifica /docs/design-system/. Se não existe → TL aciona Product Designer (/squad-design-extract) para extrair DS da UI atual antes de Frontend/Mobile prosseguirem
+6. Quando primeira feature VISUAL chega: TL verifica /.claude/squad/project/design-system/. Se não existe → TL aciona Product Designer (/squad-design-extract) para extrair DS da UI atual antes de Frontend/Mobile prosseguirem
 7. Fluxo padrão para as tarefas definidas
 ```
 
@@ -543,7 +529,7 @@ Para bugs (via Support Engineer):
 
 ### Sev3+ — Bug não crítico
 ```
-1. Issue vai para `memory/TASK_BOARD.md` como backlog normal
+1. Issue vai para `.claude/squad/project/TASK_BOARD.md` como backlog normal
 2. Segue fluxo padrão de desenvolvimento
 ```
 
@@ -565,7 +551,7 @@ Múltiplos gates dependem da aprovação do usuário. Quando o usuário está in
 
 ### Regra
 
-- Decisões tomadas sem aprovação explícita → registrar em `memory/DECISIONS_LOG.md` com tag `tl-autonomous`
+- Decisões tomadas sem aprovação explícita → registrar em `.claude/squad/project/DECISIONS_LOG.md` com tag `tl-autonomous`
 - TL é responsável por ratificar com usuário em até 24h após retorno
 - Squad não pode permanecer travada indefinidamente em projetos não-críticos — aplicar judgment
 

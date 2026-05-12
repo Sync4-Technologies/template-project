@@ -66,12 +66,12 @@ Falha em qualquer item → bloquear merge de PRs novos que dependem dessa flag a
 
 #### Flags > 90 dias sem decisão
 - Aplicar tag `tech-debt`
-- Adicionar a `memory/TASK_BOARD.md`
+- Adicionar a `.claude/squad/project/TASK_BOARD.md`
 - Atribuir prazo de remoção (≤ 30 dias)
 
 #### Flags órfãs (sem código)
 - Remover do provedor imediatamente
-- Documentar em `memory/DECISIONS_LOG.md`
+- Documentar em `.claude/squad/project/DECISIONS_LOG.md`
 
 #### Flags sem dono ativo
 - Reatribuir a TL ou PO conforme contexto
@@ -83,13 +83,13 @@ Falha em qualquer item → bloquear merge de PRs novos que dependem dessa flag a
 
 ### 5. Registrar resultado
 
-Em `memory/DECISIONS_LOG.md` com tag `flag-audit`:
+Em `.claude/squad/project/DECISIONS_LOG.md` com tag `flag-audit`:
 
 ```
 | YYYY-MM-DD | Flag audit mensal: X mantidas, Y promovidas, Z removidas, W adiadas | Review periódico ADR-003 | Lista de flags afetadas e ações | Tech Lead |
 ```
 
-Detalhamento em `memory/agent-memory/tech-lead.md` se houver decisões relevantes.
+Detalhamento em `.claude/squad/project/agent-memory/tech-lead.md` se houver decisões relevantes.
 
 ### 6. Atualizar TASK_BOARD
 
@@ -141,7 +141,7 @@ Tarefas adicionadas ao TASK_BOARD: [lista]
 
 ## Referências
 
-- ADR-003: `memory/ADR/ADR-003-feature-flags.md`
-- TL governance: `agents/tech-lead.md` → "Coordenação de Feature Flags"
-- DevOps validation: `agents/devops-engineer.md` → "Feature Flags"
-- Code Reviewer enforcement: `agents/code-reviewer.md` → "Valida uso de Feature Flags"
+- ADR-003: `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`
+- TL governance: `.claude/squad/template/agents/tech-lead.md` → "Coordenação de Feature Flags"
+- DevOps validation: `.claude/squad/template/agents/devops-engineer.md` → "Feature Flags"
+- Code Reviewer enforcement: `.claude/squad/template/agents/code-reviewer.md` → "Valida uso de Feature Flags"

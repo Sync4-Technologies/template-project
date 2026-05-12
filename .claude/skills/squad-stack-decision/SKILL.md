@@ -7,7 +7,7 @@ description: Conduz Architect na decisão de stack do projeto, consultando stack
 
 > **Owner:** Architect | **Revisão:** 90 dias | **Obsolescência:** stack-conventions reorganizadas ou ADR-001 substituído
 
-Esta skill conduz o Architect na decisão de stack do projeto, consultando os documentos em `docs/stack-conventions/`.
+Esta skill conduz o Architect na decisão de stack do projeto, consultando os documentos em `.claude/squad/template/docs/stack-conventions/`.
 
 ---
 
@@ -52,25 +52,25 @@ Para **Backend**:
 
 | Stack | Documento | Critério primário |
 |-------|-----------|-------------------|
-| Node.js + TS | `docs/stack-conventions/backend/nodejs.md` | I/O intensivo, real-time, ecosistema JS |
-| Python | `docs/stack-conventions/backend/python.md` | AI/ML, data, APIs simples |
-| PHP | `docs/stack-conventions/backend/php.md` | CMS, e-commerce, Admin pesado |
-| Java | `docs/stack-conventions/backend/java.md` | Enterprise, alta concorrência |
-| Go | `docs/stack-conventions/backend/go.md` | Performance, microserviços, infra |
+| Node.js + TS | `.claude/squad/template/docs/stack-conventions/backend/nodejs.md` | I/O intensivo, real-time, ecosistema JS |
+| Python | `.claude/squad/template/docs/stack-conventions/backend/python.md` | AI/ML, data, APIs simples |
+| PHP | `.claude/squad/template/docs/stack-conventions/backend/php.md` | CMS, e-commerce, Admin pesado |
+| Java | `.claude/squad/template/docs/stack-conventions/backend/java.md` | Enterprise, alta concorrência |
+| Go | `.claude/squad/template/docs/stack-conventions/backend/go.md` | Performance, microserviços, infra |
 
 Para **Frontend**:
 
 | Stack | Documento | Critério primário |
 |-------|-----------|-------------------|
-| React + Next.js | `docs/stack-conventions/frontend/react.md` | SSR/SSG, ecosistema maduro, SEO |
-| Vue + Nuxt | `docs/stack-conventions/frontend/vue.md` | Curva suave, menos boilerplate |
+| React + Next.js | `.claude/squad/template/docs/stack-conventions/frontend/react.md` | SSR/SSG, ecosistema maduro, SEO |
+| Vue + Nuxt | `.claude/squad/template/docs/stack-conventions/frontend/vue.md` | Curva suave, menos boilerplate |
 
 Para **Mobile**:
 
 | Stack | Documento | Critério primário |
 |-------|-----------|-------------------|
-| Flutter | `docs/stack-conventions/mobile/flutter.md` | Performance nativa, UI consistente |
-| React Native | `docs/stack-conventions/mobile/react-native.md` | Reúso skill React, OTA updates |
+| Flutter | `.claude/squad/template/docs/stack-conventions/mobile/flutter.md` | Performance nativa, UI consistente |
+| React Native | `.claude/squad/template/docs/stack-conventions/mobile/react-native.md` | Reúso skill React, OTA updates |
 
 Ler seções **"Quando usar"** e **"Quando NÃO usar"** de cada candidata.
 
@@ -92,7 +92,7 @@ Time-to-market         | Médio|  X/10   |  Y/10   |  Z/10
 
 ### 5. Avaliar fornecedores externos (se aplicável)
 
-Conforme `agents/architect.md` → "Avaliação de Fornecedores Externos":
+Conforme `.claude/squad/template/agents/architect.md` → "Avaliação de Fornecedores Externos":
 
 - Custo total (licença + operação + scaling)
 - Lock-in (estratégia de saída)
@@ -117,7 +117,7 @@ Contexto do projeto:
 Opções:
 
 ### Opção 1 — [Stack A] (RECOMENDADA)
-- Stack convention: docs/stack-conventions/[path]
+- Stack convention: .claude/squad/template/docs/stack-conventions/[path]
 - Quando usar (do convention): [resumo]
 - Trade-offs:
   - Prós: [lista]
@@ -156,7 +156,7 @@ TL apresenta opções + recomendação ao usuário. Usuário aprova/ajusta/veta.
 
 ### 10. Registrar decisão
 
-Criar `memory/ADR/ADR-NNN-stack-projeto.md` baseado em `memory/ADR/ADR-template.md`:
+Criar `.claude/squad/project/ADR/ADR-NNN-stack-projeto.md` baseado em `.claude/squad/template/memory/ADR/ADR-template.md`:
 
 - Status: Aceita
 - Contexto: por que foi necessária
@@ -168,7 +168,7 @@ Criar `memory/ADR/ADR-NNN-stack-projeto.md` baseado em `memory/ADR/ADR-template.
 
 ### 11. Atualizar ARCHITECTURE.md
 
-`memory/ARCHITECTURE.md` → seção "Stack Tecnológica":
+`.claude/squad/project/ARCHITECTURE.md` → seção "Stack Tecnológica":
 - Tecnologia escolhida + versão
 - Link para ADR
 - Link para stack convention aplicável
@@ -189,7 +189,7 @@ E seção "Stack Conventions Doc" com link para spec ativa.
 
 ## Referências
 
-- ADR-001 (opções padrão): `memory/ADR/ADR-001-stack.md`
-- Stack conventions: `docs/stack-conventions/README.md`
-- Architect: `agents/architect.md` → "Decisão de Stack"
-- TL papel: `agents/tech-lead.md` → "Decisão de Stack"
+- ADR-001 (opções padrão): `.claude/squad/template/memory/ADR/ADR-001-stack.md`
+- Stack conventions: `.claude/squad/template/docs/stack-conventions/README.md`
+- Architect: `.claude/squad/template/agents/architect.md` → "Decisão de Stack"
+- TL papel: `.claude/squad/template/agents/tech-lead.md` → "Decisão de Stack"

@@ -13,7 +13,7 @@ A squad é semi-autônoma (usuário aprova decisões críticas) e capaz de:
 
 ## Visão Geral
 
-A squad organiza 13 agentes especializados (Product Owner, Tech Lead, Architect, Engineers, QA, Code Reviewer, Security, DevOps, Support, Data) com fronteiras claras de responsabilidade, fluxos definidos e quality gates obrigatórios.
+A squad organiza 14 agentes especializados (Product Owner, Tech Lead, Architect, Product Designer, Engineers, QA, Code Reviewer, Security, DevOps, Support, Data) com fronteiras claras de responsabilidade, fluxos definidos e quality gates obrigatórios.
 
 Princípios orientadores:
 
@@ -32,8 +32,8 @@ Princípios orientadores:
 ### Você quer iniciar um projeto novo
 
 1. Clone este template para um novo repositório
-2. Acione o **Product Owner** com seu briefing (ver [`agents/product-owner.md`](agents/product-owner.md))
-3. PO produz `docs/PRD.md` baseado em [`docs/PRD-template.md`](docs/PRD-template.md)
+2. Acione o **Product Owner** com seu briefing (ver [`.claude/squad/template/agents/product-owner.md`](.claude/squad/template/agents/product-owner.md))
+3. PO produz `.claude/squad/project/PRD.md` baseado em [`.claude/squad/template/docs/PRD-template.md`](.claude/squad/template/docs/PRD-template.md)
 4. Aprove o PRD
 5. Tech Lead orquestra o resto seguindo [Fluxo 1 do CLAUDE.md](CLAUDE.md#fluxos-de-projeto)
 
@@ -60,71 +60,70 @@ Severidades: Sev1 (sistema fora) / Sev2 (degradação) / Sev3+ (não crítico). 
 ## Estrutura do Projeto
 
 ```
-.
+/ (raiz livre para arquivos do produto: src/, tests/, package.json, etc.)
+│
 ├── README.md             ← este arquivo
-├── AGENTS.md             ← índice dos 13 agentes (tool-agnostic)
+├── AGENTS.md             ← índice dos 14 agentes (tool-agnostic)
 ├── CLAUDE.md             ← governança, fluxos, gates, modos
 │
-├── /agents               ← definição de cada agente (ver AGENTS.md)
-│
-├── /memory               ← estado vivo do sistema
-│   ├── ARCHITECTURE.md
-│   ├── DECISIONS_LOG.md
-│   ├── TASK_BOARD.md
-│   ├── /ADR              ← decisões arquiteturais versionadas
-│   └── /agent-memory     ← memória especializada por agente
-│
-├── /contracts            ← APIs, schemas, interfaces (OpenAPI, JSON Schema, Zod)
-│
-├── /tests                ← testes definidos pelo QA
-│
-├── /docs
-│   ├── PRD-template.md
-│   ├── /stack-conventions ← convenções idiomáticas por linguagem/framework
-│   │   ├── backend/      (nodejs, python, php, java, go)
-│   │   ├── frontend/     (react, vue)
-│   │   └── mobile/       (flutter, react-native)
-│   ├── /design-system    ← DS do projeto (mantido pelo Product Designer)
-│   │   ├── tokens/
-│   │   ├── components/
-│   │   └── patterns/
-│   └── /runbooks         ← procedimentos de incidente, DR
-│
-└── .claude
+└── .claude/
     ├── settings.json     ← config de hooks (opt-in)
-    ├── skills/           ← skills Claude Code (7 skills da squad)
-    └── hooks/            ← scripts de hooks (load-memory, architecture-reminder)
+    ├── skills/           ← skills Claude Code (10 skills da squad)
+    ├── hooks/            ← scripts de hooks (load-memory, architecture-reminder)
+    └── squad/
+        ├── template/             ← imutável (sobrescrito em update)
+        │   ├── agents/                  ← 14 agentes
+        │   ├── docs/
+        │   │   ├── PRD-template.md
+        │   │   ├── stack-conventions/   (backend, frontend, mobile)
+        │   │   └── design-system/README.md
+        │   ├── memory/
+        │   │   ├── ADR/                 ← ADR-template + 5 defaults
+        │   │   └── agent-memory/README.md
+        │   └── contracts/               ← README + example
+        │
+        └── project/              ← estado vivo (preservado em update)
+            ├── ARCHITECTURE.md
+            ├── DECISIONS_LOG.md
+            ├── TASK_BOARD.md
+            ├── PRD.md                   ← criado durante uso
+            ├── ADR/                     ← ADRs específicos do projeto
+            ├── agent-memory/            ← 14 skeletons populados
+            ├── contracts/               ← contratos reais
+            ├── design-system/           ← tokens, componentes, patterns
+            ├── docs/                    ← specs funcionais
+            └── runbooks/                ← incidentes, DR
 ```
 
 ---
 
 ## Agentes
 
-Treze agentes com fronteiras claras. Modelos por agente:
+Quatorze agentes com fronteiras claras. Modelos por agente:
 
 ### Opus (decisão e raciocínio sistêmico)
 
 | Agente | Papel |
 |--------|-------|
-| [Product Owner](agents/product-owner.md) | O quê construir, regras de negócio, critérios de aceite |
-| [Tech Lead](agents/tech-lead.md) | Orquestração, governança técnica, plano de execução |
-| [Architect](agents/architect.md) | Arquitetura, domínio (DDD), contratos, decisão de stack |
-| [Security Engineer](agents/security-engineer.md) | Threat modeling, compliance, auth/authz, pentest |
-| [Product Designer](agents/product-designer.md) | Design System, UX, UI, acessibilidade visual (consultor — canal direto ao usuário) |
+| [Product Owner](.claude/squad/template/agents/product-owner.md) | O quê construir, regras de negócio, critérios de aceite |
+| [Tech Lead](.claude/squad/template/agents/tech-lead.md) | Orquestração, governança técnica, plano de execução |
+| [Architect](.claude/squad/template/agents/architect.md) | Arquitetura, domínio (DDD), contratos, decisão de stack |
+| [Security Engineer](.claude/squad/template/agents/security-engineer.md) | Threat modeling, compliance, auth/authz, pentest |
+| [Product Designer](.claude/squad/template/agents/product-designer.md) | Design System, UX, UI, acessibilidade visual (consultor — canal direto ao usuário) |
 
 ### Sonnet (execução)
 
 | Agente | Papel |
 |--------|-------|
-| [Backend Engineer](agents/backend-engineer.md) | APIs, lógica de negócio, persistência |
-| [Frontend Engineer](agents/frontend-engineer.md) | Interface web, Atomic Design |
-| [Mobile Engineer](agents/mobile-engineer.md) | Apps iOS/Android, Clean Architecture mobile |
-| [AI Engineer](agents/ai-engineer.md) | Agentes de IA, prompts, MCP, tools |
-| [QA Engineer](agents/qa-engineer.md) | Testes (TDD), validação de comportamento |
-| [Code Reviewer](agents/code-reviewer.md) | Qualidade do código, OWASP no código |
-| [DevOps Engineer](agents/devops-engineer.md) | CI/CD, infra, observabilidade, SRE |
-| [Support Engineer](agents/support-engineer.md) | Triagem de issues (bug vs melhoria) |
-| [Data Engineer](agents/data-engineer.md) | Pipelines, modelagem analítica (consultor) |
+| [Backend Engineer](.claude/squad/template/agents/backend-engineer.md) | APIs, lógica de negócio, persistência |
+| [Frontend Engineer](.claude/squad/template/agents/frontend-engineer.md) | Interface web, Atomic Design |
+| [Mobile Engineer](.claude/squad/template/agents/mobile-engineer.md) | Apps iOS/Android, Clean Architecture mobile |
+| [AI Engineer](.claude/squad/template/agents/ai-engineer.md) | Agentes de IA, prompts, MCP, tools |
+| [QA Engineer](.claude/squad/template/agents/qa-engineer.md) | Testes (TDD), validação de comportamento |
+| [Code Reviewer](.claude/squad/template/agents/code-reviewer.md) | Qualidade do código, OWASP no código |
+| [DevOps Engineer](.claude/squad/template/agents/devops-engineer.md) | CI/CD, infra, observabilidade, SRE |
+| [Support Engineer](.claude/squad/template/agents/support-engineer.md) | Triagem de issues (bug vs melhoria) |
+| [Data Engineer](.claude/squad/template/agents/data-engineer.md) | Pipelines, modelagem analítica (consultor) |
 
 ### Hierarquia e canais
 
@@ -183,7 +182,7 @@ Nenhuma implementação começa sem critérios de aceite, contratos e testes def
 
 ### Arquitetura Hexagonal (Ports & Adapters)
 
-Padrão preferencial em **backend** e **camada de IA** quando couber. Domain isolado de adapters externos (HTTP, DB, LLM, queue). Ver [`memory/ADR/ADR-002-arquitetura-hexagonal.md`](memory/ADR/ADR-002-arquitetura-hexagonal.md).
+Padrão preferencial em **backend** e **camada de IA** quando couber. Domain isolado de adapters externos (HTTP, DB, LLM, queue). Ver [`.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`](.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md).
 
 ```
 domain/        → entidades, regras, ports (interfaces)
@@ -195,7 +194,7 @@ adapters/
 
 ### Design System (Material 3 default)
 
-Documentação viva do DS em `/docs/design-system/`. Mantido pelo **Product Designer**; consumido por Frontend/Mobile.
+Documentação viva do DS em `/.claude/squad/project/design-system/`. Mantido pelo **Product Designer**; consumido por Frontend/Mobile.
 
 **Default:** Material Design 3 (cross-platform Web + Mobile, open source, maduro)
 
@@ -203,11 +202,11 @@ Documentação viva do DS em `/docs/design-system/`. Mantido pelo **Product Desi
 
 **Em projetos existentes sem doc:** PD extrai DS da UI atual quando primeira feature visual chega (skill `/squad-design-extract`).
 
-Ver [`memory/ADR/ADR-005-design-system.md`](memory/ADR/ADR-005-design-system.md).
+Ver [`.claude/squad/template/memory/ADR/ADR-005-design-system.md`](.claude/squad/template/memory/ADR/ADR-005-design-system.md).
 
 ### Stack Conventions
 
-Convenções idiomáticas por linguagem/framework em `/docs/stack-conventions/`. Cada documento define **quando usar**, **tooling**, **layout**, **padrões idiomáticos**, **comandos** e **anti-patterns**.
+Convenções idiomáticas por linguagem/framework em `/.claude/squad/template/docs/stack-conventions/`. Cada documento define **quando usar**, **tooling**, **layout**, **padrões idiomáticos**, **comandos** e **anti-patterns**.
 
 **Backend:** Node.js, Python, PHP, Java, Go
 **Frontend:** React + Next.js, Vue + Nuxt
@@ -215,11 +214,11 @@ Convenções idiomáticas por linguagem/framework em `/docs/stack-conventions/`.
 
 Architect consulta ao decidir stack do projeto. Engineers consultam o documento da stack ativa ao implementar.
 
-Ver índice: [`docs/stack-conventions/README.md`](docs/stack-conventions/README.md).
+Ver índice: [`.claude/squad/template/docs/stack-conventions/README.md`](.claude/squad/template/docs/stack-conventions/README.md).
 
 ### Skills e Hooks (Claude Code)
 
-A squad inclui automações opcionais via Claude Code. Ver [`memory/ADR/ADR-004-skills-e-hooks.md`](memory/ADR/ADR-004-skills-e-hooks.md).
+A squad inclui automações opcionais via Claude Code. Ver [`.claude/squad/template/memory/ADR/ADR-004-skills-e-hooks.md`](.claude/squad/template/memory/ADR/ADR-004-skills-e-hooks.md).
 
 **Skills disponíveis (7):**
 
@@ -238,14 +237,14 @@ A squad inclui automações opcionais via Claude Code. Ver [`memory/ADR/ADR-004-
 
 **Hooks ativos (opt-in via `.claude/settings.json`):**
 
-- `SessionStart` → carrega `/memory/` (TASK_BOARD, decisões recentes, ADRs) no contexto inicial
-- `PostToolUse` em edição de `memory/ARCHITECTURE.md` → lembra de atualizar `memory/DECISIONS_LOG.md`
+- `SessionStart` → carrega `.claude/squad/project/` (ARCHITECTURE, TASK_BOARD, DECISIONS_LOG, ADRs) no contexto inicial
+- `PostToolUse` em edição de `.claude/squad/project/ARCHITECTURE.md` → lembra de atualizar `.claude/squad/project/DECISIONS_LOG.md`
 
 Skills/hooks são governadas por critério rigoroso (≥3 usos para criar; revisão trimestral; remover não-usadas em 90 dias). Não são criadas autonomamente — TL propõe, usuário aprova.
 
 ### Feature Flags (default em features críticas)
 
-Toda feature crítica nova entra atrás de flag por padrão. Governança obrigatória: dono, prazo de remoção (default 90 dias), kill switch testado, review mensal. Ver [`memory/ADR/ADR-003-feature-flags.md`](memory/ADR/ADR-003-feature-flags.md).
+Toda feature crítica nova entra atrás de flag por padrão. Governança obrigatória: dono, prazo de remoção (default 90 dias), kill switch testado, review mensal. Ver [`.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`](.claude/squad/template/memory/ADR/ADR-003-feature-flags.md).
 
 Critério "feature crítica":
 - autenticação e autorização
@@ -327,9 +326,9 @@ Uma entrega só está completa quando:
 - [ ] Sistema monitorado (logs disponíveis; alertas ativos em Production)
 - [ ] Rollback testado (Production Mode)
 - [ ] README do módulo atualizado
-- [ ] `memory/ARCHITECTURE.md` atualizado (quando há mudança estrutural)
-- [ ] `memory/DECISIONS_LOG.md` atualizado (quando há decisão relevante)
-- [ ] `memory/TASK_BOARD.md` atualizado (tarefa movida para Done)
+- [ ] `.claude/squad/project/ARCHITECTURE.md` atualizado (quando há mudança estrutural)
+- [ ] `.claude/squad/project/DECISIONS_LOG.md` atualizado (quando há decisão relevante)
+- [ ] `.claude/squad/project/TASK_BOARD.md` atualizado (tarefa movida para Done)
 - [ ] Feature flag definida e testada em ambos os paths (features críticas)
 
 ---
@@ -354,21 +353,21 @@ A squad mantém **memória viva** do projeto:
 
 ADRs ativos:
 
-- [`ADR-001-stack.md`](memory/ADR/ADR-001-stack.md) — opções de stack padrão (Architect decide por projeto)
-- [`ADR-002-arquitetura-hexagonal.md`](memory/ADR/ADR-002-arquitetura-hexagonal.md) — Hexagonal preferencial em backend e AI
-- [`ADR-003-feature-flags.md`](memory/ADR/ADR-003-feature-flags.md) — Flags default em features críticas
+- [`ADR-001-stack.md`](.claude/squad/template/memory/ADR/ADR-001-stack.md) — opções de stack padrão (Architect decide por projeto)
+- [`ADR-002-arquitetura-hexagonal.md`](.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md) — Hexagonal preferencial em backend e AI
+- [`ADR-003-feature-flags.md`](.claude/squad/template/memory/ADR/ADR-003-feature-flags.md) — Flags default em features críticas
 
-Template para novos ADRs: [`memory/ADR/ADR-template.md`](memory/ADR/ADR-template.md).
+Template para novos ADRs: [`.claude/squad/template/memory/ADR/ADR-template.md`](.claude/squad/template/memory/ADR/ADR-template.md).
 
 ### Agent Memory
 
-Cada agente mantém arquivo em `memory/agent-memory/{agent-name}.md` com:
+Cada agente mantém arquivo em `.claude/squad/project/agent-memory/{agent-name}.md` com:
 - Padrões adotados pelo agente neste projeto
 - Learnings acumulados
 - Decisões pequenas que não viram ADR
 - Links para ADR e seções de ARCHITECTURE.md
 
-Limite ≤ 200 linhas por arquivo. Tech Lead audita trimestralmente. Ver [`memory/agent-memory/README.md`](memory/agent-memory/README.md) para governança.
+Limite ≤ 200 linhas por arquivo. Tech Lead audita trimestralmente. Ver [`.claude/squad/template/memory/agent-memory/README.md`](.claude/squad/template/memory/agent-memory/README.md) para governança.
 
 ---
 
@@ -385,7 +384,7 @@ Toda integração entre componentes é definida por contrato versionado.
 
 Mudanças breaking → bump major. Mudanças não-breaking → bump minor. Mudança não versionada → bloqueia implementação.
 
-Exemplo funcional: [`contracts/example.openapi.yaml`](contracts/example.openapi.yaml).
+Exemplo funcional: [`.claude/squad/template/contracts/example.openapi.yaml`](.claude/squad/template/contracts/example.openapi.yaml).
 
 ---
 
@@ -413,7 +412,7 @@ Múltiplos gates dependem de aprovação do usuário. Quando o usuário está in
 | Sev2 hotfix | Aguarda 1h; depois TL pode proceder |
 | Sev3+ | Aguarda |
 
-Decisões autônomas → registradas em `memory/DECISIONS_LOG.md` com tag `tl-autonomous`. TL ratifica em até 24h após retorno do usuário.
+Decisões autônomas → registradas em `.claude/squad/project/DECISIONS_LOG.md` com tag `tl-autonomous`. TL ratifica em até 24h após retorno do usuário.
 
 ---
 
@@ -434,16 +433,16 @@ Aplicáveis a todos os agentes de engenharia:
 ## Como Estender ou Customizar
 
 ### Adicionar um novo agente
-1. Criar `agents/{name}.md` (espelhar estrutura existente)
-2. Criar `memory/agent-memory/{name}.md` (template)
+1. Criar `.claude/squad/template/agents/{name}.md` (espelhar estrutura existente)
+2. Criar `.claude/squad/project/agent-memory/{name}.md` (template)
 3. Atualizar `AGENTS.md` (tabela)
 4. Atualizar `CLAUDE.md` (Modelos por Agente, Hierarquia se afetado)
 
 ### Mudar a stack do projeto
-1. Architect propõe 2-3 opções com trade-offs em `memory/ADR/ADR-NNN-stack-projeto.md`
+1. Architect propõe 2-3 opções com trade-offs em `.claude/squad/project/ADR/ADR-NNN-stack-projeto.md`
 2. Tech Lead apresenta ao usuário
 3. Usuário aprova/veta
-4. Atualizar `memory/ARCHITECTURE.md` → seção "Stack Tecnológica"
+4. Atualizar `.claude/squad/project/ARCHITECTURE.md` → seção "Stack Tecnológica"
 
 ### Adicionar um novo fluxo de projeto
 1. Tech Lead propõe em [CLAUDE.md → Fluxos de Projeto](CLAUDE.md#fluxos-de-projeto)
@@ -463,12 +462,12 @@ Aplicáveis a todos os agentes de engenharia:
 | Identidade da squad | [`AGENTS.md`](AGENTS.md) |
 | Regras gerais, fluxos, gates | [`CLAUDE.md`](CLAUDE.md) |
 | Modelos por agente | `CLAUDE.md` → "Modelos por Agente" |
-| Regras de cada agente | `agents/{name}.md` |
-| Estado atual do sistema | `memory/ARCHITECTURE.md` |
-| Decisões versionadas | `memory/ADR/` |
-| Decisões rápidas | `memory/DECISIONS_LOG.md` |
-| Tarefas em andamento | `memory/TASK_BOARD.md` |
-| Contratos do sistema | `/contracts/` |
+| Regras de cada agente | `.claude/squad/template/agents/{name}.md` |
+| Estado atual do sistema | `.claude/squad/project/ARCHITECTURE.md` |
+| Decisões versionadas | `.claude/squad/project/ADR/` |
+| Decisões rápidas | `.claude/squad/project/DECISIONS_LOG.md` |
+| Tarefas em andamento | `.claude/squad/project/TASK_BOARD.md` |
+| Contratos do sistema | `/.claude/squad/project/contracts/` |
 | PRD e specs | `/docs/` |
 | Padrões de squad | Aqui (este README) |
 
@@ -494,12 +493,12 @@ Ordem recomendada para entender este template:
 1. **`README.md`** (você está aqui)
 2. **[`AGENTS.md`](AGENTS.md)** — índice dos agentes
 3. **[`CLAUDE.md`](CLAUDE.md)** — governança e fluxos completos
-4. **[`agents/tech-lead.md`](agents/tech-lead.md)** — orquestração
-5. **[`agents/product-owner.md`](agents/product-owner.md)** — definição de produto
-6. **[`memory/ADR/ADR-001-stack.md`](memory/ADR/ADR-001-stack.md)** — opções de stack padrão
-7. **[`memory/ADR/ADR-002-arquitetura-hexagonal.md`](memory/ADR/ADR-002-arquitetura-hexagonal.md)** — padrão arquitetural
-8. **[`memory/ADR/ADR-003-feature-flags.md`](memory/ADR/ADR-003-feature-flags.md)** — governança de flags
-9. **[`docs/PRD-template.md`](docs/PRD-template.md)** — template para PRD de feature/produto
+4. **[`.claude/squad/template/agents/tech-lead.md`](.claude/squad/template/agents/tech-lead.md)** — orquestração
+5. **[`.claude/squad/template/agents/product-owner.md`](.claude/squad/template/agents/product-owner.md)** — definição de produto
+6. **[`.claude/squad/template/memory/ADR/ADR-001-stack.md`](.claude/squad/template/memory/ADR/ADR-001-stack.md)** — opções de stack padrão
+7. **[`.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`](.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md)** — padrão arquitetural
+8. **[`.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`](.claude/squad/template/memory/ADR/ADR-003-feature-flags.md)** — governança de flags
+9. **[`.claude/squad/template/docs/PRD-template.md`](.claude/squad/template/docs/PRD-template.md)** — template para PRD de feature/produto
 
 ---
 
