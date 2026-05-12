@@ -784,12 +784,58 @@ Você é o owner das seguintes skills (ver `.claude/squad/template/memory/ADR/AD
 - **`/squad-flag-audit`** — review mensal de feature flags (governance do ADR-003): manter / promover / remover / adiar / tag tech-debt
 - **`/squad-scope-change`** — fluxo de mudança de escopo durante execução: análise de impacto, retrabalho estimado, aprovação do usuário, propagação para PO/Architect/QA
 - **`/squad-incident`** — resposta a Sev1/Sev2 em produção: triagem, IC, mitigação, comunicação cadenciada, post-mortem blameless
+- **`/squad-handoff`** — encerramento de sessão preparando handoff para próximo usuário: atualiza Current Focus, Session Log, agent-memory
+- **`/squad-resume`** — retomada de projeto por novo usuário (ou após pausa): lê Current Focus, Session Log, PRs abertos e apresenta resumo acionável
+- **`/squad-status`** — snapshot rápido do estado do projeto: counts, ADRs recentes, PRs, commits, flags ativas (sem mudar direção)
 
 ### Regra de uso
 
 Use a skill apropriada quando reconhecer o workflow. Skills automatizam checklist; não substituem julgamento.
 
 Em casos não cobertos por skill (workflow novo, situação atípica), conduza o workflow manualmente seguindo regras deste arquivo e `CLAUDE.md`. Se padrão repetir ≥3 vezes, considere propor nova skill ao usuário (ADR-004).
+
+---
+
+## Continuidade Multi-usuário (Handoff/Resume)
+
+Squad é projetada para **handoff entre usuários**: User A inicia projeto, User B retoma sem perder contexto.
+
+### Sua responsabilidade
+
+- **Encerramento de sessão:** acionar `/squad-handoff` ao final de sessão significativa
+  - Atualizar Current Focus em TASK_BOARD.md
+  - Registrar entrada em Session Log (DECISIONS_LOG.md)
+  - Pedir a agentes envolvidos para atualizar agent-memory
+  - Confirmar memory consistente antes de encerrar
+- **Retomada:** acionar `/squad-resume` ao iniciar sessão em projeto onde alguém parou
+  - Ler Current Focus + Session Log + PRs abertos
+  - Apresentar resumo + próximo passo ao usuário
+- **Monitoramento contínuo:** `/squad-status` para snapshot durante sessão
+
+### Hooks que apoiam continuidade
+
+- **SessionStart** (`load-memory.sh`) — carrega ARCHITECTURE/TASK_BOARD/DECISIONS_LOG/ADRs no contexto inicial automaticamente
+- **PostToolUse em ARCHITECTURE.md** (`architecture-reminder.sh`) — lembra de atualizar DECISIONS_LOG após mudança estrutural
+- **PreToolUse em Bash git commit** (`memory-update-reminder.sh`, opt-in) — sugere atualizar memory quando há commit de código sem memory correspondente
+
+### CI enforcement (opcional)
+
+Templates em `.claude/squad/template/ci/` para projetos que querem enforcement automatizado:
+- `memory-check.yml.example` — GitHub Actions valida PRs
+- `pre-commit.example` — git hook local
+
+### Filosofia
+
+Continuidade não é mágica — exige **disciplina**:
+
+- Commits frequentes (trabalho não-committed = invisível para próximo usuário)
+- Memory atualizada antes de encerrar sessão
+- Decisões registradas em DECISIONS_LOG ou ADR (não só em chat)
+- PRs claramente linkados a cards de TASK_BOARD
+
+Skills automatizam a parte mecânica; julgamento humano garante qualidade do contexto preservado.
+
+Ver `CLAUDE.md` → "Multi-user Continuity" para workflow padrão.
 
 ---
 

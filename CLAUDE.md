@@ -560,6 +560,80 @@ Múltiplos gates dependem da aprovação do usuário. Quando o usuário está in
 
 ---
 
+## Multi-user Continuity (Handoff/Resume)
+
+Squad é projetada para **handoff entre usuários**: User A inicia projeto, User B retoma sem perder contexto.
+
+### Pilares de continuidade
+
+| Pilar | Onde |
+|-------|------|
+| **Pointer "onde paramos"** | `.claude/squad/project/TASK_BOARD.md` → seção "Current Focus" |
+| **Granularidade temporal** | `.claude/squad/project/DECISIONS_LOG.md` → seção "Session Log" |
+| **Estado das tarefas** | `.claude/squad/project/TASK_BOARD.md` → colunas Todo/Doing/Review/Blocked/Done |
+| **Decisões estruturais** | `.claude/squad/project/ADR/` |
+| **Decisões rápidas** | `.claude/squad/project/DECISIONS_LOG.md` |
+| **Learnings por agente** | `.claude/squad/project/agent-memory/` |
+| **Arquitetura atual** | `.claude/squad/project/ARCHITECTURE.md` |
+| **Carregamento automático** | Hook `SessionStart` (`load-memory.sh`) |
+
+### Workflow padrão de handoff/resume
+
+#### Encerrando sessão (User A)
+
+1. **Acionar `/squad-handoff`** — TL conduz checklist:
+   - Mover cards no TASK_BOARD conforme estado real
+   - Atualizar "Current Focus" com próximo passo acionável
+   - Atualizar agent-memory dos agentes envolvidos
+   - Registrar entrada em Session Log
+   - Verificar PRs abertos linkados a cards
+   - Commit de organização de memory se necessário
+2. **Resumo gerado** apresentado como handoff message
+
+#### Retomando sessão (User B ou User A após pausa)
+
+1. `git pull` para sincronizar
+2. Iniciar sessão Claude Code no diretório (hook `SessionStart` carrega memory automaticamente)
+3. **Acionar `/squad-resume`** — TL conduz:
+   - Ler Current Focus + últimas 3 entradas de Session Log
+   - Listar PRs abertos + commits recentes + tarefas ativas
+   - Apresentar resumo + próximo passo
+4. User confirma direção ou redireciona
+
+#### Snapshot rápido durante sessão
+
+- **`/squad-status`** — TL apresenta snapshot leve sem mudar direção (≤2 min)
+
+### Disciplina mínima exigida
+
+Para continuidade funcionar:
+
+- **Commits frequentes** — trabalho não-committed = invisível para próximo usuário
+- **Memory atualizada antes de encerrar** — Current Focus + Session Log + agent-memory relevantes
+- **Decisões registradas** — DECISIONS_LOG (rápidas) ou ADR (estruturais), não só em chat
+- **PRs linkados** — cards em "Review" referenciam PR explicitamente
+- **Acionamento de `/squad-handoff`** ao encerrar sessão significativa (≥1 commit relevante)
+
+### Enforcement (camadas)
+
+| Camada | Tipo |
+|--------|------|
+| Manual via skills (`/squad-handoff`, `/squad-resume`) | Comportamento orientado |
+| Hook `architecture-reminder.sh` (PostToolUse) | Lembrete ao editar ARCHITECTURE.md |
+| Hook `memory-update-reminder.sh` (PreToolUse, opt-in) | Lembrete ao fazer `git commit` com mudança em código sem memory |
+| CI workflow `memory-check.yml` (opt-in) | Comentário em PR sugerindo atualização |
+| Pre-commit hook local (opt-in) | Aviso antes de commit |
+
+Hooks e CI são **não-bloqueantes por default** (apenas warning). Projeto pode endurecer em Production Mode.
+
+### Limitação conhecida
+
+Conversation history com Claude Code (`~/.claude/projects/...`) **não migra entre usuários** — é local. Decisões "soft" tomadas em chat se perdem se não viram entrada em DECISIONS_LOG ou ADR.
+
+**Mitigação:** disciplina de registrar decisões relevantes em memory durante (ou ao final) da sessão.
+
+---
+
 ## Regra Final
 
 O objetivo não é gerar código.

@@ -39,10 +39,13 @@ Princípios orientadores:
 
 ### Você quer continuar um projeto existente sob este template
 
-1. Acione o **Tech Lead** com pedido de continuidade
-2. TL lê o codebase, `/memory` e `/contracts`
-3. TL aciona o PO para alinhar prioridades com você
-4. Fluxo padrão para tasks definidas (ver Fluxo 3)
+1. `git pull` para sincronizar
+2. Inicie sessão Claude Code no diretório (hook SessionStart carrega memory automaticamente)
+3. Acione **`/squad-resume`** — TL lê Current Focus, Session Log, PRs abertos e apresenta resumo + próximo passo acionável
+4. Confirme direção ou redirecione
+5. Ao encerrar sessão significativa, acione **`/squad-handoff`** — TL atualiza memory para próximo usuário (continuidade multi-user)
+
+Ver [`CLAUDE.md` → "Multi-user Continuity"](CLAUDE.md#multi-user-continuity-handoffresume) para workflow completo.
 
 ### Você quer refatorar
 
@@ -68,7 +71,7 @@ Severidades: Sev1 (sistema fora) / Sev2 (degradação) / Sev3+ (não crítico). 
 │
 └── .claude/
     ├── settings.json     ← config de hooks (opt-in)
-    ├── skills/           ← skills Claude Code (10 skills da squad)
+    ├── skills/           ← skills Claude Code (13 skills da squad)
     ├── hooks/            ← scripts de hooks (load-memory, architecture-reminder)
     └── squad/
         ├── template/             ← imutável (sobrescrito em update)
@@ -234,11 +237,15 @@ A squad inclui automações opcionais via Claude Code. Ver [`.claude/squad/templ
 | `/squad-design-system-new` | Product Designer propõe DS para projeto novo com UI |
 | `/squad-design-extract` | Product Designer extrai DS da UI de projeto existente sem doc |
 | `/squad-design-audit` | Product Designer audita consistência visual em produto maduro |
+| `/squad-handoff` | TL conduz encerramento de sessão preparando handoff |
+| `/squad-resume` | TL conduz retomada de projeto por novo usuário |
+| `/squad-status` | TL apresenta snapshot rápido do estado do projeto |
 
-**Hooks ativos (opt-in via `.claude/settings.json`):**
+**Hooks ativos:**
 
 - `SessionStart` → carrega `.claude/squad/project/` (ARCHITECTURE, TASK_BOARD, DECISIONS_LOG, ADRs) no contexto inicial
 - `PostToolUse` em edição de `.claude/squad/project/ARCHITECTURE.md` → lembra de atualizar `.claude/squad/project/DECISIONS_LOG.md`
+- `PreToolUse` em `git commit` (opt-in) → sugere atualizar memory quando há commit de código sem memory correspondente
 
 Skills/hooks são governadas por critério rigoroso (≥3 usos para criar; revisão trimestral; remover não-usadas em 90 dias). Não são criadas autonomamente — TL propõe, usuário aprova.
 

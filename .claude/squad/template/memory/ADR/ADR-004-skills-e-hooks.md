@@ -26,8 +26,9 @@ Claude Code suporta dois mecanismos de automação:
 
 Adotar **skills e hooks de forma seletiva** para automatizar workflows repetitivos da squad, com governança rígida que evita explosão de skills não-usadas.
 
-### Skills iniciais (7)
+### Skills (13)
 
+#### Skills de fluxo geral
 | Skill | Trigger | Owner |
 |-------|---------|-------|
 | `/squad-new-project` | Início de Fluxo 1 (projeto novo) | TL |
@@ -38,16 +39,43 @@ Adotar **skills e hooks de forma seletiva** para automatizar workflows repetitiv
 | `/squad-stack-decision` | Architect decide stack do projeto | Architect |
 | `/squad-incident` | Sev1/Sev2 em produção | TL |
 
-### Hooks iniciais (2)
+#### Skills de Design System
+| Skill | Trigger | Owner |
+|-------|---------|-------|
+| `/squad-design-system-new` | Projeto novo com UI, define DS | PD |
+| `/squad-design-extract` | Projeto legado sem doc, extrai DS | PD |
+| `/squad-design-audit` | Audit periódico de consistência visual | PD |
 
-| Hook | Evento | Ação |
-|------|--------|------|
-| `load-memory` | SessionStart | Carrega `/memory/` (TASK_BOARD ativo, decisões recentes, flags ativas) no contexto da sessão |
-| `architecture-reminder` | PostToolUse em Edit/Write em `.claude/squad/project/ARCHITECTURE.md` | Lembra de atualizar `.claude/squad/project/DECISIONS_LOG.md` |
+#### Skills de continuidade multi-usuário
+| Skill | Trigger | Owner |
+|-------|---------|-------|
+| `/squad-handoff` | Final de sessão preparando handoff | TL |
+| `/squad-resume` | Início de sessão retomando trabalho | TL |
+| `/squad-status` | Snapshot rápido do projeto | TL |
 
-Localização:
+### Hooks (3)
+
+| Hook | Evento | Ação | Opt-in? |
+|------|--------|------|---------|
+| `load-memory` | SessionStart | Carrega `.claude/squad/project/` (TASK_BOARD ativo, decisões recentes, ADRs) no contexto da sessão | Ativo por default |
+| `architecture-reminder` | PostToolUse em Edit/Write em `.claude/squad/project/ARCHITECTURE.md` | Lembra de atualizar `.claude/squad/project/DECISIONS_LOG.md` | Ativo por default |
+| `memory-update-reminder` | PreToolUse em Bash `git commit` | Sugere atualizar memory quando commit toca código sem memory correspondente | Opt-in via settings.json |
+
+### CI Enforcement (opt-in)
+
+Templates em `.claude/squad/template/ci/`:
+
+| Template | Tipo | Quando usar |
+|----------|------|-------------|
+| `memory-check.yml.example` | GitHub Actions | Validação automática em PRs |
+| `pre-commit.example` | Git hook local | Aviso antes de commit local |
+| `README.md` | Documentação | Como instalar e customizar |
+
+### Localização
+
 - Skills: `.claude/skills/{skill-name}/SKILL.md`
 - Hooks: `.claude/settings.json` (config) + `.claude/hooks/*.sh` (scripts)
+- CI templates: `.claude/squad/template/ci/`
 
 ---
 
