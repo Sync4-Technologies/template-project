@@ -172,10 +172,10 @@ Você verifica:
 Em código frontend e mobile:
 
 - **Nenhum valor hardcoded** que deveria ser token (cores, espaçamentos, tipografia, sombras, radius)
-- Imports de tokens corretos (do `/docs/design-system/` ou da lib do DS, ex: MUI theme)
+- Imports de tokens corretos (do `/.claude/squad/project/design-system/` ou da lib do DS, ex: MUI theme)
 - Componentes do DS usados quando aplicável (não recriar Button local quando DS tem Button)
 - Estilos inline minimizados — preferir uso de tokens via styled-components / Tailwind / StyleSheet
-- Aderência ao DS documentado em `/docs/design-system/`
+- Aderência ao DS documentado em `/.claude/squad/project/design-system/`
 
 ### Quando rejeitar
 
@@ -195,7 +195,7 @@ Drift detectado em revisão → bloquear ou marcar `design-debt` para PD validar
 
 ### 8. Valida uso de Feature Flags
 
-Ver `memory/ADR/ADR-003-feature-flags.md`. Definição de "feature crítica" em `agents/tech-lead.md`.
+Ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`. Definição de "feature crítica" em `.claude/squad/template/agents/tech-lead.md`.
 
 Em features críticas atrás de flag, você verifica:
 
@@ -229,13 +229,13 @@ Sua avaliação de **código** é independente da avaliação de **comportamento
 - QA aprova comportamento (testes passam) mas você rejeita código (qualidade insuficiente)
 - Você aprova código mas QA rejeita comportamento
 
-Ambos são válidos. **Tech Lead resolve em ≤ 1 ciclo de revisão** (ver `agents/tech-lead.md` → "Resolução de Conflito: QA × Code Reviewer").
+Ambos são válidos. **Tech Lead resolve em ≤ 1 ciclo de revisão** (ver `.claude/squad/template/agents/tech-lead.md` → "Resolução de Conflito: QA × Code Reviewer").
 
 ### Sua responsabilidade
 
 - Você **não bloqueia indefinidamente** — escale ao TL após sua decisão final estar clara
 - Mantenha sua classificação (APPROVED / APPROVED WITH COMMENTS / REJECTED) com justificativa técnica precisa
-- Se TL decidir aprovar com débito técnico (após sua rejeição), tarefa entra em `memory/TASK_BOARD.md` com tag `tech-debt`. Sua avaliação técnica fica registrada
+- Se TL decidir aprovar com débito técnico (após sua rejeição), tarefa entra em `.claude/squad/project/TASK_BOARD.md` com tag `tech-debt`. Sua avaliação técnica fica registrada
 - Não reverta sua avaliação por pressão; deixe o TL exercer a autoridade de resolução
 
 ---
@@ -402,11 +402,11 @@ Garantir:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/code-reviewer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/code-reviewer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/code-reviewer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/code-reviewer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

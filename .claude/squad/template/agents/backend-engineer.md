@@ -49,19 +49,19 @@ Você só implementa quando existem:
 - contratos definidos
 - critérios de aceite claros
 - testes especificados
-- **stack convention da linguagem ativa** (consultar `docs/stack-conventions/backend/{stack}.md`)
+- **stack convention da linguagem ativa** (consultar `.claude/squad/template/docs/stack-conventions/backend/{stack}.md`)
 
 Se algo estiver faltando → **bloquear e escalar**
 
 ### Stack Convention (consulta obrigatória)
 
-Antes de iniciar qualquer task, identificar a stack ativa em `memory/ARCHITECTURE.md` → seção "Stack Conventions Doc" e ler o documento correspondente:
+Antes de iniciar qualquer task, identificar a stack ativa em `.claude/squad/project/ARCHITECTURE.md` → seção "Stack Conventions Doc" e ler o documento correspondente:
 
-- [`docs/stack-conventions/backend/nodejs.md`](../docs/stack-conventions/backend/nodejs.md)
-- [`docs/stack-conventions/backend/python.md`](../docs/stack-conventions/backend/python.md)
-- [`docs/stack-conventions/backend/php.md`](../docs/stack-conventions/backend/php.md)
-- [`docs/stack-conventions/backend/java.md`](../docs/stack-conventions/backend/java.md)
-- [`docs/stack-conventions/backend/go.md`](../docs/stack-conventions/backend/go.md)
+- [`.claude/squad/template/docs/stack-conventions/backend/nodejs.md`](../.claude/squad/template/docs/stack-conventions/backend/nodejs.md)
+- [`.claude/squad/template/docs/stack-conventions/backend/python.md`](../.claude/squad/template/docs/stack-conventions/backend/python.md)
+- [`.claude/squad/template/docs/stack-conventions/backend/php.md`](../.claude/squad/template/docs/stack-conventions/backend/php.md)
+- [`.claude/squad/template/docs/stack-conventions/backend/java.md`](../.claude/squad/template/docs/stack-conventions/backend/java.md)
+- [`.claude/squad/template/docs/stack-conventions/backend/go.md`](../.claude/squad/template/docs/stack-conventions/backend/go.md)
 
 A stack convention define: tooling obrigatório, layout do projeto, convenções de código, padrão de testes, migrations, logging, performance, segurança específica, comandos padrão e anti-patterns daquela stack.
 
@@ -248,7 +248,7 @@ Aplicar sempre
 
 ### Separação de Camadas (Hexagonal preferencial)
 
-Padrão default: **Hexagonal (Ports & Adapters)** — ver `memory/ADR/ADR-002-arquitetura-hexagonal.md`.
+Padrão default: **Hexagonal (Ports & Adapters)** — ver `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`.
 
 ```
 domain/        → entidades, value objects, ports (interfaces)
@@ -334,7 +334,7 @@ Você deve implementar:
 
 ## Feature Flags (default em features críticas)
 
-Ver `memory/ADR/ADR-003-feature-flags.md`.
+Ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`.
 
 Toda feature crítica nova entra atrás de flag por padrão.
 
@@ -436,7 +436,7 @@ Uma tarefa só está em **Engineer Done** quando:
 - pipeline CI/CD verde
 - deploy realizado
 - observabilidade ativa (logs em MVP; logs + métricas + alertas em Production)
-- atualização de `memory/ARCHITECTURE.md` e `memory/DECISIONS_LOG.md` quando aplicável
+- atualização de `.claude/squad/project/ARCHITECTURE.md` e `.claude/squad/project/DECISIONS_LOG.md` quando aplicável
 
 Você é responsável por entregar **Engineer Done**. **Squad Done** é responsabilidade da pipeline + DevOps + TL.
 
@@ -497,11 +497,11 @@ Garantir:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/backend-engineer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/backend-engineer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/backend-engineer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/backend-engineer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

@@ -10,7 +10,7 @@
 
 **DS:** [Material 3 / shadcn-ui / Carbon / Polaris / Atlassian / Custom]
 **Versão:** [versão do DS ou da lib]
-**ADR:** [link para ADR específico deste projeto, derivado de `memory/ADR/ADR-005-design-system.md`]
+**ADR:** [link para ADR específico deste projeto, derivado de `.claude/squad/template/memory/ADR/ADR-005-design-system.md`]
 **Justificativa (se não-default):** [breve motivação se DS escolhido não é Material 3]
 
 ---
@@ -18,7 +18,7 @@
 ## Estrutura
 
 ```
-/docs/design-system/
+/.claude/squad/project/design-system/
 ├── README.md            # este arquivo (índice)
 ├── tokens/
 │   ├── colors.md        # paleta + uso semântico
@@ -135,7 +135,7 @@ Cada pattern doc descreve um problema recorrente de UX e o tratamento padrão:
 - **Nada hardcoded** em componentes — sempre via tokens
 - **Componente fora do DS** = exceção que exige justificativa
 - **Mudança em token primário** = decisão estrutural → TL orquestra
-- **Drift detectado em audit** = entra em `memory/TASK_BOARD.md` com tag `design-debt`
+- **Drift detectado em audit** = entra em `.claude/squad/project/TASK_BOARD.md` com tag `design-debt`
 - **Documentação desatualizada** = bloqueia release até regularização
 
 ---
@@ -161,16 +161,16 @@ Cada pattern doc descreve um problema recorrente de UX e o tratamento padrão:
 
 ### Audit periódico
 1. PD roda `/squad-design-audit` (sugerido trimestral em produtos maduros)
-2. Drift documentado em `memory/TASK_BOARD.md`
+2. Drift documentado em `.claude/squad/project/TASK_BOARD.md`
 3. TL prioriza correções
 
 ---
 
 ## Referências
 
-- ADR autoritativa: `memory/ADR/ADR-005-design-system.md`
+- ADR autoritativa: `.claude/squad/template/memory/ADR/ADR-005-design-system.md`
 - ADR específico do projeto: [link se aplicável]
-- Product Designer: `agents/product-designer.md`
-- Frontend Engineer: `agents/frontend-engineer.md`
-- Mobile Engineer: `agents/mobile-engineer.md`
-- Architect (estrutura técnica): `agents/architect.md`
+- Product Designer: `.claude/squad/template/agents/product-designer.md`
+- Frontend Engineer: `.claude/squad/template/agents/frontend-engineer.md`
+- Mobile Engineer: `.claude/squad/template/agents/mobile-engineer.md`
+- Architect (estrutura técnica): `.claude/squad/template/agents/architect.md`

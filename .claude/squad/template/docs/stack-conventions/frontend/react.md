@@ -379,7 +379,7 @@ export function Greeting({ name }: { name: string }) {
 ### Rules
 
 - **No hardcoded strings** in components
-- Languages declared in PRD (see `docs/PRD-template.md`)
+- Languages declared in PRD (see `.claude/squad/template/docs/PRD-template.md`)
 - Consider RTL (Arabic, Hebrew) in global projects
 - Native formatters: `Intl.DateTimeFormat`, `Intl.NumberFormat`
 
@@ -419,7 +419,7 @@ export function Greeting({ name }: { name: string }) {
 
 ## Feature Flags
 
-See `memory/ADR/ADR-003-feature-flags.md` and `agents/frontend-engineer.md`.
+See `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md` and `.claude/squad/template/agents/frontend-engineer.md`.
 
 - Flag check at the **route** or **organism** level, never in atoms
 - Local cache + deterministic fallback

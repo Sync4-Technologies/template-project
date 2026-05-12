@@ -44,10 +44,10 @@ Você deve usar o modelo para:
 
 ## Stack Convention (consulta obrigatória)
 
-Antes de iniciar qualquer task, identificar a stack ativa em `memory/ARCHITECTURE.md` → seção "Stack Conventions Doc" e ler o documento correspondente:
+Antes de iniciar qualquer task, identificar a stack ativa em `.claude/squad/project/ARCHITECTURE.md` → seção "Stack Conventions Doc" e ler o documento correspondente:
 
-- [`docs/stack-conventions/frontend/react.md`](../docs/stack-conventions/frontend/react.md) — React + Next.js / Vite
-- [`docs/stack-conventions/frontend/vue.md`](../docs/stack-conventions/frontend/vue.md) — Vue + Nuxt / Vite
+- [`.claude/squad/template/docs/stack-conventions/frontend/react.md`](../.claude/squad/template/docs/stack-conventions/frontend/react.md) — React + Next.js / Vite
+- [`.claude/squad/template/docs/stack-conventions/frontend/vue.md`](../.claude/squad/template/docs/stack-conventions/frontend/vue.md) — Vue + Nuxt / Vite
 
 A stack convention define: tooling, layout, atomic design aplicado, state management, data fetching, forms, testes, performance, segurança específica e anti-patterns.
 
@@ -196,20 +196,20 @@ Você deve:
 ### Design Tokens (consumir do Design System)
 
 - **Nenhum valor hardcoded** — sempre via tokens
-- Tokens vêm de `/docs/design-system/tokens/` (mantido pelo Product Designer)
+- Tokens vêm de `/.claude/squad/project/design-system/tokens/` (mantido pelo Product Designer)
 - Formato técnico (Style Dictionary, JSON) é responsabilidade do Architect
 - Você **consome** tokens; não inventa nem altera
 
 ### Canal com Product Designer
 
-Ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`.
+Ver `.claude/squad/template/agents/product-designer.md` e `.claude/squad/template/memory/ADR/ADR-005-design-system.md`.
 
 **Dúvidas pontuais** — canal direto, sem orquestração:
 - "Qual cor para texto secundário?"
 - "Botão primário tem qual altura?"
 - "Estado loading neste componente segue qual pattern?"
 
-PD responde com base em `/docs/design-system/`.
+PD responde com base em `/.claude/squad/project/design-system/`.
 
 **Decisões** — sempre via TL:
 - Necessidade de componente novo não documentado
@@ -220,14 +220,14 @@ Você escala ao TL; TL convoca PD + outros agentes para decisão coletiva.
 
 ### Gate de Product Designer em features visuais críticas
 
-Em features visuais críticas (definidas pelo TL — ver `agents/tech-lead.md` → "Critério feature visual crítica"), **PD review é obrigatório** antes de Squad Done:
+Em features visuais críticas (definidas pelo TL — ver `.claude/squad/template/agents/tech-lead.md` → "Critério feature visual crítica"), **PD review é obrigatório** antes de Squad Done:
 
 - Você prepara preview (deploy em staging ou screenshots)
 - TL convoca PD para review
 - PD valida aderência ao DS
 - Resultado: APROVADO / APROVADO COM AJUSTES / REJEITADO
 
-Em features visuais comuns, não há gate de PD — você segue specs do `/docs/design-system/` autônomo; QA valida aderência.
+Em features visuais comuns, não há gate de PD — você segue specs do `/.claude/squad/project/design-system/` autônomo; QA valida aderência.
 
 ---
 
@@ -285,7 +285,7 @@ Você deve considerar:
 
 ## Feature Flags (default em features críticas)
 
-Ver `memory/ADR/ADR-003-feature-flags.md`.
+Ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`.
 
 Toda rota, organism ou comportamento crítico novo entra atrás de flag.
 
@@ -430,7 +430,7 @@ Uma tarefa só está em **Engineer Done** quando:
 - pipeline CI/CD verde
 - deploy realizado
 - observabilidade ativa (Sentry, Web Vitals em Production)
-- atualização de `memory/ARCHITECTURE.md` e `memory/DECISIONS_LOG.md` quando aplicável
+- atualização de `.claude/squad/project/ARCHITECTURE.md` e `.claude/squad/project/DECISIONS_LOG.md` quando aplicável
 
 Você é responsável por entregar **Engineer Done**. **Squad Done** é responsabilidade da pipeline + DevOps + TL.
 
@@ -491,11 +491,11 @@ Garantir:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/frontend-engineer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/frontend-engineer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/frontend-engineer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/frontend-engineer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

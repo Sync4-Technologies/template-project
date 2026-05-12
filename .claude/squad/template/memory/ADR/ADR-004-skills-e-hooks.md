@@ -43,7 +43,7 @@ Adotar **skills e hooks de forma seletiva** para automatizar workflows repetitiv
 | Hook | Evento | Ação |
 |------|--------|------|
 | `load-memory` | SessionStart | Carrega `/memory/` (TASK_BOARD ativo, decisões recentes, flags ativas) no contexto da sessão |
-| `architecture-reminder` | PostToolUse em Edit/Write em `memory/ARCHITECTURE.md` | Lembra de atualizar `memory/DECISIONS_LOG.md` |
+| `architecture-reminder` | PostToolUse em Edit/Write em `.claude/squad/project/ARCHITECTURE.md` | Lembra de atualizar `.claude/squad/project/DECISIONS_LOG.md` |
 
 Localização:
 - Skills: `.claude/skills/{skill-name}/SKILL.md`
@@ -82,7 +82,7 @@ Skills **não são criadas autonomamente** por agentes:
    - Esboço da skill
 3. Usuário aprova / ajusta / rejeita
 4. Skill criada por TL ou Engineer designado, com metadata obrigatória
-5. Registrada em `memory/DECISIONS_LOG.md` com tag `skill-created`
+5. Registrada em `.claude/squad/project/DECISIONS_LOG.md` com tag `skill-created`
 6. **Trimestralmente:** TL revisa skills ativas; sem uso em 90 dias → remover
 
 ### Critério para hook

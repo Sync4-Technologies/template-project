@@ -14,7 +14,7 @@ Conduz o PD na extração de DS de produto existente sem documentação visual.
 ## Quando usar
 
 - Projeto existente sob domínio da squad (Fluxo 3 ou 5)
-- Não há `/docs/design-system/` populado
+- Não há `/.claude/squad/project/design-system/` populado
 - Primeira feature visual chegou — bloqueia implementação até DS estar documentado
 - TL acionou você para extrair antes de Frontend/Mobile prosseguirem
 
@@ -107,7 +107,7 @@ Detectar nível atual (sem julgar — apenas documentar):
 - Labels semânticos
 - Suporte a screen readers
 
-### 3. Documentar em `/docs/design-system/`
+### 3. Documentar em `/.claude/squad/project/design-system/`
 
 Popular o diretório com **o que existe** (não com o ideal):
 
@@ -131,7 +131,7 @@ accessibility.md    # nível atual observado
 
 ### 4. Registrar inconsistências (sem propor correção)
 
-Em `memory/agent-memory/product-designer.md`:
+Em `.claude/squad/project/agent-memory/product-designer.md`:
 
 ```
 ## Drift detectado na extração [data]
@@ -142,7 +142,7 @@ Em `memory/agent-memory/product-designer.md`:
 - ...
 ```
 
-Reportar ao TL. TL decide se drift entra em backlog (`memory/TASK_BOARD.md` com tag `design-debt`) ou se é aceitável manter.
+Reportar ao TL. TL decide se drift entra em backlog (`.claude/squad/project/TASK_BOARD.md` com tag `design-debt`) ou se é aceitável manter.
 
 ### 5. Identificar DS subjacente (se reconhecível)
 
@@ -167,15 +167,15 @@ Cobertura estimada: X% das telas do produto
 
 DS inferido: [Material / iOS / Bootstrap / Custom / Misto]
 
-Tokens documentados em /docs/design-system/tokens/:
+Tokens documentados em /.claude/squad/project/design-system/tokens/:
 - N cores semânticas mapeadas
 - N tamanhos de tipografia
 - Escala de espaçamento: [valores]
 
-Componentes documentados em /docs/design-system/components/:
+Componentes documentados em /.claude/squad/project/design-system/components/:
 - [N componentes]
 
-Patterns documentados em /docs/design-system/patterns/:
+Patterns documentados em /.claude/squad/project/design-system/patterns/:
 - [N patterns]
 
 Acessibilidade atual: [nível observado]
@@ -183,7 +183,7 @@ Acessibilidade atual: [nível observado]
 - Tap targets: [OK / pontos de atenção]
 - Focus: [OK / pontos de atenção]
 
-Drift detectado: N pontos (lista em `memory/agent-memory/product-designer.md`)
+Drift detectado: N pontos (lista em `.claude/squad/project/agent-memory/product-designer.md`)
 
 Próximo passo: 
 - Frontend/Mobile podem prosseguir com features visuais usando esta documentação
@@ -209,7 +209,7 @@ Após documentação publicada, Frontend/Mobile podem implementar a feature visu
 
 ## Referências
 
-- Product Designer: `agents/product-designer.md`
+- Product Designer: `.claude/squad/template/agents/product-designer.md`
 - Fluxo 3 (continuidade): `CLAUDE.md` → "Fluxos de Projeto"
-- DS doc template: `docs/design-system/README.md`
-- ADR-005 (DS default): `memory/ADR/ADR-005-design-system.md`
+- DS doc template: `.claude/squad/template/docs/design-system/README.md`
+- ADR-005 (DS default): `.claude/squad/template/memory/ADR/ADR-005-design-system.md`

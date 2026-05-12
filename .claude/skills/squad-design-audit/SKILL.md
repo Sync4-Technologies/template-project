@@ -21,7 +21,7 @@ Conduz o PD em audit periódico de consistência visual de um produto.
 ## Quando NÃO usar
 
 - Produto novo (sem histórico para auditar)
-- Sem `/docs/design-system/` populado → use `/squad-design-extract` primeiro
+- Sem `/.claude/squad/project/design-system/` populado → use `/squad-design-extract` primeiro
 - Decisão pontual sobre componente → não exige audit
 
 ---
@@ -30,7 +30,7 @@ Conduz o PD em audit periódico de consistência visual de um produto.
 
 ### 1. Coletar baseline
 
-- **DS docs:** `/docs/design-system/` (estado atual da documentação)
+- **DS docs:** `/.claude/squad/project/design-system/` (estado atual da documentação)
 - **Codebase:** theme files, design tokens em código, componentes implementados
 - **Telas em produção:** lista priorizada pelo TL/PO (foco em fluxos críticos)
 - **Issues visuais reportadas:** issues no tracker com label `visual` / `ui` / `design-debt`
@@ -39,7 +39,7 @@ Conduz o PD em audit periódico de consistência visual de um produto.
 
 #### Tokens em uso
 
-- Comparar tokens declarados em `/docs/design-system/tokens/` com tokens efetivamente usados no código
+- Comparar tokens declarados em `/.claude/squad/project/design-system/tokens/` com tokens efetivamente usados no código
 - Detectar:
   - **Tokens documentados mas não usados** — candidatos a remoção
   - **Valores hardcoded** que deveriam ser tokens — drift
@@ -47,7 +47,7 @@ Conduz o PD em audit periódico de consistência visual de um produto.
 
 #### Componentes
 
-Comparar specs em `/docs/design-system/components/` com implementações:
+Comparar specs em `/.claude/squad/project/design-system/components/` com implementações:
 
 - Estados faltando (componente documenta hover mas implementação não tem)
 - Variantes não documentadas (implementação tem variante "compact" não documentada)
@@ -138,13 +138,13 @@ Para cada drift de severidade média ou superior:
 - **Prioridade:** Alta / Média / Baixa
 - **Tag:** design-debt
 - **Contexto:** Audit YYYY-MM-DD — [tela/componente]
-- **Spec correta:** [link para `/docs/design-system/...`]
+- **Spec correta:** [link para `/.claude/squad/project/design-system/...`]
 - **Bloqueios:** Nenhum
 ```
 
 ### 6. Atualizar agent-memory
 
-Em `memory/agent-memory/product-designer.md`, registrar:
+Em `.claude/squad/project/agent-memory/product-designer.md`, registrar:
 
 ```
 ## Audit [data]
@@ -189,8 +189,8 @@ Estas mudanças no DS são **decisões estruturais** — você propõe ao TL, TL
 
 ## Referências
 
-- Product Designer: `agents/product-designer.md`
-- DS doc: `docs/design-system/`
-- ADR-005: `memory/ADR/ADR-005-design-system.md`
-- TASK_BOARD: `memory/TASK_BOARD.md`
-- Tag `design-debt` documentada em `memory/TASK_BOARD.md` → "Tags"
+- Product Designer: `.claude/squad/template/agents/product-designer.md`
+- DS doc: `.claude/squad/project/design-system/`
+- ADR-005: `.claude/squad/template/memory/ADR/ADR-005-design-system.md`
+- TASK_BOARD: `.claude/squad/project/TASK_BOARD.md`
+- Tag `design-debt` documentada em `.claude/squad/project/TASK_BOARD.md` → "Tags"

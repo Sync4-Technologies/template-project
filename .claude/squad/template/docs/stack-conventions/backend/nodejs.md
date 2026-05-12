@@ -236,7 +236,7 @@ pnpm prisma migrate dev --name add_users_table
 pnpm prisma migrate deploy
 ```
 
-### Rules (see `agents/backend-engineer.md` → Migrations)
+### Rules (see `.claude/squad/template/agents/backend-engineer.md` → Migrations)
 
 - Every migration **reversible** (down tested)
 - **Expand-contract** for breaking changes (Production)

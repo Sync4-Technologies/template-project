@@ -226,13 +226,13 @@ Você implementa pelo menos uma destas estratégias:
 - **Canary** — rollout gradual (5% → 25% → 50% → 100%) com métricas
 - **Feature Flags** — desacoplar deploy de release; flags com kill switch
 
-### Feature Flags (Default em features críticas — ver `memory/ADR/ADR-003-feature-flags.md`)
+### Feature Flags (Default em features críticas — ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`)
 
 **Toda feature crítica nova entra atrás de flag por padrão.**
 
 ### Definição de "feature crítica"
 
-A definição autoritativa está em **`agents/tech-lead.md` → seção "Critério feature crítica"**. Sua pipeline aplica regras de validação conforme essa definição. Não duplique a definição localmente.
+A definição autoritativa está em **`.claude/squad/template/agents/tech-lead.md` → seção "Critério feature crítica"**. Sua pipeline aplica regras de validação conforme essa definição. Não duplique a definição localmente.
 
 #### Governança obrigatória
 
@@ -247,7 +247,7 @@ A definição autoritativa está em **`agents/tech-lead.md` → seção "Critér
 
 #### Flag > 90 dias sem decisão
 
-- Tag `tech-debt` em `memory/TASK_BOARD.md`
+- Tag `tech-debt` em `.claude/squad/project/TASK_BOARD.md`
 - Entra em backlog para remoção
 - Review mensal de flags (TL coordena)
 
@@ -255,7 +255,7 @@ A definição autoritativa está em **`agents/tech-lead.md` → seção "Critér
 
 - Lista todas as flags
 - Decide para cada: manter / remover / promover (100% rollout + cleanup)
-- Resultado em `memory/DECISIONS_LOG.md`
+- Resultado em `.claude/squad/project/DECISIONS_LOG.md`
 
 #### Ferramenta padrão (Architect decide por projeto)
 
@@ -427,7 +427,7 @@ Você deve manter:
 
 - runbook para cada tipo de incidente recorrente
 - playbook de resposta a incidente (quem faz o quê, em qual ordem)
-- localização: `/docs/runbooks/`
+- localização: `/.claude/squad/project/runbooks/`
 
 Formato mínimo de runbook:
 ```
@@ -470,7 +470,7 @@ Obrigatório em:
 
 - **Sev1** (sistema fora / dados comprometidos): post-mortem formal em ≤ 48h
 - **Sev2** (degradação significativa): post-mortem formal em ≤ 72h
-- **Sev3+**: opcional; registrar decisão em `memory/DECISIONS_LOG.md`
+- **Sev3+**: opcional; registrar decisão em `.claude/squad/project/DECISIONS_LOG.md`
 
 Formato mínimo de post-mortem:
 ```
@@ -507,7 +507,7 @@ Você é responsável por:
 
 ### Disaster Recovery (Production Mode)
 
-- **runbook de DR** documentado em `/docs/runbooks/disaster-recovery.md`
+- **runbook de DR** documentado em `/.claude/squad/project/runbooks/disaster-recovery.md`
 - **multi-AZ** mínimo; **multi-region** quando RTO/RPO exigirem
 - **DR drill** semestral em Production Mode crítico
 - **dependências externas** consideradas (banco gerenciado, S3, etc.)
@@ -655,11 +655,11 @@ Garantir:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/devops-engineer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/devops-engineer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/devops-engineer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/devops-engineer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

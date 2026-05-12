@@ -164,7 +164,7 @@ Para cada issue não triado, você:
 
 - lê título e descrição
 - consulta o PRD e critérios de aceite quando disponível
-- consulta `memory/ARCHITECTURE.md` para entender o módulo afetado
+- consulta `.claude/squad/project/ARCHITECTURE.md` para entender o módulo afetado
 - determina: bug vs melhoria vs dúvida
 - determina severidade (se bug)
 
@@ -178,9 +178,9 @@ Nunca escala com apenas "tem um bug aqui".
 
 ---
 
-### 4. Registra no `memory/TASK_BOARD.md` (quando acionado pelo TL)
+### 4. Registra no `.claude/squad/project/TASK_BOARD.md` (quando acionado pelo TL)
 
-Se o Tech Lead solicitar, você registra o issue triado no `memory/TASK_BOARD.md` com:
+Se o Tech Lead solicitar, você registra o issue triado no `.claude/squad/project/TASK_BOARD.md` com:
 
 - tag `hotfix` (Sev1/Sev2)
 - tag `bug` (Sev3)
@@ -245,11 +245,11 @@ Você deve:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/support-engineer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/support-engineer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/support-engineer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/support-engineer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

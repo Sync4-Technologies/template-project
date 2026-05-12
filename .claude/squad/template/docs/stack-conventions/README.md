@@ -11,8 +11,8 @@
 ## How it works
 
 1. **Architect** decides the stack at project start, using each document's "When to use" criteria
-2. Decision is recorded in a project-specific ADR (e.g. `memory/ADR/ADR-NNN-stack-projeto.md`)
-3. Active stack is documented in `memory/ARCHITECTURE.md` → "Stack Conventions Doc" section
+2. Decision is recorded in a project-specific ADR (e.g. `.claude/squad/project/ADR/ADR-NNN-stack-projeto.md`)
+3. Active stack is documented in `.claude/squad/project/ARCHITECTURE.md` → "Stack Conventions Doc" section
 4. **Engineers** consult the active stack's document when receiving tasks
 
 ---
@@ -48,7 +48,7 @@
 ## Adding a new stack
 
 1. Architect proposes the new stack in an ADR
-2. Create the document in `docs/stack-conventions/{category}/{stack}.md`
+2. Create the document in `.claude/squad/template/docs/stack-conventions/{category}/{stack}.md`
 3. Mirror the structure of existing documents (When to use / Tooling / Layout / Patterns / Commands / Anti-patterns)
 4. Update the table in this README
 5. Submit for Tech Lead review
@@ -77,8 +77,8 @@ Every stack convention document must contain:
 
 ## Authoritative sources
 
-- **General architectural pattern** (Hexagonal, mobile Clean Architecture, Atomic Design): `agents/{name}.md` + `memory/ADR/ADR-002-arquitetura-hexagonal.md`
+- **General architectural pattern** (Hexagonal, mobile Clean Architecture, Atomic Design): `.claude/squad/template/agents/{name}.md` + `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`
 - **Language/framework idiomatic conventions:** this directory (stack-conventions)
-- **Active project stack:** `memory/ARCHITECTURE.md` + project-specific ADR
+- **Active project stack:** `.claude/squad/project/ARCHITECTURE.md` + project-specific ADR
 
 In case of conflict between a stack-convention and ADR-002 (Hexagonal): ADR-002 prevails.

@@ -5,7 +5,7 @@ description: Conduz Product Owner na criação de PRD completo (objetivo, escopo
 
 # Skill — PRD Template
 
-> **Owner:** Product Owner | **Revisão:** 90 dias | **Obsolescência:** template `docs/PRD-template.md` removido ou substituído
+> **Owner:** Product Owner | **Revisão:** 90 dias | **Obsolescência:** template `.claude/squad/template/docs/PRD-template.md` removido ou substituído
 
 Esta skill conduz o PO na criação de PRD completo seguindo o template oficial.
 
@@ -28,7 +28,7 @@ Esta skill conduz o PO na criação de PRD completo seguindo o template oficial.
 
 ## Estrutura do PRD (10 seções)
 
-Conforme `docs/PRD-template.md`:
+Conforme `.claude/squad/template/docs/PRD-template.md`:
 
 1. **Objetivo** — o que e por que existe
 2. **Usuário Alvo** — perfis, contexto, necessidade
@@ -102,8 +102,8 @@ Rejeitar critérios vagos ("Sistema deve ser rápido" → "P95 ≤ 500ms").
 
 ### 7. Salvar e propagar
 
-- Salvar em `docs/PRD.md`
-- Registrar criação em `memory/DECISIONS_LOG.md`
+- Salvar em `.claude/squad/project/PRD.md`
+- Registrar criação em `.claude/squad/project/DECISIONS_LOG.md`
 - Notificar TL (PRD aprovado, prosseguir com plano)
 
 ---
@@ -121,6 +121,6 @@ Rejeitar critérios vagos ("Sistema deve ser rápido" → "P95 ≤ 500ms").
 
 ## Referências
 
-- Template: `docs/PRD-template.md`
-- Regras do PO: `agents/product-owner.md`
+- Template: `.claude/squad/template/docs/PRD-template.md`
+- Regras do PO: `.claude/squad/template/agents/product-owner.md`
 - Modos: `CLAUDE.md` → "MVP vs Production Mode"

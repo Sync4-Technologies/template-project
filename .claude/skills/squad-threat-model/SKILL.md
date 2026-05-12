@@ -14,7 +14,7 @@ Esta skill conduz o SE em **threat modeling Fase 1** sobre arquitetura proposta 
 ## Quando usar
 
 - Architect entregou arquitetura proposta (passo 7 do Fluxo 1)
-- Feature é classificada como **crítica** (ver `agents/tech-lead.md` → "Critério feature crítica")
+- Feature é classificada como **crítica** (ver `.claude/squad/template/agents/tech-lead.md` → "Critério feature crítica")
 - Arquitetura ainda permite ajustes (contratos não finalizados)
 
 ## Quando NÃO usar
@@ -27,7 +27,7 @@ Esta skill conduz o SE em **threat modeling Fase 1** sobre arquitetura proposta 
 
 ## Definição de "feature crítica"
 
-Conforme `agents/tech-lead.md` (fonte autoritativa):
+Conforme `.claude/squad/template/agents/tech-lead.md` (fonte autoritativa):
 
 - autenticação e autorização
 - processamento de pagamentos
@@ -45,7 +45,7 @@ Antes de iniciar, leia:
 
 - Arquitetura proposta (do Architect)
 - PRD → seção RNFs (classificação de dados, compliance, auditoria)
-- `memory/ARCHITECTURE.md` (estado atual)
+- `.claude/squad/project/ARCHITECTURE.md` (estado atual)
 - ADRs relacionados
 
 ### 2. Threat Model (matriz STRIDE adaptada)
@@ -111,7 +111,7 @@ Aprovação do usuário necessária? [sim / não — sim se mudança arquitetura
 ### 4. Classificar resultado
 
 - **APROVADO** — sem vulnerabilidades críticas/altas
-- **APROVADO COM RECOMENDAÇÕES** — vulnerabilidades baixas/médias; registrar em `memory/TASK_BOARD.md` com tag `security`
+- **APROVADO COM RECOMENDAÇÕES** — vulnerabilidades baixas/médias; registrar em `.claude/squad/project/TASK_BOARD.md` com tag `security`
 - **REJEITADO** — vulnerabilidade crítica/alta; arquitetura precisa ajuste
 
 ### 5. Mitigações que exigem aprovação do usuário
@@ -169,8 +169,8 @@ Threats identificados podem alterar contratos. Architect ajusta arquitetura/cont
 
 ## Referências
 
-- Regras de SE: `agents/security-engineer.md`
-- ADR Hexagonal: `memory/ADR/ADR-002-arquitetura-hexagonal.md`
-- ADR Feature Flags: `memory/ADR/ADR-003-feature-flags.md`
+- Regras de SE: `.claude/squad/template/agents/security-engineer.md`
+- ADR Hexagonal: `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`
+- ADR Feature Flags: `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`
 - OWASP Top 10: <https://owasp.org/www-project-top-ten/>
 - STRIDE: <https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats>

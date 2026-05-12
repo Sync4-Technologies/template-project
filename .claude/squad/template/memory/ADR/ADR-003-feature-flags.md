@@ -60,14 +60,14 @@ Decisão registrada em ADR específico do projeto.
 
 ### Flag > 90 dias
 - Tag `tech-debt` aplicada
-- Entra em backlog (`memory/TASK_BOARD.md`) para remoção
+- Entra em backlog (`.claude/squad/project/TASK_BOARD.md`) para remoção
 - Revisada em review mensal de flags
 
 ### Review mensal
 - Tech Lead coordena
 - Lista todas as flags ativas
 - Decide: manter / remover / promover (rollout 100% e remover código condicional)
-- Resultado registrado em `memory/DECISIONS_LOG.md`
+- Resultado registrado em `.claude/squad/project/DECISIONS_LOG.md`
 
 ### Testes
 - Cobrir ambos os paths (on / off)

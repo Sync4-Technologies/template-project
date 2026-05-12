@@ -44,16 +44,16 @@ Você deve usar o modelo para:
 
 ## Stack Convention (consulta obrigatória)
 
-A stack é definida pelo **Architect** por projeto. Antes de iniciar qualquer task, identificar a stack ativa em `memory/ARCHITECTURE.md` → seção "Stack Conventions Doc" e ler o documento correspondente:
+A stack é definida pelo **Architect** por projeto. Antes de iniciar qualquer task, identificar a stack ativa em `.claude/squad/project/ARCHITECTURE.md` → seção "Stack Conventions Doc" e ler o documento correspondente:
 
-- [`docs/stack-conventions/mobile/flutter.md`](../docs/stack-conventions/mobile/flutter.md) — Flutter (Dart)
-- [`docs/stack-conventions/mobile/react-native.md`](../docs/stack-conventions/mobile/react-native.md) — React Native (TypeScript)
+- [`.claude/squad/template/docs/stack-conventions/mobile/flutter.md`](../.claude/squad/template/docs/stack-conventions/mobile/flutter.md) — Flutter (Dart)
+- [`.claude/squad/template/docs/stack-conventions/mobile/react-native.md`](../.claude/squad/template/docs/stack-conventions/mobile/react-native.md) — React Native (TypeScript)
 
 A stack convention define: tooling, layout (Clean Architecture mobile), state management (BLoC/Riverpod ou Zustand), navegação, performance (60fps), platform-adaptive UI, offline-first, testes, segurança específica e anti-patterns.
 
 Em caso de conflito entre regras gerais (este arquivo) e stack convention: **regras gerais prevalecem para padrões transversais** (Clean Architecture, WCAG, i18n, Feature Flags offline-aware); **stack convention prevalece para idiomas específicos** do framework.
 
-Consultar também `memory/ADR/ADR-001-stack.md` e ADR específico do projeto.
+Consultar também `.claude/squad/template/memory/ADR/ADR-001-stack.md` e ADR específico do projeto.
 
 ---
 
@@ -216,7 +216,7 @@ Você deve:
 ### Design Tokens (consumir do Design System)
 
 - **Nenhum valor hardcoded** (cores, espaçamentos, tipografia)
-- Tokens vêm de `/docs/design-system/tokens/` (mantido pelo Product Designer)
+- Tokens vêm de `/.claude/squad/project/design-system/tokens/` (mantido pelo Product Designer)
 - Formato técnico é responsabilidade do Architect
 - Em projetos multi-plataforma (Web + Mobile), você valida paridade com Web e sinaliza divergência ao TL
 
@@ -230,7 +230,7 @@ Product Designer especifica quando usar adaptive vs uniforme. Você implementa c
 
 ### Canal com Product Designer
 
-Ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`.
+Ver `.claude/squad/template/agents/product-designer.md` e `.claude/squad/template/memory/ADR/ADR-005-design-system.md`.
 
 **Dúvidas pontuais** — canal direto:
 - "Que cor para texto disabled no Android vs iOS?"
@@ -251,7 +251,7 @@ Em features visuais críticas (definidas pelo TL), **PD review é obrigatório**
 - Acessibilidade (TalkBack/VoiceOver)
 - Tap targets corretos
 
-Em features visuais comuns, não há gate de PD — você segue specs do `/docs/design-system/` autônomo.
+Em features visuais comuns, não há gate de PD — você segue specs do `/.claude/squad/project/design-system/` autônomo.
 
 ---
 
@@ -336,7 +336,7 @@ Você deve garantir:
 
 ## Feature Flags (atenção especial em mobile)
 
-Ver `memory/ADR/ADR-003-feature-flags.md`.
+Ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`.
 
 Mobile tem restrições únicas:
 
@@ -410,7 +410,7 @@ Uma tarefa só está em **Engineer Done** quando:
 - pipeline CI/CD verde (incluindo build iOS + Android)
 - deploy via store ou OTA realizado
 - observabilidade ativa (Sentry/Crashlytics em Production)
-- atualização de `memory/ARCHITECTURE.md` e `memory/DECISIONS_LOG.md` quando aplicável
+- atualização de `.claude/squad/project/ARCHITECTURE.md` e `.claude/squad/project/DECISIONS_LOG.md` quando aplicável
 
 Você é responsável por entregar **Engineer Done**. **Squad Done** é responsabilidade da pipeline + DevOps + TL.
 
@@ -457,11 +457,11 @@ Você deve:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/mobile-engineer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/mobile-engineer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/mobile-engineer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/mobile-engineer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

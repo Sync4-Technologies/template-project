@@ -44,10 +44,10 @@ Você deve usar o modelo para:
 ## Stack Convention (consulta quando aplicável)
 
 Quando o backend que hospeda IA é Python (caso comum em pipelines AI/ML), consultar:
-- [`docs/stack-conventions/backend/python.md`](../docs/stack-conventions/backend/python.md)
+- [`.claude/squad/template/docs/stack-conventions/backend/python.md`](../.claude/squad/template/docs/stack-conventions/backend/python.md)
 
 Para Node.js/TypeScript hosting (BFF de IA, workers JS):
-- [`docs/stack-conventions/backend/nodejs.md`](../docs/stack-conventions/backend/nodejs.md)
+- [`.claude/squad/template/docs/stack-conventions/backend/nodejs.md`](../.claude/squad/template/docs/stack-conventions/backend/nodejs.md)
 
 A stack convention define tooling, layout, testes e padrões da linguagem onde sua camada de IA roda.
 
@@ -178,7 +178,7 @@ Você define:
 
 ### 8. Arquitetura Hexagonal aplicada à IA
 
-Padrão default — ver `memory/ADR/ADR-002-arquitetura-hexagonal.md`.
+Padrão default — ver `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`.
 
 ```
 domain/        → lógica de prompt, validação de output, orquestração de agentes
@@ -277,14 +277,14 @@ Todo prompt em produção deve ser:
 - versionado (semver: v1.0.0)
 - testado contra cenários definidos antes de rollout
 - comparado com versão anterior (regression suite)
-- registrado em `/contracts/prompts/` ou equivalente
+- registrado em `/.claude/squad/project/contracts/prompts/` ou equivalente
 - mudança breaking → bump major + comunicação ao TL
 
 ---
 
 ## Feature Flags (default em deploy de prompts e agentes)
 
-Ver `memory/ADR/ADR-003-feature-flags.md`.
+Ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`.
 
 Todo prompt novo ou agente novo entra atrás de flag por padrão.
 
@@ -418,7 +418,7 @@ Uma tarefa só está pronta quando:
 - comportamento previsível
 - output validado por schema
 - testes definidos e passando (cobertura conforme modo)
-- prompt versionado em `/contracts/prompts/`
+- prompt versionado em `/.claude/squad/project/contracts/prompts/`
 - fallback determinístico implementado
 - integração funcionando
 - README do módulo atualizado (propósito, prompts, decisões relevantes)
@@ -494,11 +494,11 @@ Se não houver fallback → rejeitar solução
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/ai-engineer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/ai-engineer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/ai-engineer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/ai-engineer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

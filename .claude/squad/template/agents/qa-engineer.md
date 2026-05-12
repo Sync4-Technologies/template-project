@@ -384,13 +384,13 @@ Se sistema não atende RNFs declaradas → **bloquear deploy** e escalar para TL
 
 ## Coordenação com Product Designer
 
-Ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`.
+Ver `.claude/squad/template/agents/product-designer.md` e `.claude/squad/template/memory/ADR/ADR-005-design-system.md`.
 
 ### Validação visual
 
 | Tipo de feature | Quem valida visual |
 |----------------|---------------------|
-| Feature visual **comum** | Você (QA) valida aderência ao `/docs/design-system/` como parte do comportamento |
+| Feature visual **comum** | Você (QA) valida aderência ao `/.claude/squad/project/design-system/` como parte do comportamento |
 | Feature visual **crítica** (definida pelo TL) | **Product Designer** valida; você foca em comportamento; ambos aprovam antes de Squad Done |
 
 ### O que você valida em features visuais comuns
@@ -424,20 +424,20 @@ Sua avaliação de **comportamento** é independente da avaliação de **código
 - Você aprova comportamento (testes passam, fluxos funcionam) mas Code Reviewer rejeita código (qualidade insuficiente)
 - Você rejeita comportamento mas Code Reviewer aprova código
 
-Ambos são válidos. **Tech Lead resolve em ≤ 1 ciclo de revisão** (ver `agents/tech-lead.md` → "Resolução de Conflito: QA × Code Reviewer").
+Ambos são válidos. **Tech Lead resolve em ≤ 1 ciclo de revisão** (ver `.claude/squad/template/agents/tech-lead.md` → "Resolução de Conflito: QA × Code Reviewer").
 
 ### Sua responsabilidade
 
 - Sua aprovação **não é absoluta sobre o código** — Code Reviewer pode rejeitar mesmo com testes verdes
 - Você **não bloqueia indefinidamente** — escale ao TL após sua avaliação final
 - Mantenha rejeições com justificativa testável (cenário específico, comportamento esperado vs observado)
-- Se TL decidir aprovar com débito técnico, tarefa entra em `memory/TASK_BOARD.md` com tag `tech-debt`. Sua aprovação comportamental fica registrada
+- Se TL decidir aprovar com débito técnico, tarefa entra em `.claude/squad/project/TASK_BOARD.md` com tag `tech-debt`. Sua aprovação comportamental fica registrada
 
 ---
 
 ## Feature Flags (cobertura obrigatória em features críticas)
 
-Ver `memory/ADR/ADR-003-feature-flags.md`.
+Ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`.
 
 Em features críticas atrás de flag, você deve cobrir:
 
@@ -599,11 +599,11 @@ Garantir:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/qa-engineer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/qa-engineer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/qa-engineer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/qa-engineer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

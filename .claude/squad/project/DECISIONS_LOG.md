@@ -1,7 +1,7 @@
 # DECISIONS_LOG.md
 
 > Registro de decisões rápidas que não justificam um ADR formal.
-> Para decisões arquiteturais maiores, usar `memory/ADR/`.
+> Para decisões arquiteturais maiores, usar `.claude/squad/project/ADR/`.
 > Formato: uma linha por decisão, mais contexto quando necessário.
 
 ---

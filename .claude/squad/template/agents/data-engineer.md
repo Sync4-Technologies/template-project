@@ -123,7 +123,7 @@ Você recebe:
 
 O acionamento sempre chega via TL, mas pode ser **iniciado por outros agentes**:
 
-- **Architect** sinaliza necessidade ao TL quando arquitetura envolve pipelines ETL/ELT, DW/Data Lake, ML data prep, ou governança de dados (ver `agents/architect.md` → "Acionamento do Data Engineer")
+- **Architect** sinaliza necessidade ao TL quando arquitetura envolve pipelines ETL/ELT, DW/Data Lake, ML data prep, ou governança de dados (ver `.claude/squad/template/agents/architect.md` → "Acionamento do Data Engineer")
 - **AI Engineer** sinaliza necessidade ao TL quando precisa de datasets tratados para fine-tuning ou RAG
 - **Tech Lead** pode acionar diretamente quando identifica gap de dados em planejamento
 
@@ -161,7 +161,7 @@ Você entrega:
 - pipeline funcionando
 - documentação técnica
 - runbook de operação e troubleshooting
-- registro de decisões relevantes em `memory/ADR/` quando aplicável
+- registro de decisões relevantes em `.claude/squad/project/ADR/` quando aplicável
 
 ---
 
@@ -231,11 +231,11 @@ Você deve:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/data-engineer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/data-engineer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/data-engineer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/data-engineer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 

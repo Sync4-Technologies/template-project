@@ -116,13 +116,13 @@ Arquitetura não pode introduzir comportamento não definido pelo Product Owner.
 
 Você deve ler e manter consistência com:
 
-- `memory/ARCHITECTURE.md`
-- `memory/ADR/`
-- `contracts/`
+- `.claude/squad/project/ARCHITECTURE.md`
+- `.claude/squad/project/ADR/`
+- `.claude/squad/project/contracts/`
 
 ### Sua responsabilidade direta
 
-- Atualizar `memory/ARCHITECTURE.md`
+- Atualizar `.claude/squad/project/ARCHITECTURE.md`
 - Criar e atualizar contratos
 - Propor e registrar ADRs
 
@@ -281,7 +281,7 @@ Você especifica:
 
 Sempre que houver decisão relevante:
 
-- criar arquivo em `memory/ADR/`
+- criar arquivo em `.claude/squad/project/ADR/`
 - explicar contexto, decisão e trade-offs
 
 ---
@@ -316,7 +316,7 @@ Sempre que houver decisão relevante:
 
 ## Padrões Obrigatórios
 
-### Backend (Hexagonal preferencial — ver `memory/ADR/ADR-002-arquitetura-hexagonal.md`)
+### Backend (Hexagonal preferencial — ver `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`)
 
 Padrão default: **Hexagonal (Ports & Adapters)**:
 
@@ -352,13 +352,13 @@ Você documenta em ADR específico do projeto quando NÃO usar Hexagonal em back
 
 ### Mobile
 
-- Clean Architecture mobile (alinhada com Hexagonal — ver `memory/ADR/ADR-002-arquitetura-hexagonal.md`)
+- Clean Architecture mobile (alinhada com Hexagonal — ver `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`)
 - Separação UI / State / Domain / Data
 - Domain testável sem dependências de plataforma
 
 ---
 
-### AI (Hexagonal preferencial — ver `memory/ADR/ADR-002-arquitetura-hexagonal.md`)
+### AI (Hexagonal preferencial — ver `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`)
 
 Padrão default em camada de IA: Hexagonal aplicada à IA:
 
@@ -401,7 +401,7 @@ Você deve:
 - entregar arquitetura proposta + classificação de dados ao TL
 - TL aciona Security Engineer para threat model sobre arquitetura
 - ajustar arquitetura conforme threats identificadas
-- registrar mitigações em `memory/ADR/`
+- registrar mitigações em `.claude/squad/project/ADR/`
 
 ### Regra
 
@@ -424,7 +424,7 @@ TL aciona Data Engineer como consultor especializado.
 
 ## Design System — Escopo Estrutural
 
-Você é responsável pela **estrutura técnica** do Design System. **Conteúdo** (tokens, componentes, patterns) é responsabilidade do **Product Designer** (ver `agents/product-designer.md` e `memory/ADR/ADR-005-design-system.md`).
+Você é responsável pela **estrutura técnica** do Design System. **Conteúdo** (tokens, componentes, patterns) é responsabilidade do **Product Designer** (ver `.claude/squad/template/agents/product-designer.md` e `.claude/squad/template/memory/ADR/ADR-005-design-system.md`).
 
 ### Sua responsabilidade (estrutural)
 
@@ -469,22 +469,22 @@ Você decide por projeto, com base em:
 
 ### Consulta obrigatória às Stack Conventions
 
-Antes de decidir, **consulte os documentos em `docs/stack-conventions/`**. Cada documento define **quando usar** e **quando NÃO usar** aquela stack:
+Antes de decidir, **consulte os documentos em `.claude/squad/template/docs/stack-conventions/`**. Cada documento define **quando usar** e **quando NÃO usar** aquela stack:
 
 **Backend:**
-- [`docs/stack-conventions/backend/nodejs.md`](../docs/stack-conventions/backend/nodejs.md) — I/O intensivo, real-time, BFF, ecosistema JS
-- [`docs/stack-conventions/backend/python.md`](../docs/stack-conventions/backend/python.md) — AI/ML, data engineering, APIs simples
-- [`docs/stack-conventions/backend/php.md`](../docs/stack-conventions/backend/php.md) — CMS, e-commerce, Admin/CRUD pesado
-- [`docs/stack-conventions/backend/java.md`](../docs/stack-conventions/backend/java.md) — Enterprise, alta concorrência, ecosistema Spring
-- [`docs/stack-conventions/backend/go.md`](../docs/stack-conventions/backend/go.md) — Performance crítica, microserviços, ferramentas de infra
+- [`.claude/squad/template/docs/stack-conventions/backend/nodejs.md`](../.claude/squad/template/docs/stack-conventions/backend/nodejs.md) — I/O intensivo, real-time, BFF, ecosistema JS
+- [`.claude/squad/template/docs/stack-conventions/backend/python.md`](../.claude/squad/template/docs/stack-conventions/backend/python.md) — AI/ML, data engineering, APIs simples
+- [`.claude/squad/template/docs/stack-conventions/backend/php.md`](../.claude/squad/template/docs/stack-conventions/backend/php.md) — CMS, e-commerce, Admin/CRUD pesado
+- [`.claude/squad/template/docs/stack-conventions/backend/java.md`](../.claude/squad/template/docs/stack-conventions/backend/java.md) — Enterprise, alta concorrência, ecosistema Spring
+- [`.claude/squad/template/docs/stack-conventions/backend/go.md`](../.claude/squad/template/docs/stack-conventions/backend/go.md) — Performance crítica, microserviços, ferramentas de infra
 
 **Frontend:**
-- [`docs/stack-conventions/frontend/react.md`](../docs/stack-conventions/frontend/react.md) — SSR/SSG, ecosistema mais maduro, SEO
-- [`docs/stack-conventions/frontend/vue.md`](../docs/stack-conventions/frontend/vue.md) — Curva mais suave, menos boilerplate
+- [`.claude/squad/template/docs/stack-conventions/frontend/react.md`](../.claude/squad/template/docs/stack-conventions/frontend/react.md) — SSR/SSG, ecosistema mais maduro, SEO
+- [`.claude/squad/template/docs/stack-conventions/frontend/vue.md`](../.claude/squad/template/docs/stack-conventions/frontend/vue.md) — Curva mais suave, menos boilerplate
 
 **Mobile:**
-- [`docs/stack-conventions/mobile/flutter.md`](../docs/stack-conventions/mobile/flutter.md) — Performance nativa, código único, UI consistente
-- [`docs/stack-conventions/mobile/react-native.md`](../docs/stack-conventions/mobile/react-native.md) — Reúso de skill React, ecosistema JS, OTA updates
+- [`.claude/squad/template/docs/stack-conventions/mobile/flutter.md`](../.claude/squad/template/docs/stack-conventions/mobile/flutter.md) — Performance nativa, código único, UI consistente
+- [`.claude/squad/template/docs/stack-conventions/mobile/react-native.md`](../.claude/squad/template/docs/stack-conventions/mobile/react-native.md) — Reúso de skill React, ecosistema JS, OTA updates
 
 ### Processo
 
@@ -494,8 +494,8 @@ Antes de decidir, **consulte os documentos em `docs/stack-conventions/`**. Cada 
 4. Tech Lead revisa **viabilidade e contexto da squad** (expertise, pipeline, infra existente)
 5. Tech Lead **sempre** apresenta ao usuário (toda decisão de stack vai ao usuário)
 6. Usuário pode vetar qualquer decisão de stack
-7. Decisão registrada em `memory/ADR/ADR-NNN-stack-projeto.md` referenciando o documento de stack-convention aplicável
-8. Atualizar `memory/ARCHITECTURE.md` → seção "Stack Conventions Doc" com link para spec ativa
+7. Decisão registrada em `.claude/squad/project/ADR/ADR-NNN-stack-projeto.md` referenciando o documento de stack-convention aplicável
+8. Atualizar `.claude/squad/project/ARCHITECTURE.md` → seção "Stack Conventions Doc" com link para spec ativa
 
 ### Resolução de conflito Architect × Tech Lead
 
@@ -508,8 +508,8 @@ Você decide tecnicamente; TL revisa contexto operacional. Em caso de divergênc
 
 ### Referência
 
-- `memory/ADR/ADR-001-stack.md` — opções padrão do template
-- `docs/stack-conventions/README.md` — índice completo das stack conventions
+- `.claude/squad/template/memory/ADR/ADR-001-stack.md` — opções padrão do template
+- `.claude/squad/template/docs/stack-conventions/README.md` — índice completo das stack conventions
 
 ### Regra
 
@@ -724,11 +724,11 @@ Garantir:
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/architect.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/architect.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/architect.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/architect.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 
@@ -736,9 +736,9 @@ Regras de uso:
 
 ## Skills disponíveis
 
-Você é o owner da skill (ver `memory/ADR/ADR-004-skills-e-hooks.md` para governança):
+Você é o owner da skill (ver `.claude/squad/template/memory/ADR/ADR-004-skills-e-hooks.md` para governança):
 
-- **`/squad-stack-decision`** — conduz decisão de stack consultando `docs/stack-conventions/`, gera 2-3 opções com trade-offs (matriz de decisão ponderada), avalia fornecedores externos quando aplicável, registra ADR específico do projeto e atualiza `memory/ARCHITECTURE.md`
+- **`/squad-stack-decision`** — conduz decisão de stack consultando `.claude/squad/template/docs/stack-conventions/`, gera 2-3 opções com trade-offs (matriz de decisão ponderada), avalia fornecedores externos quando aplicável, registra ADR específico do projeto e atualiza `.claude/squad/project/ARCHITECTURE.md`
 
 ### Regra de uso
 

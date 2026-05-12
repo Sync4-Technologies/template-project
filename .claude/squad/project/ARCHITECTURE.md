@@ -25,9 +25,9 @@
 
 | Camada | Tecnologia | Versão | ADR | Stack Convention |
 |--------|-----------|--------|-----|------------------|
-| Backend | | | | `docs/stack-conventions/backend/{stack}.md` |
-| Frontend | | | | `docs/stack-conventions/frontend/{stack}.md` |
-| Mobile | | | | `docs/stack-conventions/mobile/{stack}.md` |
+| Backend | | | | `.claude/squad/template/docs/stack-conventions/backend/{stack}.md` |
+| Frontend | | | | `.claude/squad/template/docs/stack-conventions/frontend/{stack}.md` |
+| Mobile | | | | `.claude/squad/template/docs/stack-conventions/mobile/{stack}.md` |
 | Banco de dados principal | | | | |
 | Cache | | | | |
 | IA / LLM | | | | |
@@ -35,7 +35,7 @@
 | CI/CD | | | | |
 | Cloud | | | | |
 
-Ver detalhes em `memory/ADR/ADR-001-stack.md` e ADR específico do projeto.
+Ver detalhes em `.claude/squad/template/memory/ADR/ADR-001-stack.md` e ADR específico do projeto.
 
 ### Stack Conventions Doc (fonte de convenções idiomáticas)
 
@@ -122,15 +122,15 @@ Engineers consultam estes documentos ao implementar.
 
 ## Padrões Adotados
 
-- **Backend:** [Hexagonal (Ports & Adapters) — default — ver `memory/ADR/ADR-002-arquitetura-hexagonal.md` | OU camadas tradicionais se justificado em ADR específico]
+- **Backend:** [Hexagonal (Ports & Adapters) — default — ver `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md` | OU camadas tradicionais se justificado em ADR específico]
 - **AI:** [Hexagonal aplicada — domain isolado de adapters de LLM/tools/MCP]
 - **Frontend:** [Atomic Design]
 - **Mobile:** [Clean Architecture mobile (alinhada com Hexagonal)]
 - **API:** [ex: REST + OpenAPI, versionamento por URL /v1/]
 - **Eventos:** [ex: Event-driven via RabbitMQ / Kafka / SQS]
 - **Segurança:** [ex: JWT + refresh token, RBAC]
-- **Feature Flags:** [ferramenta + governança — ver `memory/ADR/ADR-003-feature-flags.md`]
-- **Design System:** [DS escolhido — ver `memory/ADR/ADR-005-design-system.md` e `/docs/design-system/`]
+- **Feature Flags:** [ferramenta + governança — ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`]
+- **Design System:** [DS escolhido — ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md` e `/.claude/squad/project/design-system/`]
 
 ---
 
@@ -141,8 +141,8 @@ Engineers consultam estes documentos ao implementar.
 | DS escolhido | [Material 3 (default) / shadcn-ui / Carbon / Polaris / Atlassian / Custom] |
 | Versão | [versão] |
 | Implementação | [MUI vN / Vuetify / Material Web Components / react-native-paper / Flutter Material / etc.] |
-| Documentação | `/docs/design-system/` |
-| ADR autoritativa | `memory/ADR/ADR-005-design-system.md` |
+| Documentação | `/.claude/squad/project/design-system/` |
+| ADR autoritativa | `.claude/squad/template/memory/ADR/ADR-005-design-system.md` |
 | ADR específico (se DS != default) | [link] |
 | Última extração / audit | [data se aplicável] |
 
@@ -174,7 +174,7 @@ Engineers consultam estes documentos ao implementar.
 
 - **Multi-AZ:** [sim/não]
 - **Multi-Region:** [sim/não — quando aplicável]
-- **Runbook de DR:** [link para `/docs/runbooks/disaster-recovery.md`]
+- **Runbook de DR:** [link para `/.claude/squad/project/runbooks/disaster-recovery.md`]
 - **Última validação de restore:** [data]
 - **Última DR drill:** [data]
 

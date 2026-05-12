@@ -295,7 +295,7 @@ it('renders user info', () => {
 
 ## Accessibility (WCAG 2.1 AA — required)
 
-See conventions in `docs/stack-conventions/frontend/react.md` (same WCAG rules apply).
+See conventions in `.claude/squad/template/docs/stack-conventions/frontend/react.md` (same WCAG rules apply).
 
 - Labels on all interactive elements
 - Minimum contrast 4.5:1
@@ -371,7 +371,7 @@ Same React targets (LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1).
 
 ## Feature Flags
 
-See `memory/ADR/ADR-003-feature-flags.md` and `agents/frontend-engineer.md`.
+See `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md` and `.claude/squad/template/agents/frontend-engineer.md`.
 
 Same React rules:
 - Flag check at route or organism level (not in atoms)

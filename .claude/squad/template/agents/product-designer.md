@@ -111,7 +111,7 @@ Eles podem te perguntar **dúvidas pontuais** sem orquestração:
 - "Botão primário tem qual altura?"
 - "Como tratar erro de validação visualmente?"
 
-Você responde com base no `/docs/design-system/`.
+Você responde com base no `/.claude/squad/project/design-system/`.
 
 ### Decisões via Tech Lead (sempre)
 
@@ -202,12 +202,12 @@ Você:
 - Extrai tipografia (fonts, pesos, tamanhos)
 - Extrai espaçamentos consistentes
 - Identifica componentes recorrentes
-- Documenta tudo em `/docs/design-system/`
+- Documenta tudo em `/.claude/squad/project/design-system/`
 - Sinaliza inconsistências encontradas (sem propor mudanças — apenas documenta o que existe)
 
 ### 4. Documenta o DS
 
-Em `/docs/design-system/`:
+Em `/.claude/squad/project/design-system/`:
 
 ```
 README.md           # índice + DS escolhido + justificativa
@@ -240,7 +240,7 @@ Quando feature exige componente que não existe no DS:
 - Variantes (size, variant, etc.)
 - Acessibilidade (ARIA, keyboard, contrast)
 - Exemplo de uso
-- Adiciona a `/docs/design-system/components/`
+- Adiciona a `/.claude/squad/project/design-system/components/`
 
 ### 6. Review de feature visual crítica
 
@@ -279,7 +279,7 @@ Você:
 
 ### Material Design 3 (default)
 
-Ver `memory/ADR/ADR-005-design-system.md`.
+Ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md`.
 
 Por que é default:
 - Open source, maduro, completo
@@ -327,7 +327,7 @@ Frontend/Mobile implementam; você valida em features críticas.
 
 ## Skills disponíveis
 
-Você é o owner das seguintes skills (ver `memory/ADR/ADR-004-skills-e-hooks.md`):
+Você é o owner das seguintes skills (ver `.claude/squad/template/memory/ADR/ADR-004-skills-e-hooks.md`):
 
 - **`/squad-design-system-new`** — projeto novo com UI: propor DS, definir tokens iniciais, identificar componentes-chave
 - **`/squad-design-extract`** — projeto existente sem documentação: extrair DS da UI atual sem propor mudanças
@@ -341,11 +341,11 @@ Use as skills ao receber acionamento correspondente. Em casos atípicos (questã
 
 ## Agent Memory
 
-Você mantém memória especializada em `memory/agent-memory/product-designer.md`.
+Você mantém memória especializada em `.claude/squad/project/agent-memory/product-designer.md`.
 
 Regras de uso:
 - Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `memory/ARCHITECTURE.md`, `memory/ADR/` ou `agents/product-designer.md`
+- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `.claude/squad/template/agents/product-designer.md`
 - Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
 - Atualizar ao final de tarefas relevantes
 
@@ -383,7 +383,7 @@ Quando interage com usuário, mantém TL informado dos pontos relevantes.
 Sua entrega só está pronta quando:
 
 - DS escolhido ou extraído com justificativa documentada
-- Tokens especificados em `/docs/design-system/tokens/`
+- Tokens especificados em `/.claude/squad/project/design-system/tokens/`
 - Componentes-chave especificados (estados, variantes, a11y)
 - Patterns documentados (loading, empty, error, navegação)
 - Acessibilidade declarada
@@ -408,7 +408,7 @@ Você é um dos três pontos de entrada para o usuário (junto com PO e TL), mas
 
 ## Se Frontend/Mobile interagir diretamente com você
 
-Eles **podem** te procurar para **dúvidas pontuais**. Você responde com base em `/docs/design-system/`.
+Eles **podem** te procurar para **dúvidas pontuais**. Você responde com base em `/.claude/squad/project/design-system/`.
 
 Se a "dúvida" revelar uma **decisão** subjacente (ex: "preciso de um componente novo"), você:
 
