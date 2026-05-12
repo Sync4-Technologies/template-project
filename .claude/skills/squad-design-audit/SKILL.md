@@ -30,7 +30,23 @@ Conduz o PD em audit periódico de consistência visual de um produto.
 
 ### 1. Coletar baseline
 
-- **DS docs:** `/.claude/squad/project/design-system/` (estado atual da documentação)
+#### Identificar Path do projeto (Externo vs Inline)
+
+Ler `.claude/squad/project/design-system/source.md`:
+- Se existe → **Path 1 (Externo)**: baseline é o repo externo na version pinned
+- Se não existe → **Path 2 (Inline)**: baseline é o próprio `.claude/squad/project/design-system/`
+
+#### Para Path 1 (Externo)
+
+- **Baseline:** repo externo na version pinned em `source.md` (clonar/checkout para inspeção)
+- **Overrides locais:** `tokens-override.md`, `components-custom/`, `patterns-custom/`
+- **Codebase:** theme files, design tokens em código, componentes implementados
+- **Telas em produção:** lista priorizada pelo TL/PO (foco em fluxos críticos)
+- **Issues visuais reportadas:** issues no tracker com label `visual` / `ui` / `design-debt`
+
+#### Para Path 2 (Inline)
+
+- **DS docs:** `.claude/squad/project/design-system/` (estado atual da documentação)
 - **Codebase:** theme files, design tokens em código, componentes implementados
 - **Telas em produção:** lista priorizada pelo TL/PO (foco em fluxos críticos)
 - **Issues visuais reportadas:** issues no tracker com label `visual` / `ui` / `design-debt`
@@ -75,6 +91,20 @@ Detectar inconsistências entre telas que deveriam ser similares:
 - Modal de confirmação vs modal de input — mesmo header style?
 - Form de cadastro vs form de edição — mesmo layout?
 
+#### Drift entre Override Local e Baseline Externo (Path 1 apenas)
+
+Aplicável só quando `source.md` existe:
+
+- **Overrides obsoletos:** override existe localmente mas baseline (repo externo na version pinned) já tem o mesmo valor → remover override
+- **Overrides candidatos a promoção:** override resolve problema que outros projetos da squad teriam — documentar em `source.md` → "Override → contribuição central"
+- **Drift de version:** repo externo lançou nova version desde último bump? Avaliar changelog para detectar mudanças relevantes
+- **Conflito de version:** override local depende de token que foi renomeado/removido em version mais nova do repo externo
+
+Comparar:
+- `tokens-override.md` (local) vs `tokens/colors.md`, `tokens/typography.md`, etc. (repo externo @ version pinned)
+- `components-custom/` (local) vs `components/` (repo externo @ version pinned)
+- `patterns-custom/` (local) vs `patterns/` (repo externo @ version pinned)
+
 ### 3. Priorizar drift detectado
 
 Para cada item de drift:
@@ -94,6 +124,7 @@ Formato:
 DESIGN AUDIT — [projeto]
 Data: YYYY-MM-DD
 Período coberto: [último audit / desde início se primeiro]
+Path do projeto: [Externo (vN.N.N) / Inline]
 Telas auditadas: N
 
 Resumo:
@@ -101,6 +132,13 @@ Resumo:
 - Drift alto: N itens
 - Drift médio: N itens
 - Drift baixo: N itens
+
+[Se Path 1 — Externo]
+Overrides obsoletos detectados: N (remover; baseline já cobre)
+Overrides candidatos a promoção (PR no repo externo): N
+Version atual do repo externo: vN.N.N (pinned em source.md)
+Última version disponível upstream: vN.N.N
+Bump recomendado? [sim/não — justificativa]
 
 Drift crítico (correção priorizada):
 1. [item] — [tela/componente] — [proposta de correção]
