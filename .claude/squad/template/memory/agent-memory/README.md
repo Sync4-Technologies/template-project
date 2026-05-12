@@ -17,8 +17,8 @@
 - Arquitetura geral → vai em `.claude/squad/project/ARCHITECTURE.md`
 - Decisões estruturais → vai em `.claude/squad/project/ADR/`
 - Decisões rápidas que afetam múltiplos agentes → vai em `.claude/squad/project/DECISIONS_LOG.md`
-- Regras gerais do papel → vai em `/.claude/squad/template/agents/{name}.md`
-- Regras de negócio → vai em `/.claude/squad/project/PRD.md` e specs funcionais
+- Regras gerais do papel → vai em `.claude/squad/template/agents/{name}.md`
+- Regras de negócio → vai em `.claude/squad/project/PRD.md` e specs funcionais
 
 ---
 

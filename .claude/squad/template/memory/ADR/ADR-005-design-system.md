@@ -99,6 +99,81 @@ Product Designer pode escolher alternativa quando há justificativa concreta:
 
 ---
 
+## Estratégia de uso: Externo vs Inline (Modelo B híbrido)
+
+A squad adota **Modelo B** como preferencial: DS base em **repo externo** centralizado + **override local** por projeto.
+
+### Path 1 — Externo (preferencial)
+
+Projeto referencia repo externo + lista apenas overrides locais.
+
+**Repo padrão para Material 3:**
+- URL: `https://github.com/Sync4-Technologies/design-system-material3`
+- Mantido pela squad central
+- Versionamento SemVer (tags `v1.0.0`, `v1.1.0`, etc.)
+
+**Estrutura no projeto:**
+
+```
+.claude/squad/project/design-system/
+├── source.md                ← qual DS, repo, version, customizações
+├── tokens-override.md       ← apenas o que diverge do baseline
+├── components-custom/       ← componentes específicos do projeto
+└── patterns-custom/         ← patterns específicos
+```
+
+**Quando preferir Externo:**
+- Há repo externo disponível para o DS (ver `external-repos.md`)
+- Projeto adota baseline + customizações locais (paleta seed, tipografia)
+- Squad tem múltiplos projetos com mesmo DS base
+- Atualizações centrais devem propagar
+
+### Path 2 — Inline
+
+Projeto contém DS completo (sem referenciar repo externo).
+
+**Quando preferir Inline:**
+- Brand-heavy custom com identidade visual radicalmente única
+- Projeto legado onde DS já foi extraído inline (via `/squad-design-extract`)
+- Restrição de compliance impede repo externo
+- Projeto pequeno/curto onde overhead não justifica
+
+### Repos externos suportados
+
+Lista atualizada em `.claude/squad/template/docs/design-system/external-repos.md`:
+
+| DS | Repo | Status |
+|----|------|--------|
+| Material 3 | `Sync4-Technologies/design-system-material3` | Default (em construção) |
+
+### Governance dos repos externos
+
+- **Manutenção:** squad central de design (ou PD lead da organização)
+- **PRs:** qualquer PD pode contribuir; squad central aprova
+- **Releases:** squad central decide cadência (recomendado trimestral)
+- **Breaking changes:** comunicar via CHANGELOG.md + notificar TLs dos projetos consumidores
+
+### Padrões de consumo do repo externo
+
+| Padrão | Quando usar |
+|--------|-------------|
+| **Doc-only** (default) | Frontend/Mobile lê specs do repo externo manualmente |
+| **Vendoring** (snapshot) | Copia `tokens.json` para projeto; controle granular |
+| **Git submodule** | Embarcar repo como submodule (raro) |
+| **NPM package** | Quando repo publica como `@org/ds-{nome}` |
+
+### ADR específico do projeto
+
+Cada projeto cria ADR específico que registra:
+
+- Path escolhido (Externo ou Inline)
+- Repo externo + version pinned (se Externo)
+- Justificativa de Inline (se aplicável)
+- Padrão de consumo (Doc-only, vendoring, submodule, package)
+- Customizações principais
+
+---
+
 ## Trade-offs Assumidos
 
 - Material 3 tem opinião visual forte — projetos que precisam de identidade radicalmente diferente migram para alternativa (esperado em ~10-20% dos projetos)

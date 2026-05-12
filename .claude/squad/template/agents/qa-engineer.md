@@ -390,7 +390,7 @@ Ver `.claude/squad/template/agents/product-designer.md` e `.claude/squad/templat
 
 | Tipo de feature | Quem valida visual |
 |----------------|---------------------|
-| Feature visual **comum** | Você (QA) valida aderência ao `/.claude/squad/project/design-system/` como parte do comportamento |
+| Feature visual **comum** | Você (QA) valida aderência ao `.claude/squad/project/design-system/` como parte do comportamento |
 | Feature visual **crítica** (definida pelo TL) | **Product Designer** valida; você foca em comportamento; ambos aprovam antes de Squad Done |
 
 ### O que você valida em features visuais comuns

@@ -63,6 +63,43 @@ Apresente alternativa **com justificativa** quando:
 - **Dev tools / productivity** → Atlassian DS
 - **Restrição extrema de identidade** → Custom (raro; exige ADR detalhado)
 
+### 2.5. Decidir: Externo vs Inline
+
+Após escolher o DS, decida o **caminho de adoção**:
+
+#### Consultar repos externos disponíveis
+
+Ler `.claude/squad/template/docs/design-system/external-repos.md` para identificar se o DS escolhido tem repo externo suportado pela squad.
+
+| DS escolhido | Tem repo externo? | Path recomendado |
+|--------------|-------------------|------------------|
+| Material 3 | Sim (`Sync4-Technologies/design-system-material3`) | **Externo** (preferencial) |
+| Outro com repo externo | Sim | **Externo** (preferencial) |
+| Outro sem repo externo | Não | **Inline** |
+| Custom brand-heavy | Não aplicável | **Inline** |
+
+#### Critérios para Externo
+
+- Há repo externo disponível
+- Squad tem múltiplos projetos com mesmo DS base (evitar duplicação)
+- Projeto adota baseline + customizações (paleta seed, tipografia, componentes específicos)
+- Atualizações centrais devem propagar
+
+#### Critérios para Inline
+
+- Brand-heavy custom com identidade visual radicalmente única
+- Projeto legado onde DS já foi extraído inline (via `/squad-design-extract`)
+- Restrição de compliance impede repo externo
+- Projeto pequeno/curto
+
+#### Output desta etapa
+
+Decisão registrada para passos 5 e 6:
+
+- **Path:** Externo OU Inline
+- **Se Externo:** repo URL + version inicial (commit SHA ou tag)
+- **Se Inline:** justificativa concreta
+
 ### 3. Definir tokens iniciais
 
 #### Cores
@@ -107,10 +144,27 @@ Pra cada um, indicar:
 - Variantes (filled, outlined, text para Button, etc.)
 - Estados padrão (default, hover, active, disabled, loading, error, focused)
 
-### 5. Documentar em `/.claude/squad/project/design-system/`
+### 5. Documentar em `.claude/squad/project/design-system/`
 
-Popular estrutura conforme `.claude/squad/template/docs/design-system/README.md`:
+Conforme decisão da etapa 2.5 (Externo vs Inline):
 
+#### Se Path 1 — Externo
+
+1. Copiar `.claude/squad/template/docs/design-system/source.md.template` para `.claude/squad/project/design-system/source.md`
+2. Preencher `source.md`:
+   - DS escolhido + repo externo URL + version pinned
+   - Customizações principais (paleta seed, tipografia)
+3. Criar `tokens-override.md` listando apenas o que diverge do baseline
+4. Criar `components-custom/` se houver componentes específicos do projeto que **não** existem no baseline
+5. Criar `patterns-custom/` se houver patterns específicos
+
+NÃO duplicar tokens/componentes/patterns que já existem no repo externo. Frontend/Mobile consultam o repo externo direto.
+
+#### Se Path 2 — Inline
+
+Popular estrutura completa conforme `.claude/squad/template/docs/design-system/README.md`:
+
+- `README.md` (com justificativa de inline)
 - `tokens/colors.md`, `typography.md`, `spacing.md`, `shadows.md`, `radius.md`, `motion.md`
 - `components/{button,input,card,modal,...}.md`
 - `patterns/{empty-states,error-handling,loading,navigation}.md`
@@ -154,13 +208,13 @@ Próximo passo: TL apresenta ao usuário para aprovação (gate).
 
 DS proposto vai ao usuário via TL. Possíveis resultados:
 
-- **Aprovado** — popular `/.claude/squad/project/design-system/` em detalhe; Frontend/Mobile podem começar
+- **Aprovado** — popular `.claude/squad/project/design-system/` em detalhe; Frontend/Mobile podem começar
 - **Aprovado com ajustes** — incorporar mudanças (paleta, tipografia) antes de detalhar
 - **Rejeitado** — voltar para proposta alternativa (raro)
 
 ### 8. Documentação final
 
-Com aprovação, populá-la em `/.claude/squad/project/design-system/` em nível adequado para Frontend/Mobile consumirem:
+Com aprovação, populá-la em `.claude/squad/project/design-system/` em nível adequado para Frontend/Mobile consumirem:
 
 - Cada token doc com tabela completa
 - Cada componente com todos os estados + exemplo de uso

@@ -38,5 +38,5 @@
 - **ADRs relacionados:**
   - `.claude/squad/template/memory/ADR/ADR-005-design-system.md` (default)
   - `.claude/squad/project/ADR/ADR-XXX-stack-projeto.md` (DS específico se diferente do default)
-- **Design System docs:** `/.claude/squad/project/design-system/`
+- **Design System docs:** `.claude/squad/project/design-system/`
 - **Seções de ARCHITECTURE.md relacionadas:** "Design System Doc"

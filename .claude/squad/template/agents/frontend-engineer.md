@@ -196,9 +196,26 @@ Você deve:
 ### Design Tokens (consumir do Design System)
 
 - **Nenhum valor hardcoded** — sempre via tokens
-- Tokens vêm de `/.claude/squad/project/design-system/tokens/` (mantido pelo Product Designer)
 - Formato técnico (Style Dictionary, JSON) é responsabilidade do Architect
 - Você **consome** tokens; não inventa nem altera
+
+#### Onde estão os tokens (depende do Path do projeto)
+
+Antes de implementar, verificar `.claude/squad/project/design-system/`:
+
+**Se `source.md` existe → Path 1 (Externo)**:
+- DS base vem do repo externo declarado em `source.md` (ex: `Sync4-Technologies/design-system-material3`)
+- Tokens vêm da version pinned do repo externo (consumir via doc-only, vendoring de `tokens.json`, ou package conforme estratégia em `source.md`)
+- **Overrides locais** em `tokens-override.md` aplicam por cima do baseline
+- **Componentes específicos do projeto** em `components-custom/`
+- **Patterns específicos** em `patterns-custom/`
+- Ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md` e `.claude/squad/template/docs/design-system/external-repos.md`
+
+**Se `source.md` NÃO existe → Path 2 (Inline)**:
+- DS completo em `.claude/squad/project/design-system/tokens/`, `components/`, `patterns/`
+- Consumir direto do projeto
+
+Em ambos os casos, PD é o owner; você consome.
 
 ### Canal com Product Designer
 
@@ -209,7 +226,7 @@ Ver `.claude/squad/template/agents/product-designer.md` e `.claude/squad/templat
 - "Botão primário tem qual altura?"
 - "Estado loading neste componente segue qual pattern?"
 
-PD responde com base em `/.claude/squad/project/design-system/`.
+PD responde com base em `.claude/squad/project/design-system/`.
 
 **Decisões** — sempre via TL:
 - Necessidade de componente novo não documentado
@@ -227,7 +244,7 @@ Em features visuais críticas (definidas pelo TL — ver `.claude/squad/template
 - PD valida aderência ao DS
 - Resultado: APROVADO / APROVADO COM AJUSTES / REJEITADO
 
-Em features visuais comuns, não há gate de PD — você segue specs do `/.claude/squad/project/design-system/` autônomo; QA valida aderência.
+Em features visuais comuns, não há gate de PD — você segue specs do `.claude/squad/project/design-system/` autônomo; QA valida aderência.
 
 ---
 

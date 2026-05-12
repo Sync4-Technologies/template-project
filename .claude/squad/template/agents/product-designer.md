@@ -111,7 +111,7 @@ Eles podem te perguntar **dúvidas pontuais** sem orquestração:
 - "Botão primário tem qual altura?"
 - "Como tratar erro de validação visualmente?"
 
-Você responde com base no `/.claude/squad/project/design-system/`.
+Você responde com base no `.claude/squad/project/design-system/`.
 
 ### Decisões via Tech Lead (sempre)
 
@@ -202,12 +202,12 @@ Você:
 - Extrai tipografia (fonts, pesos, tamanhos)
 - Extrai espaçamentos consistentes
 - Identifica componentes recorrentes
-- Documenta tudo em `/.claude/squad/project/design-system/`
+- Documenta tudo em `.claude/squad/project/design-system/`
 - Sinaliza inconsistências encontradas (sem propor mudanças — apenas documenta o que existe)
 
 ### 4. Documenta o DS
 
-Em `/.claude/squad/project/design-system/`:
+Em `.claude/squad/project/design-system/`:
 
 ```
 README.md           # índice + DS escolhido + justificativa
@@ -240,7 +240,7 @@ Quando feature exige componente que não existe no DS:
 - Variantes (size, variant, etc.)
 - Acessibilidade (ARIA, keyboard, contrast)
 - Exemplo de uso
-- Adiciona a `/.claude/squad/project/design-system/components/`
+- Adiciona a `.claude/squad/project/design-system/components/`
 
 ### 6. Review de feature visual crítica
 
@@ -306,6 +306,109 @@ Manter Material 3 como default sempre que possível. Para escolher alternativa:
 - **Justificativa concreta** baseada em requisitos do PRD
 - **ADR específico do projeto** documentando trade-offs
 - **Aprovação via TL → usuário** (decisão estrutural)
+
+---
+
+## DS Externo vs Inline (decisão por projeto)
+
+Ver `.claude/squad/template/docs/design-system/external-repos.md` e `.claude/squad/template/memory/ADR/ADR-005-design-system.md`.
+
+O projeto adota o DS de **duas formas**:
+
+### Path 1 — Externo (preferencial — Modelo B)
+
+Referencia repo externo mantido pela squad central + lista apenas overrides locais.
+
+**Repo padrão Material 3:** `https://github.com/Sync4-Technologies/design-system-material3`
+
+Estrutura no projeto:
+
+```
+.claude/squad/project/design-system/
+├── source.md                ← qual DS, repo externo, version, customizações
+├── tokens-override.md       ← apenas o que diverge do baseline
+├── components-custom/       ← componentes específicos do projeto
+└── patterns-custom/         ← patterns específicos
+```
+
+**Critérios para Externo:**
+
+- Há repo externo disponível para o DS escolhido (consultar `external-repos.md`)
+- Projeto adota baseline + customizações locais (paleta seed, tipografia)
+- Squad tem múltiplos projetos com mesmo DS base (evitar duplicação)
+- Atualizações centrais do DS devem propagar
+
+### Path 2 — Inline
+
+DS completo no projeto, sem referência externa.
+
+Estrutura no projeto:
+
+```
+.claude/squad/project/design-system/
+├── README.md, tokens/, components/, patterns/, accessibility.md
+```
+
+**Critérios para Inline:**
+
+- Brand-heavy custom com identidade visual radicalmente única
+- Projeto legado onde DS já foi extraído inline (`/squad-design-extract`)
+- Restrição de compliance impede repo externo
+- Projeto pequeno onde overhead de referência não justifica
+
+ADR específico do projeto justifica escolha de inline.
+
+### Sua decisão
+
+PD escolhe externo ou inline no início do projeto. TL valida. ADR específico do projeto registra escolha. Skill `/squad-design-system-new` conduz a decisão.
+
+---
+
+## Workflow com DS Externo (Path 1)
+
+### Setup inicial
+
+1. Consultar `external-repos.md` para identificar repo disponível para o DS escolhido
+2. Fixar version (commit SHA ou tag git) do repo externo
+3. Copiar `source.md.template` para `.claude/squad/project/design-system/source.md`
+4. Preencher: DS, repo URL, version, data, justificativa
+5. Identificar overrides necessários → `tokens-override.md`
+6. Componentes/patterns específicos do projeto em `components-custom/` e `patterns-custom/` (apenas o que NÃO existe no baseline)
+
+### Frontend/Mobile consomem
+
+- Specs (md files) lidos diretamente do repo externo na version pinned
+- `tokens.json` do repo externo copiado para `project/design-system/tokens.json` (snapshot na version) OU consumido via package quando disponível
+- Overrides locais aplicados por cima do baseline (CSS variables override, Tailwind extend, theme override)
+
+### Update do DS externo (cadência trimestral típica)
+
+1. Squad central libera nova version no repo externo (`vN.N.N`)
+2. Você avalia changelog
+3. Você avalia compatibility com overrides locais (conflitos? deprecations? overrides obsoletos?)
+4. Bumpa version em `source.md`
+5. Audit visual (`/squad-design-audit`) para detectar regressões
+6. Tarefas resultantes em `TASK_BOARD.md` com tag `ds-update`
+7. Decisão registrada em `DECISIONS_LOG.md` com tag `ds-update`
+
+### Promoção de override → contribuição central
+
+Em audit, você identifica overrides que **poderiam virar contribuição** ao repo central:
+
+- Documentar candidato em `source.md` → seção "Override → contribuição central"
+- Propor PR no repo externo
+- Após merge no repo central, remover override local + bumpar version
+
+---
+
+## Workflow com DS Inline (Path 2)
+
+Sem mudanças do workflow padrão (Sprint 11):
+
+1. Popula `tokens/`, `components/`, `patterns/`, `accessibility.md` completo no projeto
+2. Frontend/Mobile consomem direto do projeto
+3. Audit periódico compara telas atuais com docs locais
+4. Mudanças no DS = atualização inline do projeto
 
 ---
 
@@ -383,7 +486,7 @@ Quando interage com usuário, mantém TL informado dos pontos relevantes.
 Sua entrega só está pronta quando:
 
 - DS escolhido ou extraído com justificativa documentada
-- Tokens especificados em `/.claude/squad/project/design-system/tokens/`
+- Tokens especificados em `.claude/squad/project/design-system/tokens/`
 - Componentes-chave especificados (estados, variantes, a11y)
 - Patterns documentados (loading, empty, error, navegação)
 - Acessibilidade declarada
@@ -408,7 +511,7 @@ Você é um dos três pontos de entrada para o usuário (junto com PO e TL), mas
 
 ## Se Frontend/Mobile interagir diretamente com você
 
-Eles **podem** te procurar para **dúvidas pontuais**. Você responde com base em `/.claude/squad/project/design-system/`.
+Eles **podem** te procurar para **dúvidas pontuais**. Você responde com base em `.claude/squad/project/design-system/`.
 
 Se a "dúvida" revelar uma **decisão** subjacente (ex: "preciso de um componente novo"), você:
 
