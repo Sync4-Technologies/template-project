@@ -449,6 +449,32 @@ Se o projeto não tem PD alocado e Frontend precisa de tokens para começar:
 - TL deve alocar PD assim que possível para documentação formal
 - Você (Architect) garante que estrutura do file format está pronta para receber conteúdo do PD
 
+### Estratégia técnica de consumo do DS (Path 1 — Externo vs Path 2 — Inline)
+
+Ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md` e `.claude/squad/template/docs/design-system/external-repos.md`.
+
+Quando PD escolhe **Path 1 (Externo)** — projeto referencia repo externo (ex: `Sync4-Technologies/design-system-material3`) — você define a estratégia técnica de consumo:
+
+| Estratégia | Quando usar | Implementação |
+|-----------|-------------|---------------|
+| **Doc-only** (default) | Simplicidade; lê specs diretamente do repo externo | Frontend/Mobile consulta md files do repo externo na version pinned |
+| **Vendoring** | Controle de version + offline-ready; deploy reprodutível | Copia `tokens.json` snapshot para `project/design-system/tokens.json` na version pinned do repo |
+| **Git submodule** | Compartilhamento de assets/binários + versionamento atrelado | Embarca repo externo em `vendor/` ou similar; commit do submodule é a version |
+| **NPM package** | Repo publica como `@org/ds-{nome}` | `npm install @org/ds-material3@1.2.3`; import direto |
+
+**Cuidados:**
+- Sempre version pinned (commit SHA ou tag git) — nunca `main`/`latest`
+- Overrides locais aplicados por cima do baseline (CSS variables override, Tailwind extend, theme override)
+- Build pipeline trata `tokens-override.md` como fonte adicional de tokens, não substituto
+- Em projetos multi-plataforma (Web + Mobile), estratégia pode diferir por plataforma se necessário
+
+Quando PD escolhe **Path 2 (Inline)** — DS completo no projeto — você define:
+- Formato dos tokens (Style Dictionary, JSON, CSS vars)
+- Build pipeline para consumo direto de `project/design-system/tokens/`
+- Sincronização Web/Mobile se aplicável
+
+Decisão de estratégia registrada em ADR específico do projeto + `source.md` (se Path 1).
+
 ### Regra
 
 - Sem estrutura técnica definida por você → conteúdo do PD não pode ser consumido
