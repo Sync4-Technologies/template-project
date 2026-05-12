@@ -32,10 +32,30 @@ Princípios orientadores:
 ### Você quer iniciar um projeto novo
 
 1. Clone este template para um novo repositório
-2. Acione o **Product Owner** com seu briefing (ver [`.claude/squad/template/agents/product-owner.md`](.claude/squad/template/agents/product-owner.md))
-3. PO produz `.claude/squad/project/PRD.md` baseado em [`.claude/squad/template/docs/PRD-template.md`](.claude/squad/template/docs/PRD-template.md)
-4. Aprove o PRD
-5. Tech Lead orquestra o resto seguindo [Fluxo 1 do CLAUDE.md](CLAUDE.md#fluxos-de-projeto)
+2. Acione o **Product Owner** OU rode a skill **`/squad-prd-template`** diretamente
+3. PO oferece **dois modos** para construir o PRD — você escolhe:
+
+   #### 1️⃣ Modo Briefing
+   Você tem um briefing pronto (texto, documento, notas).
+   - Cola o briefing no chat (ou aponta o arquivo)
+   - PO lê, estrutura no formato de PRD
+   - PO pergunta apenas sobre **lacunas detectadas** (RNFs faltando, critérios vagos, etc.)
+   - Resultado: PRD completo + suas respostas das lacunas
+
+   #### 2️⃣ Modo Entrevista
+   Você não tem briefing pronto ou prefere construir guiado.
+   - PO conduz **entrevista estruturada** passo a passo
+   - Perguntas sobre: problema, usuário-alvo, escopo, fluxos, RNFs, critérios de aceite, métricas, riscos
+   - PO monta PRD progressivamente conforme suas respostas
+   - Resultado: PRD completo construído do zero
+
+   **Híbrido permitido:** PO pode trocar de modo a qualquer momento (ex: briefing vago → entrevista de gaps específicos).
+
+4. PO salva `.claude/squad/project/PRD.md` baseado em [`.claude/squad/template/docs/PRD-template.md`](.claude/squad/template/docs/PRD-template.md)
+5. Aprove o PRD (gate obrigatório)
+6. Tech Lead orquestra o resto seguindo [Fluxo 1 do CLAUDE.md](CLAUDE.md#fluxos-de-projeto)
+
+**Recomendação:** se ainda não pensou em escopo/usuário/regras → Modo Entrevista. Se já tem documento → Modo Briefing.
 
 ### Você quer continuar um projeto existente sob este template
 
