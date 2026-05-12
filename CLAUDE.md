@@ -1,5 +1,41 @@
 # Sistema de Engenharia com Agentes
 
+## Precedência sobre CLAUDE.md global
+
+Este arquivo (`CLAUDE.md` do projeto) **tem precedência** sobre qualquer `CLAUDE.md` global em `~/.claude/CLAUDE.md` quando há **conflito de governance, papéis, fluxos ou regras**.
+
+### Regras de precedência
+
+| Tópico | Fonte autoritativa |
+|--------|---------------------|
+| **Papéis, identidade, fronteiras de agentes** | Este arquivo + `.claude/squad/template/agents/{name}.md` |
+| **Fluxos de projeto (Fluxos 1-5)** | Este arquivo → "Fluxos de Projeto" |
+| **Gates obrigatórios** | Este arquivo → "Gate Obrigatórios" |
+| **Modos MVP/Production** | Este arquivo → "MVP vs Production Mode" |
+| **Hierarquia e canais** | Este arquivo → "Hierarquia" e "Regra de Interação" |
+| **Stack do projeto** | Architect via `docs/stack-conventions/` + ADR específico (NÃO o stack default global) |
+| **Disciplina de testes (cobertura)** | Modo do projeto definido aqui (não baseline pessoal global) |
+| **Continuidade multi-usuário** | Este arquivo → "Multi-user Continuity" |
+
+### O que vem do CLAUDE.md global (sem conflito)
+
+- **Idioma e estilo** de comunicação (ex: pt-BR)
+- **Preferências pessoais** de tooling
+- **Princípios genéricos** (Clean Code, SOLID) quando este arquivo não especifica
+- **Stack default** APENAS se Architect ainda não decidiu (durante exploração inicial)
+
+### Em caso de ambiguidade
+
+**Este arquivo vence.** Squad governance é detalhada e específica; preferências globais são fallback.
+
+Em particular:
+
+- **Não há "Tech Lead global"** com autoridade própria — TL é papel definido em `.claude/squad/template/agents/tech-lead.md` e segue regras deste arquivo
+- **Stack não é hardcoded** — Architect decide consultando `docs/stack-conventions/` e registra em ADR
+- **Regras absolutas globais** (ex: "nunca escreva código") são relaxadas pela governance da squad (TL pode escrever ≤5 linhas em correção crítica)
+
+---
+
 ## Objetivo
 
 Este repositório define um sistema de desenvolvimento de software baseado em agentes especializados.
