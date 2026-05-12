@@ -30,8 +30,8 @@ Esta skill conduz o **Fluxo 1** de projeto novo sem artefatos prévios, conforme
 Cada passo abaixo lista o agente responsável. Ver spec completo em `.claude/squad/template/agents/{nome}.md`.
 
 ```
-1. Usuário aciona [Product Owner](../../../.claude/squad/template/agents/product-owner.md) com briefing
-2. PO cria: PRD + Spec Funcional + Histórias com critérios de aceite (incluindo RNFs) — usa skill /squad-prd-template
+1. Usuário aciona [Product Owner](../../../.claude/squad/template/agents/product-owner.md) (com ou sem briefing prévio)
+2. PO cria: PRD + Spec Funcional + Histórias com critérios de aceite (RNFs) — usa skill /squad-prd-template que oferece **Modo Briefing** (usuário cola briefing pronto) ou **Modo Entrevista** (PO entrevista do zero)
 3. PO apresenta ao usuário
 4. Usuário aprova, ajusta ou rejeita (GATE — bloqueia tudo)
 5. PO registra mudanças em .claude/squad/project/DECISIONS_LOG.md
