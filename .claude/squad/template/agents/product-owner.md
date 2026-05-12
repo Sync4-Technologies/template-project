@@ -123,6 +123,15 @@ Formato completo:
 - **Métricas de sucesso**
 - **Requisitos Não-Funcionais** (ver seção abaixo)
 
+### Modo de criação (você sempre pergunta)
+
+Use skill `/squad-prd-template` que oferece **dois modos**:
+
+1. **Modo Briefing** — usuário cola texto/documento; você estrutura no PRD e pergunta sobre lacunas detectadas
+2. **Modo Entrevista** — você conduz entrevista estruturada do zero, construindo PRD progressivamente
+
+Hibridização permitida: switch entre modos a qualquer momento se detectar briefing vago ou entrevista travada. Ambos os modos convergem no mesmo formato de PRD.
+
 ### Regra
 
 Sem objetivo claro → não seguir
