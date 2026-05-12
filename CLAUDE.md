@@ -127,7 +127,7 @@ Os agentes estão definidos em `.claude/squad/template/agents/`. Para índice ta
 
 ## Papéis dos Agentes
 
-> Resumo. Definição completa de cada agente em `/.claude/squad/template/agents/{name}.md`. Índice tabular em [AGENTS.md](AGENTS.md).
+> Resumo. Definição completa de cada agente em `.claude/squad/template/agents/{name}.md`. Índice tabular em [AGENTS.md](AGENTS.md).
 
 ### Opus (decisão e raciocínio sistêmico)
 
@@ -170,8 +170,11 @@ Todos os outros agentes:
 
 ```
 Usuário (autoridade máxima)
-├── Product Owner — define o QUÊ (par do Tech Lead)
-└── Tech Lead — define o COMO e orquestra
+├── Product Owner — define o QUÊ (par do Tech Lead e Product Designer)
+├── Tech Lead — define o COMO e orquestra
+├── Product Designer — define visual/UX (consultor; quando alocado é peer)
+│
+└── Tech Lead orquestra os demais:
     ├── Architect
     ├── Backend / Frontend / Mobile / AI Engineer
     ├── QA / Code Reviewer / Security Engineer
@@ -198,7 +201,7 @@ Product Owner, Tech Lead e Product Designer (quando alocado) são **pares**:
 5. Security Engineer (Fase 1) faz threat model sobre arquitetura — em features críticas
 6. Tech Lead apresenta arquitetura ao usuário
 7. Usuário aprova ou rejeita
-8. Architect define contratos em `/contracts`
+8. Architect define contratos em `.claude/squad/project/contracts/`
 9. QA define testes (TDD)
 10. Engineers implementam
 11. CI automatizado: testes + lint + build + SAST (gate técnico)
@@ -331,10 +334,10 @@ A definição de modo é responsabilidade do **Tech Lead** com base no contexto 
 ## Memória do Sistema
 
 Arquivos obrigatórios:
-- /.claude/squad/project/ARCHITECTURE.md
-- /.claude/squad/project/ADR/
-- /.claude/squad/project/TASK_BOARD.md
-- /.claude/squad/project/contracts/
+- .claude/squad/project/ARCHITECTURE.md
+- .claude/squad/project/ADR/
+- .claude/squad/project/TASK_BOARD.md
+- .claude/squad/project/contracts/
 
 Regra:
 Se não está documentado, não existe.
@@ -367,7 +370,7 @@ Uma entrega só está em **Squad Done** quando TODOS os itens abaixo estão aten
 - [ ] `.claude/squad/project/TASK_BOARD.md` atualizado (tarefa movida para Done)
 - [ ] Feature flag definida e testada em ambos os paths (features críticas) — ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`
 - [ ] Product Designer aprovou (apenas em features visuais críticas) — ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md`
-- [ ] Aderência ao Design System em `/.claude/squad/project/design-system/` (sem hardcoded tokens; patterns respeitados)
+- [ ] Aderência ao Design System em `.claude/squad/project/design-system/` (sem hardcoded tokens; patterns respeitados)
 
 ---
 
@@ -452,8 +455,8 @@ Segurança é responsabilidade de TODOS, mas cada agente tem fronteira clara:
 10. Architect ajusta arquitetura + Product Designer ajusta DS conforme threats e contexto
 11. TL apresenta arquitetura + DS proposto ao usuário (incluindo decisões de stack e mitigações de segurança)
 12. Usuário aprova, ajusta ou rejeita
-13. Architect define contratos em /contracts
-13a. Product Designer documenta DS em /.claude/squad/project/design-system/ (tokens + componentes + patterns)
+13. Architect define contratos em `.claude/squad/project/contracts/`
+13a. Product Designer documenta DS em .claude/squad/project/design-system/ (tokens + componentes + patterns)
 14. QA define testes → Engineers implementam → CI (testes/lint/build/SAST) → em paralelo: QA exploratório + Code Review + Security Engineer (Fase 2 em features críticas) + Product Designer review (em features visuais críticas) → Quality Gates (TL integra) → DevOps deploy (canary/blue-green em Production)
 15. TL valida entrega final e atualiza memória do sistema
 ```
@@ -471,11 +474,11 @@ Nota: usuário tem autoridade total para ignorar sugestões do PO
 ### Fluxo 3 — Projeto Existente para Continuidade
 ```
 1. Usuário aciona TL com pedido de continuidade
-2. TL lê codebase + `/memory` (`ARCHITECTURE.md`, `TASK_BOARD.md`, `ADR/`)
+2. TL lê codebase + `.claude/squad/project/` (`ARCHITECTURE.md`, `TASK_BOARD.md`, `ADR/`)
 3. TL aciona PO para: atualizar docs se necessário, confirmar prioridades
 4. PO alinha com usuário
 5. TL cria plano de continuidade baseado no estado atual
-6. Quando primeira feature VISUAL chega: TL verifica /.claude/squad/project/design-system/. Se não existe → TL aciona Product Designer (/squad-design-extract) para extrair DS da UI atual antes de Frontend/Mobile prosseguirem
+6. Quando primeira feature VISUAL chega: TL verifica .claude/squad/project/design-system/. Se não existe → TL aciona Product Designer (/squad-design-extract) para extrair DS da UI atual antes de Frontend/Mobile prosseguirem
 7. Fluxo padrão para as tarefas definidas
 ```
 

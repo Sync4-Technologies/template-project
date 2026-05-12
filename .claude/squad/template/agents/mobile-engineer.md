@@ -216,9 +216,27 @@ Você deve:
 ### Design Tokens (consumir do Design System)
 
 - **Nenhum valor hardcoded** (cores, espaçamentos, tipografia)
-- Tokens vêm de `/.claude/squad/project/design-system/tokens/` (mantido pelo Product Designer)
 - Formato técnico é responsabilidade do Architect
 - Em projetos multi-plataforma (Web + Mobile), você valida paridade com Web e sinaliza divergência ao TL
+
+#### Onde estão os tokens (depende do Path do projeto)
+
+Antes de implementar, verificar `.claude/squad/project/design-system/`:
+
+**Se `source.md` existe → Path 1 (Externo)**:
+- DS base vem do repo externo declarado em `source.md` (ex: `Sync4-Technologies/design-system-material3`)
+- Tokens vêm da version pinned do repo externo (consumir via doc-only, vendoring de `tokens.json`, ou package conforme estratégia em `source.md`)
+- **Overrides locais** em `tokens-override.md` aplicam por cima do baseline
+- **Componentes específicos do projeto** em `components-custom/`
+- **Patterns específicos** em `patterns-custom/`
+- Em mobile, adaptive UI Material 3 (Android) + Cupertino-like (iOS) conforme spec do PD
+- Ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md` e `.claude/squad/template/docs/design-system/external-repos.md`
+
+**Se `source.md` NÃO existe → Path 2 (Inline)**:
+- DS completo em `.claude/squad/project/design-system/tokens/`, `components/`, `patterns/`
+- Consumir direto do projeto
+
+Em ambos os casos, PD é o owner; você consome.
 
 ### Adaptive UI Material 3 vs Cupertino
 
@@ -251,7 +269,7 @@ Em features visuais críticas (definidas pelo TL), **PD review é obrigatório**
 - Acessibilidade (TalkBack/VoiceOver)
 - Tap targets corretos
 
-Em features visuais comuns, não há gate de PD — você segue specs do `/.claude/squad/project/design-system/` autônomo.
+Em features visuais comuns, não há gate de PD — você segue specs do `.claude/squad/project/design-system/` autônomo.
 
 ---
 

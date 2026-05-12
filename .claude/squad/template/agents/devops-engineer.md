@@ -427,7 +427,7 @@ Você deve manter:
 
 - runbook para cada tipo de incidente recorrente
 - playbook de resposta a incidente (quem faz o quê, em qual ordem)
-- localização: `/.claude/squad/project/runbooks/`
+- localização: `.claude/squad/project/runbooks/`
 
 Formato mínimo de runbook:
 ```
@@ -507,7 +507,7 @@ Você é responsável por:
 
 ### Disaster Recovery (Production Mode)
 
-- **runbook de DR** documentado em `/.claude/squad/project/runbooks/disaster-recovery.md`
+- **runbook de DR** documentado em `.claude/squad/project/runbooks/disaster-recovery.md`
 - **multi-AZ** mínimo; **multi-region** quando RTO/RPO exigirem
 - **DR drill** semestral em Production Mode crítico
 - **dependências externas** consideradas (banco gerenciado, S3, etc.)

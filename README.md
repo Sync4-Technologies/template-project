@@ -194,7 +194,7 @@ adapters/
 
 ### Design System (Material 3 default)
 
-Documentação viva do DS em `/.claude/squad/project/design-system/`. Mantido pelo **Product Designer**; consumido por Frontend/Mobile.
+Documentação viva do DS em `.claude/squad/project/design-system/`. Mantido pelo **Product Designer**; consumido por Frontend/Mobile.
 
 **Default:** Material Design 3 (cross-platform Web + Mobile, open source, maduro)
 
@@ -206,7 +206,7 @@ Ver [`.claude/squad/template/memory/ADR/ADR-005-design-system.md`](.claude/squad
 
 ### Stack Conventions
 
-Convenções idiomáticas por linguagem/framework em `/.claude/squad/template/docs/stack-conventions/`. Cada documento define **quando usar**, **tooling**, **layout**, **padrões idiomáticos**, **comandos** e **anti-patterns**.
+Convenções idiomáticas por linguagem/framework em `.claude/squad/template/docs/stack-conventions/`. Cada documento define **quando usar**, **tooling**, **layout**, **padrões idiomáticos**, **comandos** e **anti-patterns**.
 
 **Backend:** Node.js, Python, PHP, Java, Go
 **Frontend:** React + Next.js, Vue + Nuxt
@@ -467,7 +467,7 @@ Aplicáveis a todos os agentes de engenharia:
 | Decisões versionadas | `.claude/squad/project/ADR/` |
 | Decisões rápidas | `.claude/squad/project/DECISIONS_LOG.md` |
 | Tarefas em andamento | `.claude/squad/project/TASK_BOARD.md` |
-| Contratos do sistema | `/.claude/squad/project/contracts/` |
+| Contratos do sistema | `.claude/squad/project/contracts/` |
 | PRD e specs | `/docs/` |
 | Padrões de squad | Aqui (este README) |
 

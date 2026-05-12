@@ -172,10 +172,10 @@ Você verifica:
 Em código frontend e mobile:
 
 - **Nenhum valor hardcoded** que deveria ser token (cores, espaçamentos, tipografia, sombras, radius)
-- Imports de tokens corretos (do `/.claude/squad/project/design-system/` ou da lib do DS, ex: MUI theme)
+- Imports de tokens corretos (do `.claude/squad/project/design-system/` ou da lib do DS, ex: MUI theme)
 - Componentes do DS usados quando aplicável (não recriar Button local quando DS tem Button)
 - Estilos inline minimizados — preferir uso de tokens via styled-components / Tailwind / StyleSheet
-- Aderência ao DS documentado em `/.claude/squad/project/design-system/`
+- Aderência ao DS documentado em `.claude/squad/project/design-system/`
 
 ### Quando rejeitar
 

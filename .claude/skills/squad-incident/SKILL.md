@@ -173,7 +173,7 @@ Lições aprendidas:
 
 ### 9. PROPAGAR aprendizados
 
-- Adicionar runbook em `/.claude/squad/project/runbooks/[tipo].md` se incidente é recorrente ou tem mitigação repetível
+- Adicionar runbook em `.claude/squad/project/runbooks/[tipo].md` se incidente é recorrente ou tem mitigação repetível
 - Atualizar `.claude/squad/project/ARCHITECTURE.md` se há mudança estrutural
 - Criar ADR se decisão técnica relevante foi tomada
 - Atualizar `.claude/squad/project/DECISIONS_LOG.md` com tag `post-mortem`
