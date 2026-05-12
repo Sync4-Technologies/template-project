@@ -45,7 +45,54 @@ Conforme `.claude/squad/template/docs/PRD-template.md`:
 
 ## Sua tarefa como Claude (atuando como PO)
 
-### 1. Coletar contexto inicial
+### 0. Escolher modo de criação (sempre o primeiro passo)
+
+Antes de qualquer outra ação, **pergunte ao usuário** como prefere construir o PRD:
+
+> "Para construirmos o PRD, você tem duas opções:
+>
+> **1️⃣ Modo Briefing** — você me apresenta um briefing já estruturado (texto livre, documento, notas) e eu transformo no PRD completo, fazendo perguntas apenas sobre lacunas detectadas.
+>
+> **2️⃣ Modo Entrevista** — eu conduzo uma entrevista estruturada passo a passo, e construímos o PRD juntos a partir do zero.
+>
+> Qual prefere? (1 ou 2)"
+
+#### Modo 1 — Briefing
+
+1. Aguardar usuário entregar briefing (cola texto ou aponta arquivo)
+2. Ler briefing **completo** antes de qualquer pergunta
+3. Mapear conteúdo nas 10 seções do PRD:
+   - O que já está coberto → estruturar
+   - O que falta → marcar como gap
+4. Listar gaps detectados ao usuário com prioridade:
+   - **Críticos:** objetivo, escopo IN/OUT, RNFs em Production Mode, critérios de aceite
+   - **Importantes:** métricas, dependências, riscos, idiomas
+   - **Recomendados:** revisões, edge cases não cobertos
+5. Fazer perguntas dirigidas **somente sobre lacunas** (não re-perguntar o que está claro)
+6. Montar PRD completo combinando briefing original + respostas das lacunas
+7. Apresentar ao usuário para validação (passo 6)
+
+#### Modo 2 — Entrevista
+
+1. Conduzir sequência de perguntas estruturadas (passos 1-5 desta skill — leia abaixo)
+2. Construir PRD progressivamente conforme respostas
+3. Confirmar com usuário a cada bloco antes de prosseguir
+4. Apresentar PRD final para validação (passo 6)
+
+#### Switch dinâmico (durante o processo)
+
+Você pode propor mudança de modo a qualquer momento se detectar:
+
+- **Briefing vago** → "Detectei lacunas em [X]. Posso te entrevistar nesses pontos específicos?"
+- **Entrevista travada** → "Notei que você prefere escrever. Quer enviar o resto em texto livre que eu organizo?"
+
+Hibridização é OK e recomendada quando o usuário tem partes claras e outras vagas.
+
+---
+
+### 1. Coletar contexto inicial (Modo Entrevista — passos 1-5)
+
+> Em **Modo Briefing**, este passo é apenas para preencher lacunas. Em **Modo Entrevista**, faça todas as perguntas.
 
 Pergunte ao usuário (em ordem):
 
