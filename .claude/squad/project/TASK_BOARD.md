@@ -5,6 +5,21 @@
 
 ---
 
+## 🎯 Current Focus
+
+> Pointer "onde paramos". Atualizado a cada sessão pelo TL (skill `/squad-handoff` automatiza).
+> Primeiro lugar que User B olha ao retomar (skill `/squad-resume` lê esta seção primeiro).
+
+- **Última sessão:** YYYY-MM-DD por [usuário]
+- **Em andamento:** [tarefa principal — link para card abaixo]
+- **Próximo passo:** [ação específica e concreta]
+- **Bloqueios:** [se houver]
+- **PR ativo:** [link se aplicável]
+- **Branch ativo:** [nome do branch]
+- **Modo do projeto:** [MVP / Production]
+
+---
+
 ## Formato do Card
 
 ```
@@ -62,3 +77,7 @@
 - `scope-change` — mudança de escopo durante execução
 - `security` — tarefa com impacto em segurança
 - `breaking-change` — altera contrato existente
+- `design-debt` — drift visual identificado em audit do Product Designer
+- `ds-update` — bump de version do DS externo
+- `flag-cleanup` — remoção de feature flag após rollout 100%
+- `handoff` — tarefa preparada para retomada por outro usuário

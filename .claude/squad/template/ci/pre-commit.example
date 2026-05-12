@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Template Pre-commit Hook — Memory Reminder
+#
+# Detecta commits que tocam código de produção sem atualização correspondente
+# em .claude/squad/project/. Avisa (não bloqueia por default).
+#
+# Instalação:
+#   cp .claude/squad/template/ci/pre-commit.example .githooks/pre-commit
+#   chmod +x .githooks/pre-commit
+#   git config core.hooksPath .githooks
+#
+# Para endurecer (bloquear commit em vez de avisar):
+#   Remover linha "exit 0" no final e descomentar o "exit 1".
+
+set -u
+
+# Padrões de paths considerados "código de produção"
+CODE_PATTERN='^(src/|lib/|app/|backend/|frontend/|mobile/|api/|services/|domain/|adapters/|application/|infrastructure/)'
+
+# Padrões de paths considerados "memory da squad"
+MEMORY_PATTERN='\.claude/squad/project/(DECISIONS_LOG\.md|ARCHITECTURE\.md|ADR/|agent-memory/)'
+
+# Lista arquivos staged
+STAGED="$(git diff --cached --name-only)"
+
+if [[ -z "${STAGED}" ]]; then
+  exit 0
+fi
+
+# Detecta mudança em código
+CODE_CHANGED=false
+if echo "${STAGED}" | grep -qE "${CODE_PATTERN}"; then
+  CODE_CHANGED=true
+fi
+
+# Se não há mudança em código, prosseguir
+if [[ "${CODE_CHANGED}" != "true" ]]; then
+  exit 0
+fi
+
+# Detecta atualização em memory
+MEMORY_UPDATED=false
+if echo "${STAGED}" | grep -qE "${MEMORY_PATTERN}"; then
+  MEMORY_UPDATED=true
+fi
+
+# Se memory atualizado, prosseguir
+if [[ "${MEMORY_UPDATED}" == "true" ]]; then
+  exit 0
+fi
+
+# Não atualizou memory — avisar
+cat <<'EOF'
+
+⚠️  Squad Memory Reminder
+
+Este commit toca código de produção mas não atualiza memory da squad:
+
+  - .claude/squad/project/DECISIONS_LOG.md
+  - .claude/squad/project/ARCHITECTURE.md
+  - .claude/squad/project/ADR/
+  - .claude/squad/project/agent-memory/
+
+Se a mudança implica decisão técnica relevante, mudança arquitetural,
+ou learning do agente, considere atualizar memory ANTES de commitar.
+
+Para handoff multi-usuário, considere acionar /squad-handoff antes de
+encerrar sessão.
+
+Para bypassar este aviso: git commit --no-verify
+
+EOF
+
+# Default: warning não-bloqueante (exit 0)
+exit 0
+
+# Para endurecer (bloquear commit): comentar exit 0 acima e descomentar abaixo
+# exit 1
