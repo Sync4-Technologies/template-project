@@ -155,6 +155,30 @@ Tentar identificar se o produto usa um DS:
 
 Esta inferência ajuda Frontend/Mobile entender contexto, mas **não muda nada na implementação** — produto existente continua como está.
 
+### 5.5. Avaliar similaridade com repo externo conhecido
+
+Consultar `.claude/squad/template/docs/design-system/external-repos.md` para verificar se o DS inferido tem repo externo suportado pela squad.
+
+Se inferido como Material 3 e repo `Sync4-Technologies/design-system-material3` está disponível:
+
+- **Documentar inline POR ORA** (esta skill não propõe mudanças visuais)
+- **Propor migração futura para externo** em sprint específica
+- Criar entrada em `.claude/squad/project/agent-memory/product-designer.md`:
+  ```
+  ## Migração potencial DS → externo (data)
+  - DS inferido: Material 3 (com customizações)
+  - Repo externo disponível: Sync4-Technologies/design-system-material3
+  - Razão para adiar migração: extração documentou estado atual; migração é decisão estrutural (ver ADR-005)
+  - Sprint sugerida para avaliar: [definir com TL após audit]
+  ```
+
+Se inferido como Custom / sem similar externo:
+
+- Manter inline definitivo
+- Justificar em ADR específico do projeto (criar ADR-NNN no `project/ADR/`)
+
+**Regra crítica:** esta skill não migra para externo automaticamente. Migração é decisão estrutural que envolve usuário (via TL).
+
 ### 6. Apresentar resultado ao Tech Lead
 
 Formato:
