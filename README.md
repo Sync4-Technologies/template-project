@@ -267,6 +267,16 @@ A squad inclui automações opcionais via Claude Code. Ver [`.claude/squad/templ
 - `PostToolUse` em edição de `.claude/squad/project/ARCHITECTURE.md` → lembra de atualizar `.claude/squad/project/DECISIONS_LOG.md`
 - `PreToolUse` em `git commit` (opt-in) → sugere atualizar memory quando há commit de código sem memory correspondente
 
+**CI Enforcement (opcional):**
+
+Templates em [`.claude/squad/template/ci/`](.claude/squad/template/ci/) para projetos que querem enforcement automatizado da disciplina de memory:
+
+- [`memory-check.yml.example`](.claude/squad/template/ci/memory-check.yml.example) — GitHub Actions valida PRs (comment em PR sugerindo update de memory)
+- [`pre-commit.example`](.claude/squad/template/ci/pre-commit.example) — git hook local (aviso antes de commit)
+- [`README.md`](.claude/squad/template/ci/README.md) — instalação, customização e governança
+
+Opt-in: copiar para localização ativa (`.github/workflows/` para CI, `.githooks/` para git hooks). Default não-bloqueante (warning, não fail). Projeto pode endurecer em Production Mode.
+
 Skills/hooks são governadas por critério rigoroso (≥3 usos para criar; revisão trimestral; remover não-usadas em 90 dias). Não são criadas autonomamente — TL propõe, usuário aprova.
 
 ### Feature Flags (default em features críticas)
