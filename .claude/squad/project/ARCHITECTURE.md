@@ -130,7 +130,7 @@ Engineers consultam estes documentos ao implementar.
 - **Eventos:** [ex: Event-driven via RabbitMQ / Kafka / SQS]
 - **Segurança:** [ex: JWT + refresh token, RBAC]
 - **Feature Flags:** [ferramenta + governança — ver `.claude/squad/template/memory/ADR/ADR-003-feature-flags.md`]
-- **Design System:** [DS escolhido — ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md` e `/.claude/squad/project/design-system/`]
+- **Design System:** [DS escolhido — ver `.claude/squad/template/memory/ADR/ADR-005-design-system.md` e `.claude/squad/project/design-system/`]
 
 ---
 
@@ -141,7 +141,7 @@ Engineers consultam estes documentos ao implementar.
 | DS escolhido | [Material 3 (default) / shadcn-ui / Carbon / Polaris / Atlassian / Custom] |
 | Versão | [versão] |
 | Implementação | [MUI vN / Vuetify / Material Web Components / react-native-paper / Flutter Material / etc.] |
-| Documentação | `/.claude/squad/project/design-system/` |
+| Documentação | `.claude/squad/project/design-system/` |
 | ADR autoritativa | `.claude/squad/template/memory/ADR/ADR-005-design-system.md` |
 | ADR específico (se DS != default) | [link] |
 | Última extração / audit | [data se aplicável] |
@@ -174,7 +174,7 @@ Engineers consultam estes documentos ao implementar.
 
 - **Multi-AZ:** [sim/não]
 - **Multi-Region:** [sim/não — quando aplicável]
-- **Runbook de DR:** [link para `/.claude/squad/project/runbooks/disaster-recovery.md`]
+- **Runbook de DR:** [link para `.claude/squad/project/runbooks/disaster-recovery.md`]
 - **Última validação de restore:** [data]
 - **Última DR drill:** [data]
 

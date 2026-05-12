@@ -1,7 +1,7 @@
 # AGENTS.md
 
 > Índice tool-agnostic da squad de agentes deste projeto.
-> Para regras detalhadas, ver `CLAUDE.md` (governança) e `/.claude/squad/template/agents/` (definições por agente).
+> Para regras detalhadas, ver `CLAUDE.md` (governança) e `.claude/squad/template/agents/` (definições por agente).
 
 ---
 
@@ -48,9 +48,12 @@ Squad de engenharia de software baseada em agentes especializados. O objetivo é
 
 ```
 Usuário (autoridade máxima)
-├── Product Owner — define o QUÊ (par do Tech Lead)
-└── Tech Lead — define o COMO e orquestra
-    └── todos os outros agentes
+├── Product Owner — define o QUÊ (par do Tech Lead e Product Designer)
+├── Tech Lead — define o COMO e orquestra
+├── Product Designer — define visual/UX (consultor; peer quando alocado)
+│
+└── Tech Lead orquestra os demais:
+    └── Architect, Engineers, QA, Code Reviewer, Security, DevOps, Support, Data
 ```
 
 - **PO, TL e Product Designer** podem interagir diretamente com o usuário

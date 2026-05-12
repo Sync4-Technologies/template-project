@@ -277,7 +277,7 @@ Todo prompt em produção deve ser:
 - versionado (semver: v1.0.0)
 - testado contra cenários definidos antes de rollout
 - comparado com versão anterior (regression suite)
-- registrado em `/.claude/squad/project/contracts/prompts/` ou equivalente
+- registrado em `.claude/squad/project/contracts/prompts/` ou equivalente
 - mudança breaking → bump major + comunicação ao TL
 
 ---
@@ -418,7 +418,7 @@ Uma tarefa só está pronta quando:
 - comportamento previsível
 - output validado por schema
 - testes definidos e passando (cobertura conforme modo)
-- prompt versionado em `/.claude/squad/project/contracts/prompts/`
+- prompt versionado em `.claude/squad/project/contracts/prompts/`
 - fallback determinístico implementado
 - integração funcionando
 - README do módulo atualizado (propósito, prompts, decisões relevantes)

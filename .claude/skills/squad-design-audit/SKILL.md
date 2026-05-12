@@ -21,7 +21,7 @@ Conduz o PD em audit periódico de consistência visual de um produto.
 ## Quando NÃO usar
 
 - Produto novo (sem histórico para auditar)
-- Sem `/.claude/squad/project/design-system/` populado → use `/squad-design-extract` primeiro
+- Sem `.claude/squad/project/design-system/` populado → use `/squad-design-extract` primeiro
 - Decisão pontual sobre componente → não exige audit
 
 ---
@@ -55,7 +55,7 @@ Ler `.claude/squad/project/design-system/source.md`:
 
 #### Tokens em uso
 
-- Comparar tokens declarados em `/.claude/squad/project/design-system/tokens/` com tokens efetivamente usados no código
+- Comparar tokens declarados em `.claude/squad/project/design-system/tokens/` com tokens efetivamente usados no código
 - Detectar:
   - **Tokens documentados mas não usados** — candidatos a remoção
   - **Valores hardcoded** que deveriam ser tokens — drift
@@ -63,7 +63,7 @@ Ler `.claude/squad/project/design-system/source.md`:
 
 #### Componentes
 
-Comparar specs em `/.claude/squad/project/design-system/components/` com implementações:
+Comparar specs em `.claude/squad/project/design-system/components/` com implementações:
 
 - Estados faltando (componente documenta hover mas implementação não tem)
 - Variantes não documentadas (implementação tem variante "compact" não documentada)
@@ -176,7 +176,7 @@ Para cada drift de severidade média ou superior:
 - **Prioridade:** Alta / Média / Baixa
 - **Tag:** design-debt
 - **Contexto:** Audit YYYY-MM-DD — [tela/componente]
-- **Spec correta:** [link para `/.claude/squad/project/design-system/...`]
+- **Spec correta:** [link para `.claude/squad/project/design-system/...`]
 - **Bloqueios:** Nenhum
 ```
 

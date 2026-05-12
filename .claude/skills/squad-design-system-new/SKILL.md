@@ -208,13 +208,13 @@ Próximo passo: TL apresenta ao usuário para aprovação (gate).
 
 DS proposto vai ao usuário via TL. Possíveis resultados:
 
-- **Aprovado** — popular `/.claude/squad/project/design-system/` em detalhe; Frontend/Mobile podem começar
+- **Aprovado** — popular `.claude/squad/project/design-system/` em detalhe; Frontend/Mobile podem começar
 - **Aprovado com ajustes** — incorporar mudanças (paleta, tipografia) antes de detalhar
 - **Rejeitado** — voltar para proposta alternativa (raro)
 
 ### 8. Documentação final
 
-Com aprovação, populá-la em `/.claude/squad/project/design-system/` em nível adequado para Frontend/Mobile consumirem:
+Com aprovação, populá-la em `.claude/squad/project/design-system/` em nível adequado para Frontend/Mobile consumirem:
 
 - Cada token doc com tabela completa
 - Cada componente com todos os estados + exemplo de uso

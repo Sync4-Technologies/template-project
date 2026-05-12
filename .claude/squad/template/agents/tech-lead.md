@@ -695,7 +695,7 @@ São features visuais críticas (exigem PD review antes de Squad Done):
 
 ### Regra
 
-PD é **recurso, não gargalo**. Em features comuns, Frontend/Mobile seguem `/.claude/squad/project/design-system/` autônomos. Você só convoca PD para features visuais críticas ou quando há decisão estrutural visual.
+PD é **recurso, não gargalo**. Em features comuns, Frontend/Mobile seguem `.claude/squad/project/design-system/` autônomos. Você só convoca PD para features visuais críticas ou quando há decisão estrutural visual.
 
 ### Decisões visuais sempre via você
 

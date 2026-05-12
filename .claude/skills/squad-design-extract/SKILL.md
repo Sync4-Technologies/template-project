@@ -14,7 +14,7 @@ Conduz o PD na extração de DS de produto existente sem documentação visual.
 ## Quando usar
 
 - Projeto existente sob domínio da squad (Fluxo 3 ou 5)
-- Não há `/.claude/squad/project/design-system/` populado
+- Não há `.claude/squad/project/design-system/` populado
 - Primeira feature visual chegou — bloqueia implementação até DS estar documentado
 - TL acionou você para extrair antes de Frontend/Mobile prosseguirem
 
@@ -107,7 +107,7 @@ Detectar nível atual (sem julgar — apenas documentar):
 - Labels semânticos
 - Suporte a screen readers
 
-### 3. Documentar em `/.claude/squad/project/design-system/`
+### 3. Documentar em `.claude/squad/project/design-system/`
 
 Popular o diretório com **o que existe** (não com o ideal):
 
@@ -191,15 +191,15 @@ Cobertura estimada: X% das telas do produto
 
 DS inferido: [Material / iOS / Bootstrap / Custom / Misto]
 
-Tokens documentados em /.claude/squad/project/design-system/tokens/:
+Tokens documentados em .claude/squad/project/design-system/tokens/:
 - N cores semânticas mapeadas
 - N tamanhos de tipografia
 - Escala de espaçamento: [valores]
 
-Componentes documentados em /.claude/squad/project/design-system/components/:
+Componentes documentados em .claude/squad/project/design-system/components/:
 - [N componentes]
 
-Patterns documentados em /.claude/squad/project/design-system/patterns/:
+Patterns documentados em .claude/squad/project/design-system/patterns/:
 - [N patterns]
 
 Acessibilidade atual: [nível observado]

@@ -111,7 +111,7 @@ Eles podem te perguntar **dúvidas pontuais** sem orquestração:
 - "Botão primário tem qual altura?"
 - "Como tratar erro de validação visualmente?"
 
-Você responde com base no `/.claude/squad/project/design-system/`.
+Você responde com base no `.claude/squad/project/design-system/`.
 
 ### Decisões via Tech Lead (sempre)
 
@@ -202,12 +202,12 @@ Você:
 - Extrai tipografia (fonts, pesos, tamanhos)
 - Extrai espaçamentos consistentes
 - Identifica componentes recorrentes
-- Documenta tudo em `/.claude/squad/project/design-system/`
+- Documenta tudo em `.claude/squad/project/design-system/`
 - Sinaliza inconsistências encontradas (sem propor mudanças — apenas documenta o que existe)
 
 ### 4. Documenta o DS
 
-Em `/.claude/squad/project/design-system/`:
+Em `.claude/squad/project/design-system/`:
 
 ```
 README.md           # índice + DS escolhido + justificativa
@@ -240,7 +240,7 @@ Quando feature exige componente que não existe no DS:
 - Variantes (size, variant, etc.)
 - Acessibilidade (ARIA, keyboard, contrast)
 - Exemplo de uso
-- Adiciona a `/.claude/squad/project/design-system/components/`
+- Adiciona a `.claude/squad/project/design-system/components/`
 
 ### 6. Review de feature visual crítica
 
@@ -486,7 +486,7 @@ Quando interage com usuário, mantém TL informado dos pontos relevantes.
 Sua entrega só está pronta quando:
 
 - DS escolhido ou extraído com justificativa documentada
-- Tokens especificados em `/.claude/squad/project/design-system/tokens/`
+- Tokens especificados em `.claude/squad/project/design-system/tokens/`
 - Componentes-chave especificados (estados, variantes, a11y)
 - Patterns documentados (loading, empty, error, navegação)
 - Acessibilidade declarada
@@ -511,7 +511,7 @@ Você é um dos três pontos de entrada para o usuário (junto com PO e TL), mas
 
 ## Se Frontend/Mobile interagir diretamente com você
 
-Eles **podem** te procurar para **dúvidas pontuais**. Você responde com base em `/.claude/squad/project/design-system/`.
+Eles **podem** te procurar para **dúvidas pontuais**. Você responde com base em `.claude/squad/project/design-system/`.
 
 Se a "dúvida" revelar uma **decisão** subjacente (ex: "preciso de um componente novo"), você:
 
