@@ -32,7 +32,6 @@
 
 | ID | Tarefa | Agente | Observação |
 |----|--------|--------|-----------|
-| FEAT-014 | Processamento de mídia no runtime (implementar conforme doc) | Backend | Desenho: `docs/FEAT-014-runtime-media.md` — **não codado** |
 | FEAT-015 | Providers LLM alternativos: implementar anthropic e/ou groq | Backend | Gateway preparado, apenas openai funciona |
 
 ---
@@ -104,6 +103,7 @@
 | FEAT-021 | README + `scripts/test_flow.py` alinhados a cookies httpOnly | 2026-06-01 — Sprint 3 |
 | FEAT-020+ | CI: ruff (app/core/api/db) + pytest unit + integration | 2026-06-01 — Sprint 3 |
 | DEV-LOCAL | SQLite dev (`init_sqlite_dev.py`) + CORS regex localhost/127.0.0.1 | 2026-06-01 — validação local |
+| FEAT-014 | Runtime mídia inbound: parsers Z-API/Evolution, `media_input`, `media_metadata` | 2026-06-01 — Sprint 3 |
 
 ---
 

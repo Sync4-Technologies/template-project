@@ -1,6 +1,6 @@
 # FEAT-014 — Runtime de mídia (áudio / imagem)
 
-> Desenho técnico aprovado para implementação. **Não codar** fora deste escopo sem revisão do TL.
+> Implementado em 2026-06-01 (backend `feat(FEAT-014)`). Documento de referência para fase 2 (outbound).
 
 ## Contexto
 

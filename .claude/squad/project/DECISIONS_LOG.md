@@ -31,6 +31,7 @@
 [2026-06-01] [Backend] FEAT-018: cron ARQ 03:00 `cleanup_expired_tokens` | refresh revogados/expirados; email/reset usados ou expirados
 [2026-06-01] [DevOps] CI: ruff em app/api/core/db + pytest unit + integration | Gates ampliados sem lintar legado inteiro de uma vez
 [2026-06-01] [Backend] CORS dev: regex `localhost|127.0.0.1` qualquer porta | Vite 8080 e cadastro local validados
+[2026-06-01] [Backend] FEAT-014: Whisper + vision OpenAI; download via safe_get; early_reply se multimedia off | Doc FEAT-014-runtime-media.md; migração 0009
 
 ## Decisões da squad (a partir do kickoff)
 
