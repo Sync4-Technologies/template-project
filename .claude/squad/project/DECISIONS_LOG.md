@@ -32,6 +32,8 @@
 [2026-06-01] [DevOps] CI: ruff em app/api/core/db + pytest unit + integration | Gates ampliados sem lintar legado inteiro de uma vez
 [2026-06-01] [Backend] CORS dev: regex `localhost|127.0.0.1` qualquer porta | Vite 8080 e cadastro local validados
 [2026-06-01] [Backend] FEAT-014: Whisper + vision OpenAI; download via safe_get; early_reply se multimedia off | Doc FEAT-014-runtime-media.md; migração 0009
+[2026-06-01] [Product Designer + Frontend] DEBT-013: pares subtle/subtle-foreground para success e warning | Contraste ≥4.5:1 em badges; variantes no Badge shadcn
+[2026-06-01] [Backend] FEAT-015: Anthropic Messages API + Groq OpenAI-compat no LLMGateway | Allowlists por provider; `ANTHROPIC_API_KEY` / `GROQ_API_KEY`
 
 ## Decisões da squad (a partir do kickoff)
 

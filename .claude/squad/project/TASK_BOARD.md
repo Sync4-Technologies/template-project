@@ -24,7 +24,7 @@
 
 | ID | Tarefa | Agente | Observação |
 |----|--------|--------|-----------|
-| DEBT-013 | Contraste de badges `text-success`/`text-warning` sobre `/10` < 4.5:1 (WCAG 1.4.3) — corrigir no DS e propagar | Product Designer + Frontend | Sistêmico/pré-existente; apontado no PD review do FEAT-001 |
+| — | — | — | — |
 
 ---
 
@@ -32,7 +32,7 @@
 
 | ID | Tarefa | Agente | Observação |
 |----|--------|--------|-----------|
-| FEAT-015 | Providers LLM alternativos: implementar anthropic e/ou groq | Backend | Gateway preparado, apenas openai funciona |
+| — | — | — | — |
 
 ---
 
@@ -104,6 +104,8 @@
 | FEAT-020+ | CI: ruff (app/core/api/db) + pytest unit + integration | 2026-06-01 — Sprint 3 |
 | DEV-LOCAL | SQLite dev (`init_sqlite_dev.py`) + CORS regex localhost/127.0.0.1 | 2026-06-01 — validação local |
 | FEAT-014 | Runtime mídia inbound: parsers Z-API/Evolution, `media_input`, `media_metadata` | 2026-06-01 — Sprint 3 |
+| DEBT-013 | WCAG badges: tokens `success-subtle` / `warning-subtle` + propagação no app | 2026-06-01 — pós Sprint 3 |
+| FEAT-015 | LLM Anthropic + Groq no gateway (`/agents/llm-models/{provider}`) | 2026-06-01 — pós Sprint 3 |
 
 ---
 
