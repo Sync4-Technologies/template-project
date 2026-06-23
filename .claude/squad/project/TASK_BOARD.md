@@ -48,7 +48,38 @@
 
 | ID | Tarefa | Agente | Responsável |
 |----|--------|--------|------------|
-| — | — | — | — |
+| OPS-RAILWAY | Deploy Railway piloto (painel + smoke test) | DevOps / TL | Vinicius |
+
+### OPS-RAILWAY — Deploy Railway (piloto)
+
+**Status:** In Progress  
+**Prioridade:** P0  
+**Responsável:** Vinicius  
+**Relacionado:** OPS-001 (CD), [GUIA_RAILWAY.md](docs/GUIA_RAILWAY.md)
+
+#### Escopo
+- [ ] Criar projeto Railway (`agentesia`)
+- [ ] Plugin PostgreSQL 16
+- [ ] Plugin Redis 7
+- [ ] Serviço `api` — Dockerfile, release command `alembic upgrade head`, health `/health`
+- [ ] Serviço `worker` — `Dockerfile.worker`, sem release command
+- [ ] Serviço `frontend` — Static Site, `VITE_API_URL` em build time
+- [ ] Env vars produção configuradas (sem secrets no repo)
+- [ ] Stripe webhook endpoint criado (`/billing/webhook`)
+- [ ] Smoke test: `/health/ready` OK, auth, agente, simulador, WhatsApp
+- [ ] Domínios próprios (pós-piloto)
+
+#### Artefatos (scaffold — Done)
+- `saas-agentes-backend/railway.toml` (`9f9892d`)
+- `saas-agentes-backend/Dockerfile.worker` (`9f9892d`)
+- `ia-reply/railway.toml` (`6ddc3a8`)
+- `.claude/squad/project/docs/GUIA_RAILWAY.md`
+
+#### Notas
+- `VITE_API_URL` é build-time — rebuild obrigatório se domínio da API mudar
+- `DATABASE_URL` Railway precisa de sufixo `+asyncpg` / `+psycopg2` (manual)
+- Variáveis Stripe: `STRIPE_PRICE_FREE`, `STRIPE_PRICE_STARTER`, `STRIPE_PRICE_PRO`
+- `/health/ready` retorna HTTP 503 se DB ou Redis degradado
 
 ---
 
@@ -106,15 +137,39 @@
 | FEAT-014 | Runtime mídia inbound: parsers Z-API/Evolution, `media_input`, `media_metadata` | 2026-06-01 — Sprint 3 |
 | DEBT-013 | WCAG badges: tokens `success-subtle` / `warning-subtle` + propagação no app | 2026-06-01 — pós Sprint 3 |
 | FEAT-015 | LLM Anthropic + Groq no gateway (`/agents/llm-models/{provider}`) | 2026-06-01 — pós Sprint 3 |
+| SEC-005 | Fix loop auth/refresh com cookies stale | 2026-06-23 — frontend `4a7feb2` |
+| DEV-002 | arq_pool tolerante a Redis em `APP_ENV=development` | 2026-06-23 — backend `286df2d` |
+| OPS-SCAFFOLD | Railway scaffold (Dockerfile 3.12, worker, railway.toml) | 2026-06-23 — backend `9f9892d`, frontend `6ddc3a8` |
+| QUALITY-001 | Ruff 202 → 0 violações (escopo CI) | 2026-06-23 — backend `1229605` |
+| QUALITY-002 | Bundle split, MetricasPage deps, notificações, `/forgot-password` | 2026-06-23 — frontend `4199467` |
 
 ---
 
-## Priorização sugerida para Sprint 1
+## Fase A — concluída `2026-06-23`
 
-**Concluído:** SEC-001…004, BUG-001…005
+- [x] SEC-005 — fix loop auth/refresh (frontend `4a7feb2`)
+- [x] fix(DEV) — arq_pool tolerante a Redis em development (backend `286df2d`)
+- [x] chore(deploy) — Dockerfile Python 3.12 + worker + railway.toml (backend `9f9892d`)
+- [x] chore(deploy) — railway.toml + .env.example frontend (`6ddc3a8`)
 
-**Próximo:**
-1. FEAT-020 (CI/CD) — desbloqueia gates de produção
-2. Merge frontend `squad/frontend-fixes` (FEAT-001, DEBT-009, BUG-006/007/008)
-3. DEBT-001 (extração services restantes)
-4. FEAT-012 (limites de plano)
+## Fase B — concluída `2026-06-23`
+
+- [x] chore(quality) — ruff 202 → 0 violações (backend `1229605`)
+- [x] fix(quality) — switches notificações disabled + "Em breve" (frontend `4199467`)
+- [x] fix(quality) — exhaustive-deps MetricasPage zerado (frontend `4199467`)
+- [x] fix(quality) — bundle split manualChunks, maior chunk 411 kB (frontend `4199467`)
+- [x] fix(quality) — /forgot-password página dedicada + rota GuestRoute (frontend `4199467`)
+
+---
+
+## Priorização atual (pós Fase A+B)
+
+**Em andamento:** OPS-RAILWAY — configurar painel Railway ([GUIA_RAILWAY.md](docs/GUIA_RAILWAY.md))
+
+**Próximo (Sprint 4):**
+1. OPS-001 — CD completo (após smoke test Railway)
+2. QA-001 — gate cobertura ≥80%
+3. FEAT-014b — mídia outbound
+4. QA-002 — E2E Playwright
+
+**Histórico Sprint 1–3:** ver tabela Done acima.
