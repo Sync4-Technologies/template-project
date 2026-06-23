@@ -142,6 +142,13 @@
 | OPS-SCAFFOLD | Railway scaffold (Dockerfile 3.12, worker, railway.toml) | 2026-06-23 — backend `9f9892d`, frontend `6ddc3a8` |
 | QUALITY-001 | Ruff 202 → 0 violações (escopo CI) | 2026-06-23 — backend `1229605` |
 | QUALITY-002 | Bundle split, MetricasPage deps, notificações, `/forgot-password` | 2026-06-23 — frontend `4199467` |
+| UX-001 | errorHandler: mensagem de erro correta do backend | 2026-06-23 — frontend `b881154` |
+| UX-002 | Billing: preços corretos + Enterprise "Sob consulta" | 2026-06-23 — frontend `b881154` |
+| UX-003 | OfflineBanner: feedback de rede offline | 2026-06-23 — frontend `b881154` |
+| UX-004 | Landing hero: first paint visível (sem opacity-0) | 2026-06-23 — frontend `b881154` |
+| UX-005 | Onboarding: não bloqueia UI durante wizard | 2026-06-23 — frontend `b881154` |
+| UX-006 | Conexões: botão único de criação | 2026-06-23 — frontend `b881154` |
+| UX-007 | Banner setup: condicional correto + dismiss | 2026-06-23 — frontend `b881154` |
 
 ---
 
@@ -160,16 +167,32 @@
 - [x] fix(quality) — bundle split manualChunks, maior chunk 411 kB (frontend `4199467`)
 - [x] fix(quality) — /forgot-password página dedicada + rota GuestRoute (frontend `4199467`)
 
+## Fase C — concluída `2026-06-23`
+
+- [x] fix(UX) — errorHandler: hierarquia error.message → detail → fallback + "Sem conexão" (frontend `b881154`)
+- [x] fix(UX) — Billing: preços alinhados ao backend (Free/Starter/Pro/Business/Enterprise "Sob consulta") (frontend `b881154`)
+- [x] fix(UX) — OfflineBanner: banner fixo no topo ao detectar offline/online (frontend `b881154`)
+- [x] fix(UX) — Landing hero: animação sem opacity-0, first paint visível (frontend `b881154`)
+- [x] fix(UX) — Onboarding: overlay sem bloquear cliques (pointer-events-none) (frontend `b881154`)
+- [x] fix(UX) — Conexões: botão único "+ Nova conexão" (frontend `b881154`)
+- [x] fix(UX) — Banner setup: some após criar agente + botão Dispensar (frontend `b881154`)
+
 ---
 
-## Priorização atual (pós Fase A+B)
+## Priorização atual (pós Fase A+B+C)
 
 **Em andamento:** OPS-RAILWAY — configurar painel Railway ([GUIA_RAILWAY.md](docs/GUIA_RAILWAY.md))
 
-**Próximo (Sprint 4):**
-1. OPS-001 — CD completo (após smoke test Railway)
-2. QA-001 — gate cobertura ≥80%
-3. FEAT-014b — mídia outbound
-4. QA-002 — E2E Playwright
+**Sprint 4 — após deploy Railway:**
+1. OPS-001 — CD completo (staging → prod)
+2. QA-001 — gate cobertura ≥80% / ≥95% críticos
+3. FEAT-014b — mídia outbound (send_audio/send_image)
+4. QA-002 — E2E Playwright (login → agente → simular)
+5. OBS-001 — SLOs, alertas Prometheus, Grafana
 
-**Histórico Sprint 1–3:** ver tabela Done acima.
+**Débitos conhecidos (P1/P2):**
+- request_id não propaga HTTP → worker (observabilidade)
+- Créditos debitados antes de send_text (integridade financeira)
+- Cobertura de testes: worker 46%, billing_service 41%, media_input 42%
+
+**Histórico Sprint 1–3 + Fases A/B/C:** ver tabela Done acima.
