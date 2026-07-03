@@ -28,16 +28,23 @@ Conduz TL no onboarding rápido de novo usuário (ou retomada após pausa) sem p
 
 ## Sua tarefa como Claude (atuando como Tech Lead)
 
-### 1. Carregar contexto inicial
+### 1. Carregar contexto inicial (com git fetch obrigatório)
 
-O hook `SessionStart` já carregou ARCHITECTURE/TASK_BOARD/DECISIONS_LOG/ADRs. Suplementar com:
+O hook `SessionStart` já carregou head de ARCHITECTURE/TASK_BOARD/DECISIONS_LOG/ADRs. **NÃO recarregar o que o hook já trouxe.** Suplementar com:
 
 ```bash
-git log --oneline -10
+git fetch origin
+git log --oneline -10 origin/<branch-principal>
 gh pr list --state open --json number,title,headRefName,url
 git branch --show-current
 git status --short
 ```
+
+**`git fetch` é obrigatório** — resume em estado local stale já causou re-implementação de trabalho inteiro já mergeado.
+
+**Cross-check "entregue":** para cada item marcado como entregue/OK no Current Focus, confirmar o commit/PR em `git log origin/<branch-principal>` ANTES de tratar qualquer coisa como pendente. Current Focus é texto manual — envelhece e mente; o git remoto é a verdade.
+
+**ARCHITECTURE.md completo:** o hook carrega só as primeiras 50 linhas. Se o próximo passo for arquitetural (mudança estrutural, novo domínio, decisão de stack), ler o arquivo COMPLETO. Caso contrário, head + seções relevantes bastam (economia de tokens).
 
 ### 2. Ler Current Focus
 
@@ -55,7 +62,7 @@ Se "Current Focus" está com `[a preencher]` ou desatualizado (≥7 dias da últ
 
 → Alertar usuário: "Current Focus parece desatualizado. Sugiro confirmar estado real antes de prosseguir."
 
-### 3. Ler últimas 3 entradas de Session Log
+### 3. Ler últimas 3 entradas de Session Log + calcular session delta
 
 Em `.claude/squad/project/DECISIONS_LOG.md` → seção "Session Log":
 
@@ -64,6 +71,18 @@ Pegar as 3 últimas entradas para entender trajetória recente:
 - O que foi feito nas sessões anteriores
 - Decisões tomadas
 - ADRs criados
+
+**Session delta** — o que mudou desde a última entrada do Session Log:
+
+```bash
+git log --oneline --after="<data da última entrada do Session Log>" origin/<branch-principal>
+```
+
+Apresentar como bloco "Desde última sessão" no resumo. Delta vazio + Current Focus antigo = provável estado stale; delta cheio = trabalho de outro usuário para incorporar.
+
+### 3b. Carregar agent-memory relevante
+
+Com base no "Próximo passo" do Current Focus, carregar SÓ o `agent-memory/{agente-relevante}.md` (backend → `backend-engineer.md`, frontend → `frontend-engineer.md`, deploy → `devops-engineer.md`, etc.). Não carregar a memória de todos os agentes — só a de quem vai executar (economia de tokens).
 
 ### 4. Listar PRs abertos
 
@@ -94,6 +113,9 @@ Formato:
 
 📋 Última sessão: [data] por [usuário]
 [resumo da última entrada de Session Log]
+
+📦 Desde última sessão (git delta):
+- [commits/PRs em origin desde a última entrada — ou "nenhum"]
 
 🔄 Em andamento:
 - [card 1 — agente — status]
@@ -159,6 +181,9 @@ Use `/squad-resume` para começar trabalho. Use `/squad-status` para checar prog
 - Não confirmar direção com usuário → assumir continuidade automática
 - Skip Session Log → perder contexto de decisões recentes
 - Atualizar Current Focus de outra sessão sem confirmar com usuário
+- **Pular `git fetch` / confiar no Current Focus sem cross-check no git remoto** → re-implementar trabalho já mergeado
+- **Re-resumir o projeto inteiro a cada retomada** → o resumo é delta + próximo passo + bloqueios, não a história do projeto (tokens)
+- Carregar agent-memory de todos os agentes → só a do agente do próximo passo
 
 ---
 

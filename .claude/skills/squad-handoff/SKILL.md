@@ -72,6 +72,25 @@ Em `.claude/squad/project/TASK_BOARD.md`:
 - ✅ "Implementar testes de integração para `auth/login` use case (Backend)"
 - ❌ "Continuar trabalho de auth"
 
+### 2b. ARCHITECTURE.md (step ATIVO — não checklist passivo)
+
+Perguntar explicitamente: **"Houve mudança estrutural nesta sessão (componente, fluxo, stack, integração)?"**
+
+- **Sim** → editar `ARCHITECTURE.md` AGORA (não deixar para depois) + atualizar "Última atualização"
+- **Não** → confirmar e seguir
+
+### 2c. LESSONS_LEARNED.md (step ATIVO — melhorias do SISTEMA da squad)
+
+Perguntas-gatilho (responder cada uma):
+
+1. Gap em spec de agente causou erro/retrabalho?
+2. Alguma skill perdeu passo obrigatório ou tem passo inútil?
+3. Hook deixou de carregar contexto necessário?
+4. Processo da squad causou retrabalho?
+5. Falta regra no CLAUDE.md do projeto?
+
+**Sim em qualquer uma** → registrar em `LESSONS_LEARNED.md` citando o **arquivo a modificar + ação concreta**. Learning técnico de projeto (gotcha de lib, padrão de código) NÃO vai aqui — vai em agent-memory.
+
 ### 3. Atualizar agent-memory dos agentes envolvidos
 
 Para cada agente que teve atuação relevante na sessão:
@@ -84,6 +103,11 @@ Para cada agente que teve atuação relevante na sessão:
 
 Confirmar atualização antes de prosseguir.
 
+**Regras de escrita de memória (todas as memórias do handoff):**
+
+- **Sem emojis / chars fora do BMP** — usar marcadores ASCII (`[OK]`, `[!]`, `->`). Char astral truncado por hook já quebrou resume com API Error 400.
+- **Single source por tipo de informação:** estado de tarefa → só TASK_BOARD; decisão → só DECISIONS_LOG; learning técnico → só agent-memory; melhoria de sistema → só LESSONS_LEARNED. Nos demais lugares, REFERENCIAR (1 linha), nunca repetir conteúdo. Informação duplicada custa tokens na escrita e em TODA leitura futura.
+
 ### 4. Escrever entrada em Session Log
 
 Em `.claude/squad/project/DECISIONS_LOG.md` → seção "Session Log":
@@ -92,7 +116,7 @@ Em `.claude/squad/project/DECISIONS_LOG.md` → seção "Session Log":
 | YYYY-MM-DD | [usuário] | [resumo 1-2 linhas] | [commits] | [ADRs/decisões] |
 ```
 
-Resumo deve responder: **o que foi feito** + **o que ficou pendente**.
+Resumo deve responder: **o que foi feito** + **o que ficou pendente**. **Máx 5 linhas** — referências de commit/PR, não narrativa (o `git log` já conta a história; não duplicar).
 
 ### 5. Verificar PRs abertos
 
@@ -106,16 +130,35 @@ Para cada PR aberto:
 - Anotar status de reviews (aprovado? mudanças pendentes?)
 - Identificar se aguarda ação do próximo usuário ou de revisor externo
 
+### 5b. Verificar deploy (ATIVO — "Merged ≠ Deployed")
+
+Se houve merge no branch de deploy nesta sessão, **VERIFICAR** (rodar o check, nunca copiar o valor anterior do board):
+
+- Deployment com status SUCCESS **no SHA/commit esperado** (cruzar commit do deployment com o HEAD mergeado)
+- Migrations do ambiente aplicadas (`migrate status` limpo)
+- Smoke de 1 fluxo crítico contra a URL deployada (healthz 200 não prova nada — deploy velho responde 200)
+
+Divergência (merged mas não deployado) → registrar como bloqueio explícito no Current Focus.
+
+### 5c. Gate de qualidade do engineer
+
+Perguntar: **"O engineer rodou format + lint + typecheck (gate completo, repo inteiro) no último commit?"**
+
+- Não/incerto → rodar agora; vermelho = resolver antes do handoff (próximo usuário não herda CI quebrado)
+
 ### 6. Confirmar consistência da memory
 
-Checklist antes de encerrar:
+Checklist antes de encerrar (valida o que os steps 2b/2c/3 já fizeram):
 
-- [ ] `ARCHITECTURE.md` reflete estado atual? Atualizado se houve mudança estrutural?
+- [ ] `ARCHITECTURE.md` atualizado se houve mudança estrutural? (step 2b)
+- [ ] `LESSONS_LEARNED.md` atualizado se houve gap de sistema da squad? (step 2c)
 - [ ] ADRs novos criados em `project/ADR/` se houve decisão estrutural?
 - [ ] `DECISIONS_LOG.md` tem entrada para cada decisão rápida tomada?
 - [ ] `TASK_BOARD.md` Current Focus + cards em colunas corretas?
-- [ ] `agent-memory/{relevantes}.md` atualizados?
-- [ ] Session Log tem entrada da sessão atual?
+- [ ] `agent-memory/{relevantes}.md` atualizados, sem emojis?
+- [ ] Session Log tem entrada da sessão atual (≤5 linhas)?
+- [ ] Deploy verificado no SHA esperado (se houve merge)? (step 5b)
+- [ ] **Anti-redundância:** alguma informação escrita em 2 lugares? → deixar em 1 e referenciar
 - [ ] Mudanças relevantes commitadas (não-commited = invisível para próximo usuário)?
 
 Se qualquer ❌, resolver antes de encerrar.
@@ -168,6 +211,10 @@ Se há mudanças em memory files (TASK_BOARD, DECISIONS_LOG, agent-memory) decor
 - Não logar sessão em Session Log → granularidade temporal se perde
 - Handoff antes de commitar mudanças em memory → trabalho de organização se perde
 - Memory files com TODOs não preenchidos (`[a definir]`) deixados em produção
+- **Copiar status de deploy da sessão anterior sem re-verificar** → "5 serviços SUCCESS" stale escondeu semanas de deploy quebrado (Merged ≠ Deployed)
+- **Emojis/chars astrais em memory files** → hook de truncamento pode quebrar o resume da próxima sessão
+- **Mesma informação em 2+ arquivos de memória** → duplicação custa tokens em toda sessão futura; single source + referência
+- **Handoff message narrativa** → referencia board/log/PRs em 1 linha por item, não repete conteúdo
 
 ---
 

@@ -292,6 +292,9 @@ Sempre que houver decisão relevante:
 
 - evitar complexidade desnecessária
 - começar com monólito modular antes de microservices
+- **a arquitetura proposta é a MÍNIMA que atende PRD + RNFs** — toda camada/abstração extra exige justificativa em ADR citando o requisito que a demanda (YAGNI)
+- Hexagonal/DDD só onde ADR-002 diz que agrega (domínio rico) — não por default
+- escala-se o que o PRD pede, não o hipotético — simplicidade tem peso igual a escalabilidade na decisão
 
 ---
 

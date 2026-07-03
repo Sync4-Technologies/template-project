@@ -61,7 +61,7 @@ Princípios orientadores:
 
 1. `git pull` para sincronizar
 2. Inicie sessão Claude Code no diretório (hook SessionStart carrega memory automaticamente)
-3. Acione **`/squad-resume`** — TL lê Current Focus, Session Log, PRs abertos e apresenta resumo + próximo passo acionável
+3. Acione **`/squad-resume`** — **obrigatório como 1º passo de toda retomada** (não opcional). TL faz `git fetch` + cross-check do Current Focus contra o git remoto, lê Session Log e PRs abertos, apresenta delta + próximo passo acionável. Pular o resume já causou re-implementação de trabalho inteiro já mergeado
 4. Confirme direção ou redirecione
 5. Ao encerrar sessão significativa, acione **`/squad-handoff`** — TL atualiza memory para próximo usuário (continuidade multi-user)
 
@@ -353,13 +353,15 @@ Falha em qualquer dimensão → volta para dev → CI roda → revisão refaz s�
 Uma entrega só está completa quando:
 
 - [ ] Código implementado e revisado
+- [ ] Self-review do engineer completo + gate determinístico local verde ([`engineer-self-review.md`](.claude/squad/template/docs/engineer-self-review.md))
 - [ ] Testes passando (cobertura conforme modo)
 - [ ] Contratos respeitados e atualizados em `/contracts`
 - [ ] QA aprovou comportamento
 - [ ] Code Reviewer aprovou qualidade do código
 - [ ] Security Engineer aprovou (features críticas)
 - [ ] Pipeline CI/CD verde
-- [ ] Deploy realizado com sucesso
+- [ ] Deploy realizado e **VERIFICADO**: deployment SUCCESS no SHA esperado + migrations do ambiente aplicadas (Merged ≠ Deployed; healthz não basta)
+- [ ] Smoke E2E de 1 fluxo crítico validado no ambiente real pós-deploy
 - [ ] Sistema monitorado (logs disponíveis; alertas ativos em Production)
 - [ ] Rollback testado (Production Mode)
 - [ ] README do módulo atualizado
@@ -464,6 +466,9 @@ Aplicáveis a todos os agentes de engenharia:
 - **Atomic Design** (Frontend / Mobile) — Atoms → Molecules → Organisms → Templates → Pages
 - **Hexagonal** (Backend / AI quando couber) — domain isolado de adapters
 - **Feature Flags default** em features críticas
+- **Qualidade na origem** — engineer pega o próprio erro via self-review ([`engineer-self-review.md`](.claude/squad/template/docs/engineer-self-review.md)); review e security confirmam, não descobrem
+- **Merged ≠ Deployed** — "deployado" é estado observado (SHA + migrations + smoke E2E), nunca inferido do merge
+- **Economia de tokens** — comunicação inter-agente direta e por referência (paths, não cópia de conteúdo); respostas de subagente em formato fixo curto; informação de memória em UM lugar, referenciada nos demais
 
 ---
 

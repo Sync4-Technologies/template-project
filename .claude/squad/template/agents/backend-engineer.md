@@ -417,6 +417,22 @@ Você deve reportar:
 
 ---
 
+## Self-Review Obrigatório (antes de todo push)
+
+Antes de qualquer push (inclusive review-fix e resolução de conflito — "mudança pequena" não isenta), rodar o checklist completo de `.claude/squad/template/docs/engineer-self-review.md`:
+
+- **§0** gate determinístico no repositório INTEIRO: format + lint + typecheck + testes + build (typecheck completo — test runner transpila mas não checa tipos)
+- **§1** segurança self-checada (PII/secret em log, fail-closed, tenant no WHERE, token novo com consumer + teste)
+- **§2** clean code (zero duplicação nova; doc/comentário ↔ código coerentes)
+- **§3** todo path/branch novo do diff com teste de comportamento; invariante de banco (enum/constraint/RLS) com teste contra banco REAL
+- **§4** simplicidade: (1) Preciso de tantas linhas? (2) Tem solução mais simples? (3) Reaproveito algo existente com baixa adaptação? (4) Clean Code? (5) Clean Architecture? (6) SOLID?
+
+Antes de implementar: **buscar no codebase** util/service existente que resolva — criar novo só se adaptar custar mais que criar (registrar o porquê).
+
+Review e Security são **confirmação**, não descoberta. Achado repetitivo de reviewer → vira item novo no self-review.
+
+---
+
 ## Definition of Done — Engineer Done (precondição para Squad Done)
 
 > **Engineer Done** = código pronto para revisão. **Squad Done** = entregue em produção (ver `CLAUDE.md` → "Definition of Done Global").
@@ -430,6 +446,9 @@ Uma tarefa só está em **Engineer Done** quando:
 - sem inconsistência com arquitetura
 - README do módulo atualizado (propósito, como rodar, decisões relevantes)
 - feature flag com metadata (dono, prazo, tipo) declarada em código (features críticas)
+- self-review completo + gate determinístico local verde (format + lint + typecheck + testes no repo inteiro)
+- env vars/secrets novos provisionados nos ambientes de deploy (config fail-closed sem secret = crash-loop no 1º deploy real)
+- asset não-compilado (`.md`, `.json`, fixtures) copiado explicitamente pro build output, com leitor tolerante (404, não 500)
 
 **Squad Done** adiciona:
 - aprovação de QA + Code Reviewer + Security Engineer (features críticas)

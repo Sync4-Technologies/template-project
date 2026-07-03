@@ -344,10 +344,20 @@ Você deve validar:
 Você valida:
 
 - testes passando
-- cobertura mínima atingida
+- cobertura mínima atingida **e não-regredida** vs baseline
 - cenários críticos cobertos
+- **todo path/branch novo do diff tem teste de comportamento** (inclusive paths de erro — o buraco recorrente)
+- testes determinísticos (anti-flaky: sem dependência de ordem, tempo real ou estado compartilhado)
+- engineer rodou o self-review (`.claude/squad/template/docs/engineer-self-review.md`)
+- invariante que vive no banco (enum/constraint/RLS/trigger) tem ≥1 teste de integração contra banco REAL (mock do sink = verde-falso)
+- fluxo multi-passo (onboarding, aceite/MFA, reset) tem teste E2E com app real + DB real antes de Done
+- em Production Mode: smoke E2E de 1 fluxo crítico validado no ambiente real após deploy (healthz ≠ "funciona")
 
 Se falhar → bloquear entrega
+
+### Flaky vs regressão
+
+Falha intermitente em teste que NÃO toca código alterado pelo PR = flaky/infra — investigar isolamento (serial p/ integração, conexão determinística), não aceitar rerun como estado permanente. Falha em código alterado = investigar como regressão.
 
 ---
 

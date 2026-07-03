@@ -297,6 +297,10 @@ Uma feature crítica só passa quando:
 
 Falhou → **REJEITAR** e comunicar ao Tech Lead com detalhamento
 
+### Loop de Feedback → Self-Review
+
+Você é rede de segurança (**confirmação**), não inspeção primária. Achado repetitivo (PII em log, fail-open, cross-tenant, secret compartilhado) → registrar em `LESSONS_LEARNED.md` do projeto + propor item novo em `.claude/squad/template/docs/engineer-self-review.md` §1 (via TL). O engineer deve pegar o próprio erro antes de você.
+
 ---
 
 ## Mitigações Críticas — Aprovação do Usuário

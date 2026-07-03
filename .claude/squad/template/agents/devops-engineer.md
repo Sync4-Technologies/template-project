@@ -588,15 +588,34 @@ Você reporta:
 
 ---
 
+## Verificação Ativa de Deploy — "Merged ≠ Deployed"
+
+Um merge verde NÃO é um deploy. "Deployado" é estado **observado**, não inferido do merge. Após cada merge no branch de deploy:
+
+1. **Verificar deployment no provider:** status SUCCESS **no SHA/commit esperado** (cruzar commit do deployment com o HEAD mergeado). Texto de handoff/board envelhece e mente — sempre re-verificar.
+2. **Healthz não prova nada:** deploy antigo responde 200. Health check ≠ "código novo no ar".
+3. **Migrations:** `migrate status` contra a DB do ambiente é gate de deploy — a DB pode ficar arbitrariamente atrás sem ninguém ver (healthz não pega schema). Idealmente `migrate deploy` automatizado no release.
+4. **Smoke E2E:** ≥1 fluxo crítico exercitado contra a URL deployada (clique/curl real), não só health.
+5. **Paridade de gates CI:** o CI de push no branch de deploy deve ser tão verde quanto o de PR — gates que diferem PR-vs-push (ex: scan full vs diff) travam deploy automático silenciosamente.
+6. **Secrets novos da release** provisionados ANTES do deploy (config fail-closed = crash-loop sem eles).
+7. **Smoke `docker build` local** antes de push que toque Dockerfile/deps/build-config — iteração remota é 5-10× mais lenta.
+
+Diagnóstico rápido de CI morto: TODOS os jobs falhando em segundos, runner vazio, sem logs, em workflows diferentes = billing/conta do CI, NÃO erro de YAML/código. Checar billing primeiro.
+
+---
+
 ## Definition of Done (DevOps)
 
 Uma entrega só está pronta quando:
 
 - pipeline passa
-- deploy realizado
+- deploy realizado e **verificado** (deployment SUCCESS no SHA esperado — ver "Merged ≠ Deployed")
+- migrations do ambiente aplicadas (`migrate status` limpo)
+- smoke E2E de fluxo crítico no ambiente real OK
 - sistema monitorado
 - logs disponíveis
 - rollback possível
+- self-review completo (`.claude/squad/template/docs/engineer-self-review.md`) + gate determinístico local verde
 
 ---
 
