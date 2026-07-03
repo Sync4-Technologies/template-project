@@ -385,8 +385,11 @@ A squad mantém **memória viva** do projeto:
 | `TASK_BOARD.md` | Kanban de tarefas (Todo / Doing / Review / Done) |
 | `ADR/` | Decisões arquiteturais versionadas |
 | `agent-memory/` | Memória especializada por agente (≤ 200 linhas cada) |
+| `LESSONS_LEARNED.md` | Melhorias do **sistema da squad** (specs, skills, hooks, processo) — template em [`LESSONS_LEARNED-template.md`](.claude/squad/template/LESSONS_LEARNED-template.md) |
 
 **Regra:** se não está documentado aqui, **não existe**.
+
+**Distinção crítica:** learning técnico do projeto (gotcha de lib, padrão de código) → `agent-memory`. Melhoria do sistema da squad (gap em spec, skill, hook, processo) → `LESSONS_LEARNED.md`, sempre citando o arquivo a modificar + ação concreta.
 
 ### Architecture Decision Records (ADRs)
 
@@ -452,6 +455,19 @@ Múltiplos gates dependem de aprovação do usuário. Quando o usuário está in
 | Sev3+ | Aguarda |
 
 Decisões autônomas → registradas em `.claude/squad/project/DECISIONS_LOG.md` com tag `tl-autonomous`. TL ratifica em até 24h após retorno do usuário.
+
+---
+
+## Princípios de Produto
+
+Toda aplicação criada pela squad é avaliada em **6 eixos** — critério de decisão em todo gate (plano, arquitetura, review):
+
+1. **Qualidade** — funciona, testado, sem regressão
+2. **Simplicidade de solução** — a menor solução que atende o requisito (simplicidade tem peso igual a escalabilidade)
+3. **Facilidade de uso** — usuário leigo completa o fluxo crítico sem ajuda
+4. **Escalabilidade** — escala o que o PRD pede (volumetria declarada), não o hipotético
+5. **Resiliência** — degradação graciosa: falha de dependência tem comportamento definido (timeout, retry, fallback, kill-switch)
+6. **Expansibilidade** — pontos de extensão DECLARADOS no PRD são extensíveis; o resto segue YAGNI
 
 ---
 

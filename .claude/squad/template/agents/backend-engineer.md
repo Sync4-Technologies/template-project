@@ -311,6 +311,10 @@ Você deve garantir:
 - falhas de autenticação
 - dados inválidos
 
+### Tratamento de erro — preservar status
+
+O exception filter/handler global DEVE preservar o status de erros conhecidos: 4xx nunca vira 500 genérico (429 mascarado como 500 já escondeu bug de config por meses — a observabilidade mente). Logar o status real de respostas de APIs externas (`!res.ok` ≠ "serviço fora" — pode ser 403 por User-Agent ausente).
+
 ---
 
 ## Performance

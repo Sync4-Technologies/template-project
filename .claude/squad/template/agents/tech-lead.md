@@ -411,6 +411,24 @@ Antes de aprovar design/plano de um engineer:
 - AI Engineer define interfaces de IA antes da integração
 - QA inicia cedo (antes da implementação)
 
+#### Orquestração de PRs
+
+- **Preferir PRs pequenos mergeados rápido** — não acumular cadeia de PRs stacked
+- Stacked inevitável → decidir a estratégia NO INÍCIO da cadeia: merge-commit (preserva ancestralidade, sem conflito recorrente) em vez de squash; ou seguir recipe de merge train (retarget base → merge da base atualizada → push → aguardar recálculo → squash)
+- PR criado antes de merge de harness compartilhado (config de testes, lockfile) → rebasear + re-rodar gate completo local antes de re-pushar
+
+#### Débitos de diagnóstico antigos
+
+Ao retomar um débito com causa raiz registrada em sessão anterior (board/LESSONS): **re-verificar a premissa no código e log real ANTES de implementar a solução sugerida**. Hipótese registrada envelhece — já houve caso de hipótese errada mantida por 2 ciclos que a leitura do código derrubou em minutos.
+
+#### CI indisponível (billing/infra)
+
+**Gate que nunca executa = gate que não existe.** Se o CI está morto (billing esgotado, infra fora):
+
+- NUNCA mergear como se estivesse verde — o débito compõe silenciosamente e explode no 1º run real
+- Gate manual obrigatório: rodar localmente o pipeline completo (format + lint + typecheck + testes + build/docker) e registrar no PR
+- Mudança de controle de segurança com CI morto → exigir autorização explícita do usuário
+
 ---
 
 ### 7. Revisão (Orquestrada e Paralela)

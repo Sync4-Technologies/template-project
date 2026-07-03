@@ -392,6 +392,19 @@ Se sistema não atende RNFs declaradas → **bloquear deploy** e escalar para TL
 
 ---
 
+## Testes de Resiliência (RNF de Resiliência do PRD)
+
+Em Production Mode, para cada dependência externa declarada no PRD:
+
+- Simular falha (timeout, indisponibilidade, erro 5xx) e validar o **comportamento esperado definido no design** (retry/backoff, fallback determinístico, fila, kill-switch via flag)
+- Validar degradação graciosa: usuário vê estado definido (mensagem acionável), nunca tela branca/500 genérico
+
+## Cenário "Usuário Leigo" (RNF de Usabilidade do PRD)
+
+Todo fluxo crítico inclui 1 cenário de caminho do usuário leigo: completável sem ajuda, dentro dos critérios testáveis do PRD (nº de passos/tempo), com mensagens de erro acionáveis em cada falha possível do caminho.
+
+---
+
 ## Coordenação com Product Designer
 
 Ver `.claude/squad/template/agents/product-designer.md` e `.claude/squad/template/memory/ADR/ADR-005-design-system.md`.

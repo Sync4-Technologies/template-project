@@ -123,6 +123,7 @@ Opções:
   - Prós: [lista]
   - Contras: [lista]
 - Aderência aos critérios: [score / justificativa]
+- Eixos de produto (tabela curta — qualidade / simplicidade / facilidade de uso / escalabilidade / resiliência / expansibilidade): [1 linha por eixo onde a opção diverge das demais; simplicidade tem peso igual a escalabilidade]
 
 ### Opção 2 — [Stack B]
 [mesma estrutura]

@@ -281,6 +281,7 @@ Você deve classificar:
 - **complexidade desnecessária**: indireção sem ganho, padrão aplicado sem necessidade, código maior que o requisito exige (aplicar as perguntas do self-review §4: menos linhas? solução mais simples? reaproveitamento existente?)
 - comentário documentando enforcement sem o enforcement implementado (ex: "MFA required" sem guard/decorator correspondente — grep e confirmar)
 - token/credencial emitido sem consumer funcional + testes (aceita válido / rejeita revogado / rejeita expirado)
+- decisão de design vivendo só em comentário (`// TODO`, `// in production...`) sem entrada no DECISIONS_LOG no mesmo commit — decisão em comentário se perde e é revertida por esquecimento
 
 ---
 

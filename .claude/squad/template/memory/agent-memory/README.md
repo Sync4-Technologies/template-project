@@ -19,6 +19,9 @@
 - Decisões rápidas que afetam múltiplos agentes → vai em `.claude/squad/project/DECISIONS_LOG.md`
 - Regras gerais do papel → vai em `.claude/squad/template/agents/{name}.md`
 - Regras de negócio → vai em `.claude/squad/project/PRD.md` e specs funcionais
+- Melhoria do SISTEMA da squad (gap em spec/skill/hook/processo) → vai em `.claude/squad/project/LESSONS_LEARNED.md` (com arquivo a modificar + ação concreta)
+
+**Regra de escrita:** sem emojis/chars astrais — usar `[OK]`, `[!]`, `->` (hook de carregamento trunca por bytes em algumas versões; char astral cortado quebra a sessão seguinte).
 
 ---
 

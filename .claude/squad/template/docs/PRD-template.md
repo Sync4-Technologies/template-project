@@ -96,6 +96,19 @@
 - [ ] SOC 2 — auditoria de segurança
 - **Outros:** [especificar]
 
+### Resiliência
+- Comportamento em falha de cada dependência externa: [ex: API X fora → fila + retry com backoff; provider LLM fora → fallback determinístico]
+- Degradação graciosa: [o que o usuário vê quando um subsistema falha — nunca tela branca/500 genérico]
+- Kill-switch: [features críticas desligáveis via flag sem deploy]
+
+### Usabilidade (facilidade de uso)
+- Fluxo crítico completável por usuário leigo sem ajuda: [sim/não — qual fluxo]
+- Critérios testáveis: [ex: onboarding completo em ≤ N passos / ≤ N minutos; mensagens de erro acionáveis]
+
+### Expansibilidade
+- Pontos de extensão DECLARADOS: [ex: novos provedores de pagamento; novos canais de mensagem]
+- Fora disso, YAGNI: nada é construído "para o futuro" sem constar aqui
+
 ### Cobertura de Testes
 - MVP Mode: ≥ 60% em regras críticas de negócio
 - Production Mode: ≥ 80% geral / ≥ 95% em regras críticas

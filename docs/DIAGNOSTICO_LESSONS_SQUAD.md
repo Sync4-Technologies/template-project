@@ -3,7 +3,7 @@
 > Data: 2026-07-03. Gerado a partir de `docs/LESSONS_LEARNED.md` (projeto Concilia, Ondas 0–8, 27 seções, ações AM-01..AM-66) cruzado com leitura completa deste template (13 agentes, 13 skills, 3 hooks, ADRs default).
 > Cada linha mapeia lição -> arquivo do template -> mudança proposta.
 >
-> **STATUS: P0 APLICADO em 2026-07-03** (temas A, B, C, I, J, K — 13 arquivos modificados + `engineer-self-review.md` e `pre-commit-quality.example` criados). Pendentes: P1 (D, E*, F*, L) e P2 (G, H). *Partes de E (token consumer, DB real, feedback loop) e F (paralelismo, delegações, merge-train parcial) entraram junto com o P0 por tocarem os mesmos arquivos.
+> **STATUS: P0 APLICADO em 2026-07-03** (temas A, B, C, I, J, K — commit `5f202e7`). **P1 APLICADO em 2026-07-03** (temas D, E, F, L — `LESSONS_LEARNED-template.md` criado; security/TL/CR/PRD/PO/architect/PD/QA/README/agent-memory atualizados; skill squad-stack-decision com eixos de produto). Pendente: P2 (G — skill deploy-preflight + devops PaaS; H — stack-conventions).
 
 ---
 

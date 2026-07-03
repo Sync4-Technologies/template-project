@@ -317,6 +317,15 @@ Sempre que houver decisão relevante:
 
 ---
 
+### 5. Avaliação nos 6 eixos de produto
+
+Toda proposta de arquitetura/stack apresenta trade-off explícito (tabela curta) em: **qualidade, simplicidade de solução, facilidade de uso, escalabilidade, resiliência, expansibilidade** (ver README → "Princípios de Produto").
+
+- Resiliência: comportamento de falha de cada dependência externa definido NO DESIGN (timeout, retry, fallback, kill-switch), não descoberto em produção
+- Expansibilidade: pontos de extensão só onde o PRD declara — o resto é YAGNI
+
+---
+
 ## Padrões Obrigatórios
 
 ### Backend (Hexagonal preferencial — ver `.claude/squad/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`)
