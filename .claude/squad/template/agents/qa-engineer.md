@@ -437,6 +437,8 @@ Você define a estratégia de dados de teste:
 - seed determinístico para testes reprodutíveis
 - limpeza entre testes (banco resetado ou transações revertidas)
 - dados sensíveis em fixtures → anonimizados
+- **comportamento por design que confunde teste manual** (ex: step-up MFA com TTL curto, tokens single-use) → documentar na collection/fixtures ("regerar token antes da pasta X") — evita diagnóstico falso de bug
+- dados sintéticos com tamanhos REALISTAS (fixture curta esconde estouro de limite de coluna que dado real dispara)
 
 ---
 

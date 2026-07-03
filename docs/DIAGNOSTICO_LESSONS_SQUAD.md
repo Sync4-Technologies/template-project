@@ -3,7 +3,7 @@
 > Data: 2026-07-03. Gerado a partir de `docs/LESSONS_LEARNED.md` (projeto Concilia, Ondas 0–8, 27 seções, ações AM-01..AM-66) cruzado com leitura completa deste template (13 agentes, 13 skills, 3 hooks, ADRs default).
 > Cada linha mapeia lição -> arquivo do template -> mudança proposta.
 >
-> **STATUS: P0 APLICADO em 2026-07-03** (temas A, B, C, I, J, K — commit `5f202e7`). **P1 APLICADO em 2026-07-03** (temas D, E, F, L — `LESSONS_LEARNED-template.md` criado; security/TL/CR/PRD/PO/architect/PD/QA/README/agent-memory atualizados; skill squad-stack-decision com eixos de produto). Pendente: P2 (G — skill deploy-preflight + devops PaaS; H — stack-conventions).
+> **STATUS: P0 APLICADO em 2026-07-03** (temas A, B, C, I, J, K — commit `5f202e7`). **P1 APLICADO em 2026-07-03** (temas D, E, F, L — commit `07638ed`). **P2 APLICADO em 2026-07-03** (tema G: skill `/squad-deploy-preflight` criada + padrões PaaS/Docker no devops + gate docker fiel no self-review; tema H: stack-conventions nodejs [NODE_ENV matrix, NestJS SWC/eslint-DI, lockfile, HTTP outbound] e react [server-only env, NEXT_PUBLIC build-time] + CR grep SSR + architect governança de contratos + QA fixtures realistas). Restante do diagnóstico: tema M (upstream versionado + `squad-update.sh`) — decisão estrutural, aplicar quando o usuário definir o mecanismo de sync.
 
 ---
 

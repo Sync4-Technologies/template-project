@@ -14,7 +14,7 @@
 - [ ] Lint no repositório inteiro
 - [ ] Typecheck completo (test runner transpila mas NÃO checa tipos — o compilador é o único portão real)
 - [ ] Testes com cobertura (conforme modo MVP/Production)
-- [ ] Build (incluindo `docker build` local se tocou Dockerfile/deps/build-config)
+- [ ] Build (incluindo `docker build` local se tocou Dockerfile/deps/build-config — build FIEL: limpar artefatos locais tipo `packages/*/dist` antes de `--no-cache`, senão o contexto sujo mascara erro de build order que só explode no provider)
 - [ ] Mexeu em manifest de dependências → lockfile da RAIZ commitado junto
 - [ ] Rebase em base atualizada + gate completo re-rodado, se a base mudou desde o início da tarefa
 

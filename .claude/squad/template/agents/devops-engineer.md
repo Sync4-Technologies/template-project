@@ -604,6 +604,19 @@ Diagnóstico rápido de CI morto: TODOS os jobs falhando em segundos, runner vaz
 
 ---
 
+## Padrões PaaS + Docker (aprendidos em produção)
+
+Antes de deploy em PaaS (Railway, Render, Fly.io etc.), rodar a skill `/squad-deploy-preflight`. Regras permanentes:
+
+- **Monorepo:** Dockerfile builda pacotes internos por GLOB (`--filter "./packages/*"`), nunca lista explícita — pacote novo fora da lista quebra o build só no provider
+- **`.dockerignore` na RAIZ do contexto** (subdiretório não é lido) excluindo `**/dist` + `**/node_modules`; validação local fiel = limpar artefatos (`rm -rf packages/*/dist`) antes de `docker build --no-cache` (simula o snapshot git do provider)
+- **Multi-stage:** env de produção só no stage final (no stage de build pula devDeps); init process (tini) se o app não propaga sinais; deps de runtime (ex: openssl) em todos os stages que precisam
+- **watchPatterns:** mudança só de Dockerfile costuma NÃO disparar redeploy — cobrir os paths certos ou forçar
+- **Sem features BuildKit não suportadas** pelo provider (ex: cache mounts com id)
+- **Env de build-time do frontend** (`NEXT_PUBLIC_*` etc.) entra como buildArg — var de runtime não afeta bundle já buildado
+
+---
+
 ## Definition of Done (DevOps)
 
 Uma entrega só está pronta quando:

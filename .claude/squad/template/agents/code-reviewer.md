@@ -282,6 +282,7 @@ Você deve classificar:
 - comentário documentando enforcement sem o enforcement implementado (ex: "MFA required" sem guard/decorator correspondente — grep e confirmar)
 - token/credencial emitido sem consumer funcional + testes (aceita válido / rejeita revogado / rejeita expirado)
 - decisão de design vivendo só em comentário (`// TODO`, `// in production...`) sem entrada no DECISIONS_LOG no mesmo commit — decisão em comentário se perde e é revertida por esquecimento
+- (apps SSR/RSC) client component (`'use client'`) importando código que lê env server-only (`process.env.*` sem `NEXT_PUBLIC_`) — grep e confirmar; build/test/lint ficam verdes e a feature quebra só em produção
 
 ---
 

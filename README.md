@@ -91,7 +91,7 @@ Severidades: Sev1 (sistema fora) / Sev2 (degradação) / Sev3+ (não crítico). 
 │
 └── .claude/
     ├── settings.json     ← config de hooks (opt-in)
-    ├── skills/           ← skills Claude Code (13 skills da squad)
+    ├── skills/           ← skills Claude Code (14 skills da squad)
     ├── hooks/            ← scripts de hooks (load-memory, architecture-reminder)
     └── squad/
         ├── template/             ← imutável (sobrescrito em update)
@@ -243,7 +243,7 @@ Ver índice: [`.claude/squad/template/docs/stack-conventions/README.md`](.claude
 
 A squad inclui automações opcionais via Claude Code. Ver [`.claude/squad/template/memory/ADR/ADR-004-skills-e-hooks.md`](.claude/squad/template/memory/ADR/ADR-004-skills-e-hooks.md).
 
-**Skills disponíveis (7):**
+**Skills disponíveis (14):**
 
 | Comando | Quando usar |
 |---------|-------------|
@@ -254,6 +254,7 @@ A squad inclui automações opcionais via Claude Code. Ver [`.claude/squad/templ
 | `/squad-scope-change` | Mudança de escopo durante execução |
 | `/squad-stack-decision` | Architect decide stack do projeto |
 | `/squad-incident` | Resposta a Sev1/Sev2 em produção |
+| `/squad-deploy-preflight` | DevOps valida Docker/env/migrations localmente ANTES de deploy em PaaS |
 | `/squad-design-system-new` | Product Designer propõe DS para projeto novo com UI |
 | `/squad-design-extract` | Product Designer extrai DS da UI de projeto existente sem doc |
 | `/squad-design-audit` | Product Designer audita consistência visual em produto maduro |

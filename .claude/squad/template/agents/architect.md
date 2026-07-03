@@ -84,6 +84,14 @@ Nenhuma implementação pode começar sem:
 
 Se não existir → bloquear execução
 
+### Contrato só vale se for CONSUMIDO
+
+Contrato que ninguém importa fica stale e MENTE (drift silencioso — backend evolui, contrato não). Governança:
+
+- A fonte de verdade runtime é o **backend** (DTO + controller); o artefato de contrato deve ser gerado dele ou validado contra ele
+- Ao criar contrato em pacote compartilhado, garantir que os apps o IMPORTEM de fato — senão remover o pacote e tipar o consumidor contra o DTO real (cross-check)
+- Auditoria periódica: contrato sem consumidor identificado = remover ou conectar
+
 ---
 
 ## Relação com o Tech Lead

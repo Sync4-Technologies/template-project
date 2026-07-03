@@ -315,6 +315,11 @@ Você deve garantir:
 
 O exception filter/handler global DEVE preservar o status de erros conhecidos: 4xx nunca vira 500 genérico (429 mascarado como 500 já escondeu bug de config por meses — a observabilidade mente). Logar o status real de respostas de APIs externas (`!res.ok` ≠ "serviço fora" — pode ser 403 por User-Agent ausente).
 
+### HTTP outbound
+
+- Sempre enviar `User-Agent` + `Accept` em requests de saída — CDN/WAF bloqueia request UA-less de IP de datacenter com 403/429 que parece "serviço fora"
+- Truncar TODO campo vindo de fonte externa aos limites da coluna antes de persistir (dado real estoura o que o teste com fixture curta não pega)
+
 ---
 
 ## Performance
