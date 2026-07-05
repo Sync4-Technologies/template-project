@@ -5,12 +5,23 @@ Governança completa para projetos conduzidos por squad de agentes Claude Code: 
 ## Instalação
 
 ```bash
-# 1. Adicionar o marketplace (uma vez por máquina)
+# 1. Adicionar o marketplace (uma vez por máquina; lê a branch default do repo)
 /plugin marketplace add Sync4-Technologies/template-project
 
-# 2. Instalar o plugin
+# 2. Instalar o plugin (escopo user — vale pra todos os projetos da máquina)
 /plugin install squad@pdati
+
+# 3. Verificar
+claude plugin list              # squad@pdati — enabled
+claude plugin details squad     # 15 skills, 3 hooks, ~870 tok always-on
+
+# 4. Reiniciar a sessão Claude Code (plugin carrega na próxima sessão)
+
+# 5. No projeto (uma vez):
+/squad-init                     # cria .claude/squad/project/ + SQUAD_VERSION
 ```
+
+Passo a passo completo com troubleshooting: README do repositório → "Distribuição e Versionamento (Plugin)".
 
 ## Uso
 

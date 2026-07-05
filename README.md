@@ -491,12 +491,69 @@ Aplicáveis a todos os agentes de engenharia:
 
 ## Distribuição e Versionamento (Plugin)
 
-A squad é distribuída como **plugin Claude Code** — este repositório é o **upstream oficial** e também o marketplace:
+A squad é distribuída como **plugin Claude Code** — este repositório é o **upstream oficial** e também o marketplace.
+
+### Instalação — passo a passo
+
+**Pré-requisitos:** Claude Code instalado; acesso de leitura a este repositório no GitHub.
+
+**1. Adicionar o marketplace** (uma vez por máquina):
 
 ```bash
+# dentro de uma sessão Claude Code:
 /plugin marketplace add Sync4-Technologies/template-project
-/plugin install squad@pdati
+
+# ou pelo terminal:
+claude plugin marketplace add Sync4-Technologies/template-project
 ```
+
+> O marketplace é lido da **branch default** do repo. Para testar uma versão ainda não mergeada, aponte para o clone local: `claude plugin marketplace add /caminho/do/clone`.
+
+**2. Instalar o plugin:**
+
+```bash
+/plugin install squad@pdati
+# ou: claude plugin install squad@pdati
+```
+
+Escopo padrão: `user` (vale para todos os projetos da máquina; os hooks são inofensivos em projetos sem squad — retornam vazio).
+
+**3. Verificar a instalação:**
+
+```bash
+claude plugin list                # squad@pdati — Status: enabled
+claude plugin details squad       # 15 skills, 3 hooks, ~870 tokens always-on
+```
+
+**4. Reiniciar a sessão Claude Code** — plugin instalado no meio de uma sessão só carrega na próxima. As skills aparecem como `squad:squad-*` (ex: `/squad:squad-resume`; o nome curto `/squad-resume` também resolve quando não há conflito).
+
+**5. Inicializar a squad no projeto** (uma vez por projeto):
+
+```bash
+cd meu-projeto
+claude
+/squad-init     # cria .claude/squad/project/ (memória viva) + SQUAD_VERSION + CLAUDE.md mínimo
+```
+
+Projeto novo sem PRD → seguir com `/squad-new-project`. Projeto em andamento → `/squad-resume`.
+
+**6. Atualizar** (ação explícita, nunca silenciosa):
+
+```bash
+claude plugin marketplace update pdati   # sincroniza o marketplace
+/plugin                                  # menu → squad → update
+```
+
+Após atualizar, registrar a nova versão no `SQUAD_VERSION` do projeto (o `/squad-resume` lembra).
+
+**Troubleshooting:**
+
+| Sintoma | Causa provável |
+|---------|----------------|
+| `marketplace add` não acha o plugin | marketplace.json só existe em branch não-default — usar path local até o merge |
+| Skills não aparecem | sessão iniciada antes do install — reiniciar sessão |
+| Hook não carrega memória | projeto sem `.claude/squad/project/` — rodar `/squad-init` |
+| Skills duplicadas neste repo | cópia legada em `.claude/skills/` coexiste com o plugin (namespaces distintos) — some ao migrar o layout legado |
 
 - **Fonte canônica:** [`plugin/`](plugin/) (skills, hooks, specs de agentes, docs, templates). Toda melhoria entra AQUI primeiro.
 - **Adoção em projeto:** `/squad-init` cria `.claude/squad/project/` (memória viva) + `SQUAD_VERSION` — o projeto carrega só o ESTADO; o comportamento vem do plugin, versionado.
