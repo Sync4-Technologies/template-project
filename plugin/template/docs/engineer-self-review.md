@@ -45,6 +45,7 @@
 - [ ] Testes determinísticos (sem dependência de ordem, tempo real, estado compartilhado)
 - [ ] Invariante que vive no banco (enum, constraint, RLS, trigger) → ≥1 teste de integração contra banco REAL (mock do sink esconde a classe inteira de bug)
 - [ ] Fluxo multi-passo (onboarding, MFA, reset) → teste E2E com app real + DB real antes de Done
+- [ ] Branch que altera prompt, modelo, contexto ou tools de feature de IA → eval de regressão rodada (golden set, sem queda de score) — ver `stack-conventions/ai/evals.md`
 
 ## §4 — Simplicidade (anti-over-engineering)
 

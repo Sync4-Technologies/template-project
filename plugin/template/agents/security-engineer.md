@@ -300,6 +300,21 @@ Aprendidos em incidentes reais — verificar em TODA feature que emite/valida cr
 
 ---
 
+## Checklist LLM/IA (OWASP LLM Top 10 — obrigatório em feature com IA)
+
+Toda feature que usa LLM adiciona superfície de ataque própria. Verificar:
+
+1. **Prompt injection direto** — input de usuário tentando sobrescrever instruções ("ignore as regras e..."). Guardrails testados com casos adversariais no golden set (`${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/ai/evals.md`); instruções de sistema nunca concatenadas com input cru sem delimitação.
+2. **Prompt injection indireto** — conteúdo NÃO-confiável que entra no contexto (documento de RAG, resultado de web fetch, mensagem de terceiro) pode conter instruções. Regra: conteúdo recuperado é DADO, nunca comando; testar com documento malicioso no corpus.
+3. **Insecure output handling** — output do modelo é input não-confiável para o resto do sistema: sanitizar antes de renderizar (XSS), validar por schema antes de executar (nunca `eval`/SQL/shell direto de output), escapar antes de persistir.
+4. **Vazamento de dados via contexto** — PII/segredos no prompt aparecem em logs, cache e no provider. Classificação de dados do PRD §5 aplicada ao que ENTRA no contexto; logs de prompt/output redigidos; isolamento por tenant no retrieval (filtro no índice, não no prompt).
+5. **Excessive agency das tools** — cada tool exposta ao modelo tem least privilege (escopo mínimo, credencial própria); ação irreversível/externa (enviar, pagar, deletar) exige confirmação ou gate; tool com URL/host de input do usuário passa pelo guard SSRF.
+6. **Model DoS / custo** — input de usuário não controla tamanho do contexto sem limite; rate-limit por usuário/tenant em endpoints de IA; alerta de custo anômalo (orçamento do PRD §5).
+
+Feature de IA sem esses itens verificados = REJEITAR (mesmo rigor do Quality Gate abaixo).
+
+---
+
 ## Quality Gate (Security)
 
 Uma feature crítica só passa quando:

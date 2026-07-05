@@ -60,7 +60,50 @@
 
 ---
 
-## 5. Requisitos Não-Funcionais
+## 5. Produto de IA
+
+> **Obrigatória quando IA é núcleo do produto** (definido no kickoff — `/squad-new-project` pergunta "qual o papel da IA neste produto?"). Se IA é apenas acessória, preencher só a linha "Papel da IA" e marcar N/A no resto. Se não há IA, remover a seção.
+
+### Papel da IA
+- [ ] **Núcleo** — o valor do produto É a capacidade de IA (ex: agente conversacional, copiloto, geração)
+- [ ] **Acessória** — IA melhora uma feature (ex: sugestão, classificação, busca semântica)
+- [ ] **Ausente**
+
+### Casos de uso de IA
+| # | Caso de uso | Input | Output esperado | Criticidade |
+|---|------------|-------|-----------------|-------------|
+| IA-01 | [ex: responder cliente no WhatsApp] | [mensagem + histórico + base] | [resposta no tom da marca] | Alta |
+
+### Modelo e provider
+- Provider/modelo por caso de uso: [ex: IA-01 → Anthropic claude-sonnet-5; classificação → haiku]
+- Justificativa (capability × custo × latência): [Architect valida via ADR-006-arquitetura-ia]
+- Fallback determinístico quando o provider falha: [ex: fila + resposta padrão; nunca silêncio]
+
+### Custo (RNF)
+- Custo-alvo por interação: [ex: ≤ US$ 0,01/mensagem]
+- Orçamento mensal de inferência: [ex: ≤ US$ N/tenant] + alerta em [%]
+- Estratégias: prompt caching, modelo menor onde couber, limite de contexto
+
+### Latência de inferência (RNF)
+- P50: [ex: ≤ 2s] / P95: [ex: ≤ 6s] — com streaming: primeiro token ≤ [ex: 1s]
+
+### Dados e privacidade
+- Dados que ENTRAM no contexto do modelo: [classificar — PII permitida? anonimizar?]
+- Retenção de prompts/outputs em log: [política — sem PII crua em log]
+- Dados de cliente NUNCA usados para treino de terceiros: [confirmar termos do provider]
+
+### Qualidade de IA (evals — critérios de aceite)
+- Golden set: [N casos representativos versionados, incl. adversariais]
+- Métrica de aprovação: [ex: ≥ 95% no golden set; zero vazamento de PII; zero violação de escopo]
+- Regressão: toda mudança de prompt/modelo/contexto roda evals antes de merge
+
+### Guardrails
+- O que o agente NUNCA pode fazer: [ex: prometer prazo, dar aconselhamento médico, executar ação irreversível sem confirmação]
+- Kill-switch: [feature IA desligável via flag — ADR-003]
+
+---
+
+## 6. Requisitos Não-Funcionais
 
 > Obrigatório em **Production Mode**. Fortemente recomendado em MVP.
 > O Architect pode elevar os valores abaixo — nunca reduzir sem aprovação do usuário.
@@ -120,7 +163,7 @@
 
 ---
 
-## 6. Critérios de Aceite
+## 7. Critérios de Aceite
 
 > Devem ser objetivos, verificáveis e convertíveis em testes.
 
@@ -145,7 +188,7 @@
 
 ---
 
-## 7. Métricas de Sucesso
+## 8. Métricas de Sucesso
 
 | Métrica | Baseline atual | Meta em 30 dias | Meta em 90 dias |
 |---------|--------------|----------------|----------------|
@@ -154,14 +197,14 @@
 
 ---
 
-## 8. Dependências
+## 9. Dependências
 
 - [Serviço / API externo que esta feature depende]
 - [Outra feature que deve estar pronta antes]
 
 ---
 
-## 9. Riscos
+## 10. Riscos
 
 | Risco | Probabilidade | Impacto | Mitigação |
 |-------|-------------|--------|----------|
@@ -169,7 +212,7 @@
 
 ---
 
-## 10. Histórico de Revisões
+## 11. Histórico de Revisões
 
 | Data | Autor | Mudança |
 |------|-------|---------|
