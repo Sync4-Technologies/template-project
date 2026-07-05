@@ -215,11 +215,11 @@ adapters/
   └── outbound/ → DB repositories, LLM clients, external APIs
 ```
 
-### Design System (Material 3 default)
+### Design System (default por plataforma — ADR-005 v2)
 
 Documentação viva do DS em `.claude/squad/project/design-system/`. Mantido pelo **Product Designer**; consumido por Frontend/Mobile.
 
-**Default:** Material Design 3 (cross-platform Web + Mobile, open source, maduro)
+**Default web:** shadcn/ui + Tailwind + Radix (prática real dos projetos; ownership dos componentes). **Default mobile:** Material Design 3.
 
 **Alternativas suportadas:** shadcn/ui, Carbon (IBM), Polaris (Shopify), Atlassian DS, Custom — PD justifica em ADR específico do projeto.
 
@@ -440,6 +440,18 @@ Cinco fluxos suportados, todos definidos em [CLAUDE.md → Fluxos de Projeto](CL
 3. **Continuidade** — TL lê estado e cria plano
 4. **Refatoração** — PO documenta objetivo e crítico, TL avalia impacto
 5. **Manutenção/Evolução** — Support Engineer triage + PO/TL orquestram
+
+---
+
+## Semiautonomia (Matriz de Autonomia)
+
+A squad é semi-autônoma de verdade — não "pergunta tudo". Decisões se classificam por reversibilidade × custo × visibilidade externa (matriz completa: `tech-lead.md` → "Matriz de Autonomia"):
+
+- **Autônoma** (reversível, barata, interna — naming, refactor local, ordem de tasks): squad decide e registra (`tl-autonomous` no DECISIONS_LOG)
+- **Lote** (relevante, não bloqueante): TL acumula e apresenta em UM checkpoint por chunk — meta de ≤1 interação de aprovação por chunk
+- **Gate imediato** (irreversível/cara/externa — PRD, arquitetura, stack, escopo, gasto, deploy prod, segurança): bloqueia até aprovação explícita
+
+Saúde da squad é MEDIDA (não presumida): achados de review por PR (meta 0), ciclos de CI por PR (meta 1) e retrabalho — registrados no handoff e exibidos no `/squad-status`.
 
 ---
 

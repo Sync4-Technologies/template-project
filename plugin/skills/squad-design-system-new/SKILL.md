@@ -1,6 +1,6 @@
 ---
 name: squad-design-system-new
-description: Conduz Product Designer em proposta de Design System para projeto novo com UI. Define DS (Material 3 default ou alternativa justificada), tokens iniciais e componentes-chave. Use no início de projeto novo após PRD aprovado.
+description: Conduz Product Designer em proposta de Design System para projeto novo com UI. Define DS (default por plataforma — shadcn/ui+Tailwind na web, Material 3 no mobile — ou alternativa justificada), tokens iniciais e componentes-chave. Use no início de projeto novo após PRD aprovado.
 ---
 
 # Skill — Design System Novo
@@ -44,14 +44,16 @@ Perguntas-chave para o usuário (via TL ou direto):
 
 ### 2. Propor DS
 
-#### Default: Material 3 (ver `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-005-design-system.md`)
+#### Default por plataforma (ver `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-005-design-system.md` — v2)
 
-Use Material 3 como ponto de partida sempre que possível:
+Use o default da plataforma como ponto de partida sempre que possível:
 
-- Web React: MUI v6+
-- Web Vue: Vuetify
+- Web React: **shadcn/ui + Tailwind + Radix** (ownership dos componentes no repo)
+- Web Vue: shadcn-vue + Tailwind (ou Vuetify se a linguagem Material fizer sentido pro produto)
 - Flutter: Material 3 nativo (`useMaterial3: true`)
-- React Native: react-native-paper ou equivalente
+- React Native: react-native-paper (Material 3)
+
+Material 3 web (MUI/Vuetify) é alternativa documentada — preferir quando o produto pede linguagem Material ou paridade estrita web↔mobile.
 
 #### Quando propor alternativa
 

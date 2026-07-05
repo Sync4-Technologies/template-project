@@ -53,6 +53,19 @@ Skills completas: ver `skills/`. Specs dos agentes: `template/agents/`. Checklis
 
 Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.claude/squad/project/`, remove as cópias locais de template/skills/hooks (com confirmação) e grava `SQUAD_VERSION`.
 
+## Changelog
+
+### 1.1.0 (2026-07-05)
+- **IA no centro**: seção "Produto de IA" no PRD (custo/interação como RNF, evals, guardrails); `stack-conventions/ai/` (anthropic, rag, evals); gate "sem eval → feature de IA incompleta"; checklist OWASP LLM Top 10 no Security; ADR-006-arquitetura-ia; observabilidade de IA no DevOps
+- **Frontend**: mini-spec do PD obrigatória pra toda tela; checklist visual (self-review §5); gate "rodou e olhou" (screenshots dos 4 estados); ADR-005 v2 (default web = shadcn/ui + Tailwind); biblioteca de page-patterns
+- **Semiautonomia**: Matriz de Autonomia (autônoma/lote/gate) + checkpoint de aprovações em lote no TL; métricas de saúde da squad no handoff e no /squad-status
+
+### 1.0.1 (2026-07-05)
+- Hook SessionStart injeta persona Tech Lead em projeto com squad inicializada
+
+### 1.0.0 (2026-07-05)
+- Release inicial: 15 skills, 14 agentes, 3 hooks, template completo (pós-diagnóstico LESSONS_LEARNED P0+P1+P2)
+
 ## Origem
 
 Extraído do repositório `template-project` após diagnóstico de lições aprendidas em projeto real (ver `docs/DIAGNOSTICO_LESSONS_SQUAD.md` no repo). v1.0.0 = estado pós-aplicação P0+P1+P2 do diagnóstico.

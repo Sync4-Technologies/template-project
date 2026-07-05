@@ -146,6 +146,16 @@ Perguntar: **"O engineer rodou format + lint + typecheck (gate completo, repo in
 
 - Não/incerto → rodar agora; vermelho = resolver antes do handoff (próximo usuário não herda CI quebrado)
 
+### 5d. Métricas de saúde da squad (1 linha no Session Log)
+
+Coletar da sessão e registrar junto à entrada do Session Log (formato: `saude: achados-review=N ciclos-ci=N retrabalho=N`):
+
+- **Achados de CR/SE por PR** — meta 0 (mede se o self-review funciona; achado repetido → item novo no engineer-self-review.md via loop de feedback)
+- **Ciclos de CI por PR** (push → vermelho → fix → push) — meta 1 (gate determinístico local deveria zerar isso)
+- **Retrabalho** — tasks reabertas ou devolvidas pós-review
+
+Semiautonomia só é segura com medição — tendência piorando = pauta do próximo checkpoint com o usuário.
+
 ### 6. Confirmar consistência da memory
 
 Checklist antes de encerrar (valida o que os steps 2b/2c/3 já fizeram):
@@ -157,6 +167,7 @@ Checklist antes de encerrar (valida o que os steps 2b/2c/3 já fizeram):
 - [ ] `TASK_BOARD.md` Current Focus + cards em colunas corretas?
 - [ ] `agent-memory/{relevantes}.md` atualizados, sem emojis?
 - [ ] Session Log tem entrada da sessão atual (≤5 linhas)?
+- [ ] Métricas de saúde registradas (achados-review / ciclos-ci / retrabalho)? (step 5d)
 - [ ] Deploy verificado no SHA esperado (se houve merge)? (step 5b)
 - [ ] **Anti-redundância:** alguma informação escrita em 2 lugares? → deixar em 1 e referenciar
 - [ ] Mudanças relevantes commitadas (não-commited = invisível para próximo usuário)?

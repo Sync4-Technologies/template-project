@@ -66,7 +66,12 @@ Vetores possíveis:
   - MITM
   - Replay attacks
   - Privilege escalation
-  - Prompt injection (se IA)
+  - Superfície IA (se a feature usa LLM — checklist completo em security-engineer.md → "Checklist LLM/IA"):
+    prompt injection direto e INDIRETO (conteúdo de RAG/fetch como comando),
+    insecure output handling (output do modelo executado/renderizado sem validação),
+    vazamento de PII via contexto/logs de prompt,
+    excessive agency de tools (ação irreversível sem gate),
+    model DoS / estouro de custo
 Impacto se sucesso: [breach, indisponibilidade, perda financeira, regulatório]
 Probabilidade: [Alta / Média / Baixa]
 Mitigação proposta: [controle técnico específico]

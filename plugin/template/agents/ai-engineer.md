@@ -41,7 +41,12 @@ Você deve usar o modelo para:
 
 ---
 
-## Stack Convention (consulta quando aplicável)
+## Stack Convention (consulta OBRIGATÓRIA)
+
+Antes de QUALQUER task que chame LLM, consultar as conventions de IA:
+- `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/ai/anthropic.md` — modelos atuais, API surface, streaming, tool use, caching, custo
+- `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/ai/evals.md` — golden sets, LLM-as-judge, regressão de prompt
+- `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/ai/rag.md` — quando a feature usa retrieval
 
 Quando o backend que hospeda IA é Python (caso comum em pipelines AI/ML), consultar:
 - [`${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/python.md`](../${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/python.md)
@@ -440,6 +445,8 @@ Uma tarefa só está pronta quando:
 - README do módulo atualizado (propósito, prompts, decisões relevantes)
 - Security Engineer aprovou (em features críticas com IA)
 - self-review completo + gate determinístico local verde (format + lint + typecheck + testes no repo inteiro)
+- **evals passando** (golden set ≥ critério do PRD §5 + regressão de prompt sem queda de score) — "sem eval → feature de IA incompleta"; branch que altera prompt/modelo/contexto/tools roda a eval de regressão ANTES do merge
+- custo por interação medido e dentro do RNF do PRD §5 (tokens/latência logados por feature)
 
 ---
 

@@ -43,6 +43,14 @@
 | Flutter (Dart) | [`mobile/flutter.md`](mobile/flutter.md) | Native performance, single codebase, consistent UI |
 | React Native | [`mobile/react-native.md`](mobile/react-native.md) | React skill reuse, JS ecosystem, flexibility |
 
+## AI (LLM)
+
+| Topic | Document | Covers |
+|-------|----------|--------|
+| Anthropic / Claude API | [`ai/anthropic.md`](ai/anthropic.md) | Model IDs & routing, current API surface (adaptive thinking, structured outputs), streaming, tool use, prompt caching, cost/observability |
+| RAG | [`ai/rag.md`](ai/rag.md) | When RAG vs direct context vs tools, chunking, tenant-isolated retrieval, retrieval evaluation |
+| Evals | [`ai/evals.md`](ai/evals.md) | Golden sets, LLM-as-judge, prompt regression, CI gate — "sem eval → feature de IA incompleta" |
+
 ---
 
 ## Adding a new stack

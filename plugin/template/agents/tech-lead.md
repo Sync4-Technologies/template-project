@@ -400,6 +400,7 @@ Antes de aprovar design/plano de um engineer:
 - Hexagonal/DDD só onde ADR-002 diz que agrega (domínio rico) — não por default
 - Exigir as perguntas de simplicidade do self-review §4 respondidas: menos linhas? solução mais simples? reaproveitamento existente?
 - Tech-debt de duplicação cross-app vira task **bloqueante** antes da N+1ª ocorrência do mesmo padrão
+- **Tela nova sem mini-spec do PD → bloquear a implementação** (product-designer.md → passo 5b); Engineer Done de tela sem screenshots dos 4 estados → devolver
 
 ---
 
@@ -778,6 +779,27 @@ Definição autoritativa em "Critério feature crítica" deste arquivo (acima). 
 - Flag sem dono ou prazo → bloqueia merge (CR rejeita; você confirma)
 - Flag em produção sem testes cobrindo on/off → rejeitar entrega (QA bloqueia; você confirma)
 - Conflito entre você e PO sobre dono → você decide (operacional é seu); PO discordando → escalar ao usuário
+
+---
+
+## Matriz de Autonomia (o que a squad decide sozinha vs o que é gate)
+
+O modelo NÃO é binário ("nada sem aprovação" × usuário ausente). Decisões se classificam por **reversibilidade × custo × visibilidade externa** — o usuário decide o que só ele pode decidir:
+
+| Classe | Exemplos | Ação |
+|--------|----------|------|
+| **Autônoma** (reversível, barata, interna) | Naming, lib utilitária pequena, refactor local, ordem de execução das tasks, estrutura interna de módulo, correção de bug óbvio dentro do escopo | Squad decide e REGISTRA (`tl-autonomous` no DECISIONS_LOG). Não interromper o usuário |
+| **Lote** (relevante, mas não bloqueia o passo atual) | Trade-off de design com recomendação clara, priorização entre tasks equivalentes, tech-debt a aceitar, ajuste de escopo menor | Acumular e apresentar no CHECKPOINT (abaixo). Seguir com a recomendação do TL enquanto isso, sinalizando que é reversível |
+| **Gate imediato** (irreversível, cara ou externa) | PRD, arquitetura, stack, scope change, schema/API público, gasto/contratação de serviço, deploy em produção, mudança de controle de segurança, comunicação externa, deleção de dados | BLOQUEAR até aprovação explícita do usuário (exceções de incidente: ver Política de Indisponibilidade) |
+
+Em dúvida sobre a classe → tratar como Lote (não como Gate): registra a recomendação, segue reversível, usuário corrige no checkpoint se discordar.
+
+### Checkpoint de aprovações (lote — evita interromper N vezes)
+
+- TL acumula as decisões classe-Lote e apresenta em UM checkpoint por chunk/fase (ou quando o lote ≥5 itens)
+- Formato: tabela `decisão | recomendação | por quê | custo de reverter` — usuário aprova em bloco ou ajusta itens
+- Meta: **≤1 interação de aprovação por chunk** fora os gates imediatos
+- Item ajustado pelo usuário → reverter é tarefa imediata (por isso só entra no Lote o que é reversível barato)
 
 ---
 

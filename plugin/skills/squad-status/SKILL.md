@@ -44,6 +44,9 @@ git status --short
 gh pr list --state open --json number,title,headRefName,reviewDecision
 
 # TASK_BOARD counts (Python or grep)
+
+# Métricas de saúde (últimas entradas `saude:` do Session Log — squad-handoff step 5d)
+grep -o "saude: [^|]*" .claude/squad/project/DECISIONS_LOG.md | tail -3
 ```
 
 Ler:
@@ -73,6 +76,10 @@ Formato (≤200 palavras):
 
 📝 Commits últimos 10:
 [lista compacta]
+
+📈 Saúde da squad (últimas 3 sessões — tendência):
+- achados-review/PR: [N N N] | ciclos-ci/PR: [N N N] | retrabalho: [N N N]
+- (meta: 0 achados, 1 ciclo — piora consistente = pauta de checkpoint)
 
 🏗️ ADRs do projeto: N
 - ADR-NNN: [título]

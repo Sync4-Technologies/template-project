@@ -26,7 +26,7 @@ Esta skill conduz o PO na criação de PRD completo seguindo o template oficial.
 
 ---
 
-## Estrutura do PRD (10 seções)
+## Estrutura do PRD (11 seções)
 
 Conforme `${CLAUDE_PLUGIN_ROOT}/template/docs/PRD-template.md`:
 
@@ -34,12 +34,13 @@ Conforme `${CLAUDE_PLUGIN_ROOT}/template/docs/PRD-template.md`:
 2. **Usuário Alvo** — perfis, contexto, necessidade
 3. **Escopo** — IN / OUT explícitos
 4. **Requisitos Funcionais** — happy path, alternativos, regras de negócio, estados
-5. **Requisitos Não-Funcionais** — performance, disponibilidade, volumetria, segurança, compliance, i18n, cobertura de testes
-6. **Critérios de Aceite** — histórias de usuário com Dado/Quando/Então testáveis
-7. **Métricas de Sucesso** — baseline + meta 30/90 dias
-8. **Dependências** — externas, internas
-9. **Riscos** — probabilidade × impacto × mitigação
-10. **Histórico de Revisões**
+5. **Produto de IA** — papel da IA (núcleo/acessória/ausente), casos de uso IA, modelo/provider, custo por interação (RNF), latência de inferência, dados/PII no contexto, evals, guardrails. **Perguntar SEMPRE no início: "qual o papel da IA neste produto?"** — núcleo torna a seção obrigatória e bloqueante
+6. **Requisitos Não-Funcionais** — performance, disponibilidade, volumetria, segurança, compliance, resiliência, usabilidade, expansibilidade, i18n, cobertura de testes
+7. **Critérios de Aceite** — histórias de usuário com Dado/Quando/Então testáveis
+8. **Métricas de Sucesso** — baseline + meta 30/90 dias
+9. **Dependências** — externas, internas
+10. **Riscos** — probabilidade × impacto × mitigação
+11. **Histórico de Revisões**
 
 ---
 
@@ -61,7 +62,7 @@ Antes de qualquer outra ação, **pergunte ao usuário** como prefere construir 
 
 1. Aguardar usuário entregar briefing (cola texto ou aponta arquivo)
 2. Ler briefing **completo** antes de qualquer pergunta
-3. Mapear conteúdo nas 10 seções do PRD:
+3. Mapear conteúdo nas 11 seções do PRD:
    - O que já está coberto → estruturar
    - O que falta → marcar como gap
 4. Listar gaps detectados ao usuário com prioridade:

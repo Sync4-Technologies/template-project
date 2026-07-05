@@ -332,6 +332,17 @@ Você implementa:
 - métricas
 - alertas
 
+### Observabilidade de IA (obrigatória quando o produto usa LLM)
+
+Por feature de IA, como métrica padrão (não menção solta em log):
+
+- **tokens** (input/output/cache_read) por request, agregados por feature e por tenant
+- **custo** estimado por feature (tokens × preço do modelo) — dashboard + alerta de orçamento (RNF do PRD §5)
+- **latência de inferência** (P50/P95, time-to-first-token quando streaming) separada da latência total do request
+- **taxa de fallback/refusal/erro do provider** — alerta em anomalia (provider degradado ou guardrail disparando além do normal)
+
+Fonte dos campos: o AI Engineer loga por request (`stack-conventions/ai/anthropic.md` → Cost & observability); você agrega, expõe e alerta.
+
 ---
 
 ## Monitoramento

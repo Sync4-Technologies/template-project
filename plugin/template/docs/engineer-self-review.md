@@ -45,6 +45,7 @@
 - [ ] Testes determinísticos (sem dependência de ordem, tempo real, estado compartilhado)
 - [ ] Invariante que vive no banco (enum, constraint, RLS, trigger) → ≥1 teste de integração contra banco REAL (mock do sink esconde a classe inteira de bug)
 - [ ] Fluxo multi-passo (onboarding, MFA, reset) → teste E2E com app real + DB real antes de Done
+- [ ] Branch que altera prompt, modelo, contexto ou tools de feature de IA → eval de regressão rodada (golden set, sem queda de score) — ver `stack-conventions/ai/evals.md`
 
 ## §4 — Simplicidade (anti-over-engineering)
 
@@ -60,6 +61,20 @@ Responder honestamente antes de entregar:
 Resposta "não" em 1–3 → simplificar/reaproveitar ANTES de enviar pra review. Abstração especulativa (camada/interface/config sem 2º caso de uso real) = remover (YAGNI).
 
 ---
+
+## §5 — Qualidade visual (frontend/mobile — obrigatório em toda tela)
+
+**Gate "rodou e olhou":** antes de Engineer Done, rodar o app e CAPTURAR SCREENSHOT dos estados principais (happy, loading, empty, error). Código verde ≠ tela boa; ninguém aprova tela que nunca foi renderizada (lição §27 Concilia: cascata de bugs em fluxo nunca aberto num navegador).
+
+- [ ] Screenshots dos 4 estados capturados e anexados ao Engineer Done (tela crítica: PD revisa a imagem)
+- [ ] Implementação segue a mini-spec do PD (hierarquia, layout, componentes) — divergência foi acordada, não improvisada
+- [ ] Spacing na ESCALA do DS (nenhum valor mágico); alinhamento consistente entre blocos
+- [ ] Hierarquia tipográfica clara (1 dominante por tela; tamanhos/pesos da escala do DS)
+- [ ] Estados obrigatórios implementados: loading (skeleton onde couber), empty (mensagem + ação, nunca área branca), error (mensagem acionável, nunca genérica), sucesso
+- [ ] Responsivo verificado em 3 larguras (mobile ~375, tablet ~768, desktop ~1280) — sem overflow, sem quebra de layout
+- [ ] Dark mode íntegro (quando o projeto suporta)
+- [ ] Foco visível + navegação por teclado no fluxo principal (a11y além do axe)
+- [ ] Textos reais/realistas (nomes longos, números grandes) — não "teste 123" que esconde overflow
 
 ## Loop de melhoria
 
