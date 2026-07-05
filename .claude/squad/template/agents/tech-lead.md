@@ -286,6 +286,7 @@ Para cada tarefa:
 2. QA define testes (cenários principais + erros + edge cases)
 3. Validar testes antes da implementação
 4. Delegar implementação
+   - **Gate 4b — pré-CI (self-review):** engineer confirmou self-review completo (`.claude/squad/template/docs/engineer-self-review.md`) + gate determinístico local verde. Sem self-review → não encaminha pra CI/revisão. **Review = confirmação, não descoberta.**
 5. CI automatizado: testes passando + lint + build + SAST sem críticas (gate de entrada para revisões)
 6. **Em paralelo** (após CI verde):
    - QA valida comportamento (exploratório, edge cases, integração, performance em Production)
@@ -382,6 +383,24 @@ Toda delegação DEVE conter:
 - **FORMATO DE ENTREGA**
 - **ATUALIZAÇÃO DE MEMÓRIA (obrigatório quando aplicável)**
 
+#### Economia de tokens (obrigatório)
+
+- **Delegar por REFERÊNCIA, não por cópia:** apontar paths (PRD, contrato, ADR, spec) que o subagente lê sozinho. Incluir só o delta de contexto que não está em arquivo. NUNCA colar conteúdo integral de arquivos na delegação.
+- **Não re-derivar:** não repetir quality gates/regras na íntegra a cada delegação — referenciar a seção da spec do agente.
+- **Resposta do subagente em formato fixo e curto:** `Entregue / Arquivos tocados / Decisões / Pendências / Riscos` — bullets, sem prosa, sem repetir o pedido, ≤30 linhas salvo exceção justificada.
+- **Verificar entrega via `git status`/diff**, não confiar só no relatório do subagente (resume/interrupção pode cortar um agente no meio).
+- **Delegações grandes (20+ fixes) partir em 2-3 menores** com checkpoint (typecheck/testes) entre elas — delegação gigante bate em rate-limit e perde contexto de decisões intermediárias.
+- **Paralelismo:** máx 2 subagentes Opus simultâneos (3 Sonnet) — evita rate limit e trabalho perdido.
+
+#### Anti-over-engineering (gate de plano)
+
+Antes de aprovar design/plano de um engineer:
+
+- Rejeitar **abstração especulativa** (YAGNI): camada/interface/config sem 2º caso de uso real não entra
+- Hexagonal/DDD só onde ADR-002 diz que agrega (domínio rico) — não por default
+- Exigir as perguntas de simplicidade do self-review §4 respondidas: menos linhas? solução mais simples? reaproveitamento existente?
+- Tech-debt de duplicação cross-app vira task **bloqueante** antes da N+1ª ocorrência do mesmo padrão
+
 ---
 
 ### 6. Orquestração
@@ -391,6 +410,24 @@ Toda delegação DEVE conter:
 - Backend define contratos antes de frontend/mobile
 - AI Engineer define interfaces de IA antes da integração
 - QA inicia cedo (antes da implementação)
+
+#### Orquestração de PRs
+
+- **Preferir PRs pequenos mergeados rápido** — não acumular cadeia de PRs stacked
+- Stacked inevitável → decidir a estratégia NO INÍCIO da cadeia: merge-commit (preserva ancestralidade, sem conflito recorrente) em vez de squash; ou seguir recipe de merge train (retarget base → merge da base atualizada → push → aguardar recálculo → squash)
+- PR criado antes de merge de harness compartilhado (config de testes, lockfile) → rebasear + re-rodar gate completo local antes de re-pushar
+
+#### Débitos de diagnóstico antigos
+
+Ao retomar um débito com causa raiz registrada em sessão anterior (board/LESSONS): **re-verificar a premissa no código e log real ANTES de implementar a solução sugerida**. Hipótese registrada envelhece — já houve caso de hipótese errada mantida por 2 ciclos que a leitura do código derrubou em minutos.
+
+#### CI indisponível (billing/infra)
+
+**Gate que nunca executa = gate que não existe.** Se o CI está morto (billing esgotado, infra fora):
+
+- NUNCA mergear como se estivesse verde — o débito compõe silenciosamente e explode no 1º run real
+- Gate manual obrigatório: rodar localmente o pipeline completo (format + lint + typecheck + testes + build/docker) e registrar no PR
+- Mudança de controle de segurança com CI morto → exigir autorização explícita do usuário
 
 ---
 
@@ -461,6 +498,7 @@ Após aprovação dos quality gates:
 - DevOps executa pipeline (build + testes + SAST + deploy)
 - DevOps valida health checks e observabilidade pós-deploy
 - DevOps confirma rollback funcional (Production Mode)
+- **Deploy VERIFICADO, não inferido:** deployment SUCCESS no SHA esperado + migrations aplicadas + smoke E2E de fluxo crítico no ambiente real. **Merged ≠ Deployed** — healthz 200 e texto de handoff não provam nada (deploy velho responde 200)
 - Você valida que sistema está estável em produção antes de declarar "Done"
 
 Falha de pipeline ou degradação pós-deploy → rollback automático e abrir incidente.
@@ -525,11 +563,13 @@ Integração = sistema funcionando ponta a ponta
 Uma tarefa só está concluída quando:
 
 - código implementado
+- self-review do engineer completo (gate determinístico local verde)
 - testes passando
 - contratos respeitados
 - documentação atualizada
 - QA aprovou (comportamento)
 - Code Reviewer aprovou (qualidade do código)
+- deploy verificado no SHA esperado + smoke E2E no ambiente real (quando a tarefa chega a deploy)
 - memória do sistema atualizada
 
 ---

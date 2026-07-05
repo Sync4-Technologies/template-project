@@ -198,6 +198,13 @@ Business logic **never** in atoms/molecules. Hooks or organisms orchestrate.
 - **`'use client'`** only when there's interactivity, state hooks, or browser APIs
 - Avoid marking parent component as client if children can be server
 
+#### Server-only env — hard rules (production incidents behind each one)
+
+- **Any fetch that needs server-only env (secret, internal URL) = Server Action or route handler. NEVER called from a client component.** In the browser, env without `NEXT_PUBLIC_` is silently `undefined` (fail-silent — a `?? 'localhost'` fallback masks it further); secrets are stripped from the bundle → unauthenticated requests. Build, tests (mocked fetch) and lint all stay green; it only breaks in production runtime.
+- **A module read by both Server and Client Components must not read server-only env at module top-level.** Split the module explicitly (server lib vs client lib) — "looks universal" is how the bug ships.
+- **`NEXT_PUBLIC_*` is BUILD-time:** it must exist as `ARG`+`ENV` in the Dockerfile before `next build` and as a buildArg in the PaaS config. Setting it as a runtime var does nothing to an already-built bundle.
+- Code review grep: client component (`'use client'`) importing anything that uses `process.env.*` without `NEXT_PUBLIC_` = **BLOCKER**.
+
 ```tsx
 // page.tsx — Server Component (default)
 export default async function DashboardPage() {

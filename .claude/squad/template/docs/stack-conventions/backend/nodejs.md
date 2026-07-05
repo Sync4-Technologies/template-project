@@ -296,6 +296,40 @@ export const logger = pino({
 
 ---
 
+## Deployment & runtime gotchas (learned in production)
+
+### NODE_ENV semantics matrix
+
+`NODE_ENV` has multiple independent effects (config validation strictness, logger transports, dependency installation). Wrong combination = crash. Standard matrix:
+
+| Environment | NODE_ENV | Why |
+|---|---|---|
+| Local dev | `development` | dev-only transports (pino-pretty) available; relaxed config checks |
+| PaaS staging/develop | `staging` | strict config checks with stubs; NO dev-only deps in prod bundle (`development` here crashes on missing devDeps) |
+| PaaS production | `production` | strict checks with real values; devDeps pruned |
+| CI tests | `test` | separate Zod enum value |
+
+Document each effect explicitly in `config.schema.ts` (Zod enum comment).
+
+### NestJS specifics
+
+- **Dev server:** use SWC builder via `nest-cli.json` (`decorators: true`, `decoratorMetadata: true`) from day one. `tsx`/plain esbuild silently drops `emitDecoratorMetadata` → DI receives `undefined` → boot crash.
+- **Never run blind `eslint --fix` on services/repositories.** `consistent-type-imports` converts DI-injected classes to `import { type X }`; with `emitDecoratorMetadata` the import is elided → `design:paramtypes` loses the class → runtime boot crash (tsc does NOT catch this). Injected classes = value imports; only pure types/DTOs/enums = `type` imports.
+- **Exception filter must preserve known error status** — 4xx (incl. 429 from rate-limiters returning plain objects) must never become generic 500.
+
+### Monorepo / lockfile
+
+- Touched any `package.json` → commit the ROOT `pnpm-lock.yaml` in the same commit. `git add apps/` misses the root lock → `--frozen-lockfile` (CI/Docker default) fails for the whole monorepo.
+- Dockerfiles build internal packages by GLOB (`pnpm --filter "./packages/*" build`), never an explicit list.
+
+### Outbound HTTP
+
+- Always send `User-Agent` + `Accept` on outbound `fetch` — CDN/WAF (e.g. Cloudflare) blocks UA-less datacenter requests with 403/429 that look like "service down".
+- Log the real upstream status; `!res.ok` ≠ "unavailable".
+- Truncate every externally-sourced field to its column limit before persisting (avoids P2000-class runtime errors on real data).
+
+---
+
 ## Standard commands
 
 ```bash

@@ -411,6 +411,22 @@ Você reporta:
 
 ---
 
+## Self-Review Obrigatório (antes de todo push)
+
+Antes de qualquer push (inclusive review-fix — "mudança pequena" não isenta), rodar o checklist completo de `.claude/squad/template/docs/engineer-self-review.md`:
+
+- **§0** gate determinístico no repositório INTEIRO: format + lint + typecheck + testes + build
+- **§1** segurança self-checada (nenhum prompt/output com PII em log; credenciais de provider fora do código)
+- **§2** clean code (zero duplicação nova; doc/comentário ↔ código coerentes)
+- **§3** todo path/branch novo com teste; fallback determinístico testado
+- **§4** simplicidade: (1) Preciso de tantas linhas? (2) Tem solução mais simples? (3) Reaproveito chain/client/validador existente com baixa adaptação? (4) Clean Code? (5) Clean Architecture? (6) SOLID?
+
+Antes de implementar: **buscar no codebase** solução existente que resolva — criar novo só se adaptar custar mais que criar.
+
+Review e Security são **confirmação**, não descoberta. Achado repetitivo de reviewer → vira item novo no self-review.
+
+---
+
 ## Definition of Done (AI)
 
 Uma tarefa só está pronta quando:
@@ -423,6 +439,7 @@ Uma tarefa só está pronta quando:
 - integração funcionando
 - README do módulo atualizado (propósito, prompts, decisões relevantes)
 - Security Engineer aprovou (em features críticas com IA)
+- self-review completo + gate determinístico local verde (format + lint + typecheck + testes no repo inteiro)
 
 ---
 

@@ -426,6 +426,22 @@ Você reporta:
 
 ---
 
+## Self-Review Obrigatório (antes de todo push)
+
+Antes de qualquer push (inclusive review-fix e resolução de conflito — "mudança pequena" não isenta), rodar o checklist completo de `.claude/squad/template/docs/engineer-self-review.md`:
+
+- **§0** gate determinístico no repositório INTEIRO: format + lint + typecheck + testes + build
+- **§1** segurança self-checada (nenhum secret/env server-only alcançável por código client-side; validação na fronteira)
+- **§2** clean code (zero duplicação nova; doc/comentário ↔ código coerentes)
+- **§3** todo path/branch novo do diff com teste de comportamento; fluxo multi-passo (onboarding, auth) com E2E real
+- **§4** simplicidade: (1) Preciso de tantas linhas? (2) Tem solução mais simples? (3) Reaproveito componente/hook existente com baixa adaptação? (4) Clean Code? (5) Clean Architecture? (6) SOLID?
+
+Antes de implementar: **buscar no codebase** componente/hook/util existente que resolva — criar novo só se adaptar custar mais que criar.
+
+Review e Security são **confirmação**, não descoberta. Achado repetitivo de reviewer → vira item novo no self-review.
+
+---
+
 ## Definition of Done — Engineer Done (precondição para Squad Done)
 
 > **Engineer Done** = código pronto para revisão. **Squad Done** = entregue em produção (ver `CLAUDE.md` → "Definition of Done Global").
@@ -441,6 +457,8 @@ Uma tarefa só está em **Engineer Done** quando:
 - design tokens consumidos da fonte do Architect (sem hardcoded)
 - feature flag com metadata (dono, prazo, tipo) declarada em código (features críticas)
 - README do módulo atualizado (propósito, como rodar, decisões relevantes)
+- self-review completo + gate determinístico local verde (format + lint + typecheck + testes no repo inteiro)
+- em apps SSR/RSC: nenhum client component consumindo env server-only (build verde ≠ funciona em prod — o split server/client é runtime)
 
 **Squad Done** adiciona:
 - aprovação de QA + Code Reviewer + Security Engineer (features críticas)

@@ -344,10 +344,20 @@ Você deve validar:
 Você valida:
 
 - testes passando
-- cobertura mínima atingida
+- cobertura mínima atingida **e não-regredida** vs baseline
 - cenários críticos cobertos
+- **todo path/branch novo do diff tem teste de comportamento** (inclusive paths de erro — o buraco recorrente)
+- testes determinísticos (anti-flaky: sem dependência de ordem, tempo real ou estado compartilhado)
+- engineer rodou o self-review (`.claude/squad/template/docs/engineer-self-review.md`)
+- invariante que vive no banco (enum/constraint/RLS/trigger) tem ≥1 teste de integração contra banco REAL (mock do sink = verde-falso)
+- fluxo multi-passo (onboarding, aceite/MFA, reset) tem teste E2E com app real + DB real antes de Done
+- em Production Mode: smoke E2E de 1 fluxo crítico validado no ambiente real após deploy (healthz ≠ "funciona")
 
 Se falhar → bloquear entrega
+
+### Flaky vs regressão
+
+Falha intermitente em teste que NÃO toca código alterado pelo PR = flaky/infra — investigar isolamento (serial p/ integração, conexão determinística), não aceitar rerun como estado permanente. Falha em código alterado = investigar como regressão.
 
 ---
 
@@ -379,6 +389,19 @@ Ferramentas: k6, Locust, Gatling ou equivalente.
 ### Regra
 
 Se sistema não atende RNFs declaradas → **bloquear deploy** e escalar para TL.
+
+---
+
+## Testes de Resiliência (RNF de Resiliência do PRD)
+
+Em Production Mode, para cada dependência externa declarada no PRD:
+
+- Simular falha (timeout, indisponibilidade, erro 5xx) e validar o **comportamento esperado definido no design** (retry/backoff, fallback determinístico, fila, kill-switch via flag)
+- Validar degradação graciosa: usuário vê estado definido (mensagem acionável), nunca tela branca/500 genérico
+
+## Cenário "Usuário Leigo" (RNF de Usabilidade do PRD)
+
+Todo fluxo crítico inclui 1 cenário de caminho do usuário leigo: completável sem ajuda, dentro dos critérios testáveis do PRD (nº de passos/tempo), com mensagens de erro acionáveis em cada falha possível do caminho.
 
 ---
 
@@ -414,6 +437,8 @@ Você define a estratégia de dados de teste:
 - seed determinístico para testes reprodutíveis
 - limpeza entre testes (banco resetado ou transações revertidas)
 - dados sensíveis em fixtures → anonimizados
+- **comportamento por design que confunde teste manual** (ex: step-up MFA com TTL curto, tokens single-use) → documentar na collection/fixtures ("regerar token antes da pasta X") — evita diagnóstico falso de bug
+- dados sintéticos com tamanhos REALISTAS (fixture curta esconde estouro de limite de coluna que dado real dispara)
 
 ---
 
