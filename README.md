@@ -489,6 +489,23 @@ Aplicáveis a todos os agentes de engenharia:
 
 ---
 
+## Distribuição e Versionamento (Plugin)
+
+A squad é distribuída como **plugin Claude Code** — este repositório é o **upstream oficial** e também o marketplace:
+
+```bash
+/plugin marketplace add Sync4-Technologies/template-project
+/plugin install squad@pdati
+```
+
+- **Fonte canônica:** [`plugin/`](plugin/) (skills, hooks, specs de agentes, docs, templates). Toda melhoria entra AQUI primeiro.
+- **Adoção em projeto:** `/squad-init` cria `.claude/squad/project/` (memória viva) + `SQUAD_VERSION` — o projeto carrega só o ESTADO; o comportamento vem do plugin, versionado.
+- **Versionamento:** SemVer no `plugin/.claude-plugin/plugin.json`; update é explícito por máquina/usuário, nunca silencioso. `SQUAD_VERSION` no projeto registra qual governança valia em cada fase.
+- **Regra anti-drift:** proibido editar arquivos do plugin/template dentro de um projeto. Gap no sistema → `LESSONS_LEARNED.md` do projeto → backport aqui → bump de versão → projetos atualizam.
+- **Layout legado (clone do template):** continua funcionando para projetos existentes; `/squad-init` migra (preserva `project/`, remove cópias locais com confirmação). O diretório `.claude/` deste repo mantém a cópia legada até a migração dos projetos ativos — mudanças novas vão em `plugin/`.
+
+---
+
 ## Como Estender ou Customizar
 
 ### Adicionar um novo agente
