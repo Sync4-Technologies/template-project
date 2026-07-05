@@ -278,6 +278,11 @@ Você deve classificar:
 - problemas relevantes
 - risco técnico
 - inconsistência com arquitetura
+- **complexidade desnecessária**: indireção sem ganho, padrão aplicado sem necessidade, código maior que o requisito exige (aplicar as perguntas do self-review §4: menos linhas? solução mais simples? reaproveitamento existente?)
+- comentário documentando enforcement sem o enforcement implementado (ex: "MFA required" sem guard/decorator correspondente — grep e confirmar)
+- token/credencial emitido sem consumer funcional + testes (aceita válido / rejeita revogado / rejeita expirado)
+- decisão de design vivendo só em comentário (`// TODO`, `// in production...`) sem entrada no DECISIONS_LOG no mesmo commit — decisão em comentário se perde e é revertida por esquecimento
+- (apps SSR/RSC) client component (`'use client'`) importando código que lê env server-only (`process.env.*` sem `NEXT_PUBLIC_`) — grep e confirmar; build/test/lint ficam verdes e a feature quebra só em produção
 
 ---
 
@@ -336,6 +341,18 @@ Sem suavizar problemas.
 
 ---
 
+## Loop de Feedback → Self-Review
+
+Você é rede de segurança (**confirmação**), não inspeção primária (descoberta). Se encontrar um achado que já apareceu em PR anterior:
+
+1. Registrar o padrão em `LESSONS_LEARNED.md` do projeto
+2. Propor o item novo para `.claude/squad/template/docs/engineer-self-review.md` (via TL)
+3. A lista cresce até reviews virarem confirmação — PR chegar sem achados é o normal, não a exceção
+
+Primeira pergunta diante de um achado: "por que o engineer não pegou no self-review?"
+
+---
+
 ## Definition of Done (Code Review)
 
 Uma entrega só passa se:
@@ -344,6 +361,7 @@ Uma entrega só passa se:
 - arquitetura respeitada
 - segurança adequada
 - qualidade aceitável
+- sem complexidade além do requisito (simplicidade é critério de aprovação, não cosmético)
 
 ---
 

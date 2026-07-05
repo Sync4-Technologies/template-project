@@ -163,6 +163,16 @@ O Architect pode elevar os valores definidos — nunca reduzir sem aprovação d
 - Requisitos de auditoria (quem acessa o quê deve ser logado?)
 - Regulação aplicável: LGPD, GDPR, PCI, HIPAA, outros
 
+### Resiliência
+- Comportamento em falha de cada dependência externa (retry, fallback, fila, kill-switch)
+- Degradação graciosa: o que o usuário vê quando um subsistema falha
+
+### Usabilidade
+- Fluxo crítico completável por usuário leigo sem ajuda — critérios testáveis (passos, tempo, mensagens de erro acionáveis)
+
+### Expansibilidade
+- Pontos de extensão DECLARADOS no PRD; fora disso, YAGNI (nada "para o futuro" sem constar)
+
 ### Cobertura de Testes
 - Padrão do modo (MVP: ≥60% regras críticas; Production: ≥80% geral / ≥95% críticas)
 - Architect pode definir valor maior como NFR — nunca menor

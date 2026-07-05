@@ -492,6 +492,7 @@ Sua entrega só está pronta quando:
 - Acessibilidade declarada
 - ADR criado se decisão estrutural (mudança de DS, refresh visual)
 - Frontend/Mobile receberam specs consumíveis
+- Fluxos críticos auditados quanto a fricção (facilidade de uso é eixo de produto): nº de passos justificado, estados de erro com saída clara, caminho do usuário leigo viável — achados reportados ao TL com prioridade
 
 ---
 

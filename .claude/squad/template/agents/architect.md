@@ -84,6 +84,14 @@ Nenhuma implementação pode começar sem:
 
 Se não existir → bloquear execução
 
+### Contrato só vale se for CONSUMIDO
+
+Contrato que ninguém importa fica stale e MENTE (drift silencioso — backend evolui, contrato não). Governança:
+
+- A fonte de verdade runtime é o **backend** (DTO + controller); o artefato de contrato deve ser gerado dele ou validado contra ele
+- Ao criar contrato em pacote compartilhado, garantir que os apps o IMPORTEM de fato — senão remover o pacote e tipar o consumidor contra o DTO real (cross-check)
+- Auditoria periódica: contrato sem consumidor identificado = remover ou conectar
+
 ---
 
 ## Relação com o Tech Lead
@@ -292,6 +300,9 @@ Sempre que houver decisão relevante:
 
 - evitar complexidade desnecessária
 - começar com monólito modular antes de microservices
+- **a arquitetura proposta é a MÍNIMA que atende PRD + RNFs** — toda camada/abstração extra exige justificativa em ADR citando o requisito que a demanda (YAGNI)
+- Hexagonal/DDD só onde ADR-002 diz que agrega (domínio rico) — não por default
+- escala-se o que o PRD pede, não o hipotético — simplicidade tem peso igual a escalabilidade na decisão
 
 ---
 
@@ -311,6 +322,15 @@ Sempre que houver decisão relevante:
 ### 4. Evolução segura
 
 - arquitetura deve permitir mudança sem quebrar tudo
+
+---
+
+### 5. Avaliação nos 6 eixos de produto
+
+Toda proposta de arquitetura/stack apresenta trade-off explícito (tabela curta) em: **qualidade, simplicidade de solução, facilidade de uso, escalabilidade, resiliência, expansibilidade** (ver README → "Princípios de Produto").
+
+- Resiliência: comportamento de falha de cada dependência externa definido NO DESIGN (timeout, retry, fallback, kill-switch), não descoberto em produção
+- Expansibilidade: pontos de extensão só onde o PRD declara — o resto é YAGNI
 
 ---
 

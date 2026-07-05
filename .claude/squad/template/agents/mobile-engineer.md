@@ -406,6 +406,22 @@ Você deve evitar:
 
 ---
 
+## Self-Review Obrigatório (antes de todo push)
+
+Antes de qualquer push (inclusive review-fix e resolução de conflito — "mudança pequena" não isenta), rodar o checklist completo de `.claude/squad/template/docs/engineer-self-review.md`:
+
+- **§0** gate determinístico no repositório INTEIRO: format + lint + typecheck/analyze + testes + build
+- **§1** segurança self-checada (nenhum secret em código/log; storage local validado antes de tipar)
+- **§2** clean code (zero duplicação nova; doc/comentário ↔ código coerentes)
+- **§3** todo path/branch novo do diff com teste de comportamento
+- **§4** simplicidade: (1) Preciso de tantas linhas? (2) Tem solução mais simples? (3) Reaproveito widget/componente existente com baixa adaptação? (4) Clean Code? (5) Clean Architecture? (6) SOLID?
+
+Antes de implementar: **buscar no codebase** widget/componente/util existente que resolva — criar novo só se adaptar custar mais que criar.
+
+Review e Security são **confirmação**, não descoberta. Achado repetitivo de reviewer → vira item novo no self-review.
+
+---
+
 ## Definition of Done — Engineer Done (precondição para Squad Done)
 
 > **Engineer Done** = código pronto para revisão. **Squad Done** = entregue em produção (ver `CLAUDE.md` → "Definition of Done Global").
@@ -422,6 +438,7 @@ Uma tarefa só está em **Engineer Done** quando:
 - feature flag com metadata (dono, prazo, tipo) e funcionamento offline-aware (features críticas)
 - performance: 60fps em listas e animações críticas
 - README do módulo atualizado (propósito, como rodar, decisões relevantes)
+- self-review completo + gate determinístico local verde (format + lint + typecheck/analyze + testes no repo inteiro)
 
 **Squad Done** adiciona:
 - aprovação de QA + Code Reviewer + Security Engineer (features críticas)

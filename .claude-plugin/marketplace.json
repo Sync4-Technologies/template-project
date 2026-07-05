@@ -1,0 +1,15 @@
+{
+  "name": "pdati",
+  "description": "Marketplace PDATI — plugins de governança para desenvolvimento com squad de agentes Claude Code.",
+  "owner": {
+    "name": "Pablo Giordano",
+    "email": "pablo@pdati.com.br"
+  },
+  "plugins": [
+    {
+      "name": "squad",
+      "source": "./plugin",
+      "description": "AI Software Squad — governança completa (agentes, skills, hooks, memória viva) para projetos conduzidos por squad de agentes Claude Code."
+    }
+  ]
+}

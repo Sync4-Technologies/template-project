@@ -285,6 +285,21 @@ Em features críticas atrás de flag, você valida:
 
 ---
 
+## Padrões Obrigatórios de Auth/Token (checklist de revisão)
+
+Aprendidos em incidentes reais — verificar em TODA feature que emite/valida credencial:
+
+1. **Um scope = um segredo.** Nunca compartilhar segredo de assinatura (HS256 etc.) entre fluxos distintos (access, refresh, impersonation, convite). Blast radius isolado se um vazar.
+2. **Token emitido exige CONSUMER funcional no mesmo PR** + testes E2E: aceita válido; rejeita revogado; rejeita expirado; verifiers vizinhos rejeitam o scope errado. Token sem consumer = feature não-funcional que passa em review.
+3. **Revoke implica lookup em CADA request.** Setar `revoked_at` no banco sem consultar (blocklist por jti em DB/Redis) = token continua válido até o TTL. Revogação que não é verificada não existe.
+4. **Bypass de auth (dev/test) exige fail-fast** em ambiente non-development (validação no boot que derruba o processo). Bypass que depende de "lembrar de desligar" é seguro com probabilidade zero.
+5. **Timing:** baseline delay de resposta em falha de auth deve ficar ACIMA do tempo médio do caminho feliz (hash caro incluso) — abaixo vira oráculo de timing.
+6. **URLs públicas geradas por config** (convite, verificação, reset) → enforcement de protocolo (HTTPS) no schema de config, não só em documentação.
+7. **Claims sensíveis (role, tenant) nunca vêm do client** — rotação/refresh exige lookup no banco.
+8. **Rate-limit default revisado contra o uso real de um cliente típico** (SPA autenticado ≠ endpoint isolado): backstop global folgado + limite estrito por endpoint sensível (defesa em profundidade). E o exception filter deve preservar o status (429 que vira 500 esconde o problema por meses).
+
+---
+
 ## Quality Gate (Security)
 
 Uma feature crítica só passa quando:
@@ -296,6 +311,10 @@ Uma feature crítica só passa quando:
 - compliance atendido (quando aplicável)
 
 Falhou → **REJEITAR** e comunicar ao Tech Lead com detalhamento
+
+### Loop de Feedback → Self-Review
+
+Você é rede de segurança (**confirmação**), não inspeção primária. Achado repetitivo (PII em log, fail-open, cross-tenant, secret compartilhado) → registrar em `LESSONS_LEARNED.md` do projeto + propor item novo em `.claude/squad/template/docs/engineer-self-review.md` §1 (via TL). O engineer deve pegar o próprio erro antes de você.
 
 ---
 

@@ -61,7 +61,7 @@ Princípios orientadores:
 
 1. `git pull` para sincronizar
 2. Inicie sessão Claude Code no diretório (hook SessionStart carrega memory automaticamente)
-3. Acione **`/squad-resume`** — TL lê Current Focus, Session Log, PRs abertos e apresenta resumo + próximo passo acionável
+3. Acione **`/squad-resume`** — **obrigatório como 1º passo de toda retomada** (não opcional). TL faz `git fetch` + cross-check do Current Focus contra o git remoto, lê Session Log e PRs abertos, apresenta delta + próximo passo acionável. Pular o resume já causou re-implementação de trabalho inteiro já mergeado
 4. Confirme direção ou redirecione
 5. Ao encerrar sessão significativa, acione **`/squad-handoff`** — TL atualiza memory para próximo usuário (continuidade multi-user)
 
@@ -91,7 +91,7 @@ Severidades: Sev1 (sistema fora) / Sev2 (degradação) / Sev3+ (não crítico). 
 │
 └── .claude/
     ├── settings.json     ← config de hooks (opt-in)
-    ├── skills/           ← skills Claude Code (13 skills da squad)
+    ├── skills/           ← skills Claude Code (14 skills da squad)
     ├── hooks/            ← scripts de hooks (load-memory, architecture-reminder)
     └── squad/
         ├── template/             ← imutável (sobrescrito em update)
@@ -243,7 +243,7 @@ Ver índice: [`.claude/squad/template/docs/stack-conventions/README.md`](.claude
 
 A squad inclui automações opcionais via Claude Code. Ver [`.claude/squad/template/memory/ADR/ADR-004-skills-e-hooks.md`](.claude/squad/template/memory/ADR/ADR-004-skills-e-hooks.md).
 
-**Skills disponíveis (7):**
+**Skills disponíveis (14):**
 
 | Comando | Quando usar |
 |---------|-------------|
@@ -254,6 +254,7 @@ A squad inclui automações opcionais via Claude Code. Ver [`.claude/squad/templ
 | `/squad-scope-change` | Mudança de escopo durante execução |
 | `/squad-stack-decision` | Architect decide stack do projeto |
 | `/squad-incident` | Resposta a Sev1/Sev2 em produção |
+| `/squad-deploy-preflight` | DevOps valida Docker/env/migrations localmente ANTES de deploy em PaaS |
 | `/squad-design-system-new` | Product Designer propõe DS para projeto novo com UI |
 | `/squad-design-extract` | Product Designer extrai DS da UI de projeto existente sem doc |
 | `/squad-design-audit` | Product Designer audita consistência visual em produto maduro |
@@ -353,13 +354,15 @@ Falha em qualquer dimensão → volta para dev → CI roda → revisão refaz s�
 Uma entrega só está completa quando:
 
 - [ ] Código implementado e revisado
+- [ ] Self-review do engineer completo + gate determinístico local verde ([`engineer-self-review.md`](.claude/squad/template/docs/engineer-self-review.md))
 - [ ] Testes passando (cobertura conforme modo)
 - [ ] Contratos respeitados e atualizados em `/contracts`
 - [ ] QA aprovou comportamento
 - [ ] Code Reviewer aprovou qualidade do código
 - [ ] Security Engineer aprovou (features críticas)
 - [ ] Pipeline CI/CD verde
-- [ ] Deploy realizado com sucesso
+- [ ] Deploy realizado e **VERIFICADO**: deployment SUCCESS no SHA esperado + migrations do ambiente aplicadas (Merged ≠ Deployed; healthz não basta)
+- [ ] Smoke E2E de 1 fluxo crítico validado no ambiente real pós-deploy
 - [ ] Sistema monitorado (logs disponíveis; alertas ativos em Production)
 - [ ] Rollback testado (Production Mode)
 - [ ] README do módulo atualizado
@@ -383,8 +386,11 @@ A squad mantém **memória viva** do projeto:
 | `TASK_BOARD.md` | Kanban de tarefas (Todo / Doing / Review / Done) |
 | `ADR/` | Decisões arquiteturais versionadas |
 | `agent-memory/` | Memória especializada por agente (≤ 200 linhas cada) |
+| `LESSONS_LEARNED.md` | Melhorias do **sistema da squad** (specs, skills, hooks, processo) — template em [`LESSONS_LEARNED-template.md`](.claude/squad/template/LESSONS_LEARNED-template.md) |
 
 **Regra:** se não está documentado aqui, **não existe**.
+
+**Distinção crítica:** learning técnico do projeto (gotcha de lib, padrão de código) → `agent-memory`. Melhoria do sistema da squad (gap em spec, skill, hook, processo) → `LESSONS_LEARNED.md`, sempre citando o arquivo a modificar + ação concreta.
 
 ### Architecture Decision Records (ADRs)
 
@@ -453,6 +459,19 @@ Decisões autônomas → registradas em `.claude/squad/project/DECISIONS_LOG.md`
 
 ---
 
+## Princípios de Produto
+
+Toda aplicação criada pela squad é avaliada em **6 eixos** — critério de decisão em todo gate (plano, arquitetura, review):
+
+1. **Qualidade** — funciona, testado, sem regressão
+2. **Simplicidade de solução** — a menor solução que atende o requisito (simplicidade tem peso igual a escalabilidade)
+3. **Facilidade de uso** — usuário leigo completa o fluxo crítico sem ajuda
+4. **Escalabilidade** — escala o que o PRD pede (volumetria declarada), não o hipotético
+5. **Resiliência** — degradação graciosa: falha de dependência tem comportamento definido (timeout, retry, fallback, kill-switch)
+6. **Expansibilidade** — pontos de extensão DECLARADOS no PRD são extensíveis; o resto segue YAGNI
+
+---
+
 ## Princípios Universais
 
 Aplicáveis a todos os agentes de engenharia:
@@ -464,6 +483,83 @@ Aplicáveis a todos os agentes de engenharia:
 - **Atomic Design** (Frontend / Mobile) — Atoms → Molecules → Organisms → Templates → Pages
 - **Hexagonal** (Backend / AI quando couber) — domain isolado de adapters
 - **Feature Flags default** em features críticas
+- **Qualidade na origem** — engineer pega o próprio erro via self-review ([`engineer-self-review.md`](.claude/squad/template/docs/engineer-self-review.md)); review e security confirmam, não descobrem
+- **Merged ≠ Deployed** — "deployado" é estado observado (SHA + migrations + smoke E2E), nunca inferido do merge
+- **Economia de tokens** — comunicação inter-agente direta e por referência (paths, não cópia de conteúdo); respostas de subagente em formato fixo curto; informação de memória em UM lugar, referenciada nos demais
+
+---
+
+## Distribuição e Versionamento (Plugin)
+
+A squad é distribuída como **plugin Claude Code** — este repositório é o **upstream oficial** e também o marketplace.
+
+### Instalação — passo a passo
+
+**Pré-requisitos:** Claude Code instalado; acesso de leitura a este repositório no GitHub.
+
+**1. Adicionar o marketplace** (uma vez por máquina):
+
+```bash
+# dentro de uma sessão Claude Code:
+/plugin marketplace add Sync4-Technologies/template-project
+
+# ou pelo terminal:
+claude plugin marketplace add Sync4-Technologies/template-project
+```
+
+> O marketplace é lido da **branch default** do repo. Para testar uma versão ainda não mergeada, aponte para o clone local: `claude plugin marketplace add /caminho/do/clone`.
+
+**2. Instalar o plugin:**
+
+```bash
+/plugin install squad@pdati
+# ou: claude plugin install squad@pdati
+```
+
+Escopo padrão: `user` (vale para todos os projetos da máquina; os hooks são inofensivos em projetos sem squad — retornam vazio).
+
+**3. Verificar a instalação:**
+
+```bash
+claude plugin list                # squad@pdati — Status: enabled
+claude plugin details squad       # 15 skills, 3 hooks, ~870 tokens always-on
+```
+
+**4. Reiniciar a sessão Claude Code** — plugin instalado no meio de uma sessão só carrega na próxima. As skills aparecem como `squad:squad-*` (ex: `/squad:squad-resume`; o nome curto `/squad-resume` também resolve quando não há conflito).
+
+**5. Inicializar a squad no projeto** (uma vez por projeto):
+
+```bash
+cd meu-projeto
+claude
+/squad-init     # cria .claude/squad/project/ (memória viva) + SQUAD_VERSION + CLAUDE.md mínimo
+```
+
+Projeto novo sem PRD → seguir com `/squad-new-project`. Projeto em andamento → `/squad-resume`.
+
+**6. Atualizar** (ação explícita, nunca silenciosa):
+
+```bash
+claude plugin marketplace update pdati   # sincroniza o marketplace
+/plugin                                  # menu → squad → update
+```
+
+Após atualizar, registrar a nova versão no `SQUAD_VERSION` do projeto (o `/squad-resume` lembra).
+
+**Troubleshooting:**
+
+| Sintoma | Causa provável |
+|---------|----------------|
+| `marketplace add` não acha o plugin | marketplace.json só existe em branch não-default — usar path local até o merge |
+| Skills não aparecem | sessão iniciada antes do install — reiniciar sessão |
+| Hook não carrega memória | projeto sem `.claude/squad/project/` — rodar `/squad-init` |
+| Skills duplicadas neste repo | cópia legada em `.claude/skills/` coexiste com o plugin (namespaces distintos) — some ao migrar o layout legado |
+
+- **Fonte canônica:** [`plugin/`](plugin/) (skills, hooks, specs de agentes, docs, templates). Toda melhoria entra AQUI primeiro.
+- **Adoção em projeto:** `/squad-init` cria `.claude/squad/project/` (memória viva) + `SQUAD_VERSION` — o projeto carrega só o ESTADO; o comportamento vem do plugin, versionado.
+- **Versionamento:** SemVer no `plugin/.claude-plugin/plugin.json`; update é explícito por máquina/usuário, nunca silencioso. `SQUAD_VERSION` no projeto registra qual governança valia em cada fase.
+- **Regra anti-drift:** proibido editar arquivos do plugin/template dentro de um projeto. Gap no sistema → `LESSONS_LEARNED.md` do projeto → backport aqui → bump de versão → projetos atualizam.
+- **Layout legado (clone do template):** continua funcionando para projetos existentes; `/squad-init` migra (preserva `project/`, remove cópias locais com confirmação). O diretório `.claude/` deste repo mantém a cópia legada até a migração dos projetos ativos — mudanças novas vão em `plugin/`.
 
 ---
 
