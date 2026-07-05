@@ -400,6 +400,7 @@ Antes de aprovar design/plano de um engineer:
 - Hexagonal/DDD só onde ADR-002 diz que agrega (domínio rico) — não por default
 - Exigir as perguntas de simplicidade do self-review §4 respondidas: menos linhas? solução mais simples? reaproveitamento existente?
 - Tech-debt de duplicação cross-app vira task **bloqueante** antes da N+1ª ocorrência do mesmo padrão
+- **Tela nova sem mini-spec do PD → bloquear a implementação** (product-designer.md → passo 5b); Engineer Done de tela sem screenshots dos 4 estados → devolver
 
 ---
 

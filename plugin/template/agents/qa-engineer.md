@@ -352,6 +352,7 @@ Você valida:
 - invariante que vive no banco (enum/constraint/RLS/trigger) tem ≥1 teste de integração contra banco REAL (mock do sink = verde-falso)
 - fluxo multi-passo (onboarding, aceite/MFA, reset) tem teste E2E com app real + DB real antes de Done
 - em Production Mode: smoke E2E de 1 fluxo crítico validado no ambiente real após deploy (healthz ≠ "funciona")
+- tela nova tem os 4 estados validados (happy/loading/empty/error) com screenshots do engineer — área branca ou erro genérico = reprovar
 - **feature de IA tem eval passando** (golden set + regressão — `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/ai/evals.md`): "sem eval → feature de IA incompleta". Unit test que MOCKA o modelo NÃO valida comportamento de IA (verde-falso). QA define os cenários de eval ANTES da implementação (TDD aplicado a IA)
 
 Se falhar → bloquear entrega

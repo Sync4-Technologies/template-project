@@ -459,6 +459,8 @@ Uma tarefa só está em **Engineer Done** quando:
 - README do módulo atualizado (propósito, como rodar, decisões relevantes)
 - self-review completo + gate determinístico local verde (format + lint + typecheck + testes no repo inteiro)
 - em apps SSR/RSC: nenhum client component consumindo env server-only (build verde ≠ funciona em prod — o split server/client é runtime)
+- implementação partiu da **mini-spec do PD** (tela nova sem mini-spec não inicia — pedir ao TL)
+- **gate "rodou e olhou"**: app rodado + screenshots dos estados principais (happy/loading/empty/error) anexados; checklist visual do self-review §5 completo; tela crítica → screenshots vão pro review do PD
 
 **Squad Done** adiciona:
 - aprovação de QA + Code Reviewer + Security Engineer (features críticas)

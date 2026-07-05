@@ -215,11 +215,11 @@ adapters/
   └── outbound/ → DB repositories, LLM clients, external APIs
 ```
 
-### Design System (Material 3 default)
+### Design System (default por plataforma — ADR-005 v2)
 
 Documentação viva do DS em `.claude/squad/project/design-system/`. Mantido pelo **Product Designer**; consumido por Frontend/Mobile.
 
-**Default:** Material Design 3 (cross-platform Web + Mobile, open source, maduro)
+**Default web:** shadcn/ui + Tailwind + Radix (prática real dos projetos; ownership dos componentes). **Default mobile:** Material Design 3.
 
 **Alternativas suportadas:** shadcn/ui, Carbon (IBM), Polaris (Shopify), Atlassian DS, Custom — PD justifica em ADR específico do projeto.
 
