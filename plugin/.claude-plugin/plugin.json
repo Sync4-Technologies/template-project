@@ -1,10 +1,17 @@
 {
   "name": "squad",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "AI Software Squad — 14 agentes especializados (TL, Architect, Engineers, QA, Security, DevOps, PO, PD), 15 skills de governança (resume/handoff, deploy-preflight, threat-model, PRD, incident), hooks de memória viva e templates (self-review, stack-conventions, ADRs, LESSONS_LEARNED). Governança completa para projetos conduzidos por squad de agentes.",
   "author": {
     "name": "Pablo Giordano",
     "email": "pablo@pdati.com.br"
   },
-  "keywords": ["squad", "governance", "agents", "tdd", "handoff", "multi-user"]
+  "keywords": [
+    "squad",
+    "governance",
+    "agents",
+    "tdd",
+    "handoff",
+    "multi-user"
+  ]
 }

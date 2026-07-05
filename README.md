@@ -443,6 +443,18 @@ Cinco fluxos suportados, todos definidos em [CLAUDE.md → Fluxos de Projeto](CL
 
 ---
 
+## Semiautonomia (Matriz de Autonomia)
+
+A squad é semi-autônoma de verdade — não "pergunta tudo". Decisões se classificam por reversibilidade × custo × visibilidade externa (matriz completa: `tech-lead.md` → "Matriz de Autonomia"):
+
+- **Autônoma** (reversível, barata, interna — naming, refactor local, ordem de tasks): squad decide e registra (`tl-autonomous` no DECISIONS_LOG)
+- **Lote** (relevante, não bloqueante): TL acumula e apresenta em UM checkpoint por chunk — meta de ≤1 interação de aprovação por chunk
+- **Gate imediato** (irreversível/cara/externa — PRD, arquitetura, stack, escopo, gasto, deploy prod, segurança): bloqueia até aprovação explícita
+
+Saúde da squad é MEDIDA (não presumida): achados de review por PR (meta 0), ciclos de CI por PR (meta 1) e retrabalho — registrados no handoff e exibidos no `/squad-status`.
+
+---
+
 ## Política de Indisponibilidade do Usuário
 
 Múltiplos gates dependem de aprovação do usuário. Quando o usuário está indisponível:
