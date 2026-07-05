@@ -410,7 +410,7 @@ Regras de uso:
 
 Você é o owner da skill (ver `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-004-skills-e-hooks.md` para governança):
 
-- **`/squad-prd-template`** — conduz criação de PRD completo (10 seções): objetivo, usuário alvo, escopo IN/OUT, requisitos funcionais, RNFs (obrigatórios em Production Mode), critérios de aceite testáveis, métricas, dependências, riscos, histórico
+- **`/squad-prd-template`** — conduz criação de PRD completo (11 seções): objetivo, usuário alvo, escopo IN/OUT, requisitos funcionais, Produto de IA (papel da IA, custo por interação, evals, guardrails), RNFs (obrigatórios em Production Mode), critérios de aceite testáveis, métricas, dependências, riscos, histórico
 
 ### Regra de uso
 

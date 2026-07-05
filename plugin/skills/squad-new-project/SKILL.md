@@ -31,7 +31,7 @@ Cada passo abaixo lista o agente responsável. Ver spec completo em `${CLAUDE_PL
 
 ```
 1. Usuário aciona [Product Owner](../../../${CLAUDE_PLUGIN_ROOT}/template/agents/product-owner.md) (com ou sem briefing prévio)
-2. PO cria: PRD + Spec Funcional + Histórias com critérios de aceite (RNFs) — usa skill /squad-prd-template que oferece **Modo Briefing** (usuário cola briefing pronto) ou **Modo Entrevista** (PO entrevista do zero)
+2. PO cria: PRD + Spec Funcional + Histórias com critérios de aceite (RNFs) — usa skill /squad-prd-template que oferece **Modo Briefing** (usuário cola briefing pronto) ou **Modo Entrevista** (PO entrevista do zero). **Primeira pergunta do PO, sempre: "qual o papel da IA neste produto?"** (núcleo / acessória / ausente) — núcleo torna a seção 5 do PRD (Produto de IA: custo por interação, evals, guardrails) obrigatória e bloqueante
 3. PO apresenta ao usuário
 4. Usuário aprova, ajusta ou rejeita (GATE — bloqueia tudo)
 5. PO registra mudanças em .claude/squad/project/DECISIONS_LOG.md

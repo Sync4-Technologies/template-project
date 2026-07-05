@@ -439,6 +439,8 @@ Uma tarefa só está em **Engineer Done** quando:
 - performance: 60fps em listas e animações críticas
 - README do módulo atualizado (propósito, como rodar, decisões relevantes)
 - self-review completo + gate determinístico local verde (format + lint + typecheck/analyze + testes no repo inteiro)
+- implementação partiu da **mini-spec do PD** (tela nova sem mini-spec não inicia — pedir ao TL)
+- **gate "rodou e olhou"**: app rodado nas duas plataformas + screenshots dos estados principais (happy/loading/empty/error) anexados; checklist visual do self-review §5 completo
 
 **Squad Done** adiciona:
 - aprovação de QA + Code Reviewer + Security Engineer (features críticas)

@@ -1,7 +1,7 @@
-# ADR-005 — Design System (Material 3 Default + Alternativas)
+# ADR-005 — Design System (default por plataforma + Alternativas)
 
-**Status:** Aceita
-**Data:** 2026-05-11
+**Status:** Aceita (v2 — 2026-07-05: default web passa a shadcn/ui + Tailwind; Material 3 segue default mobile)
+**Data:** 2026-05-11 (v1) / 2026-07-05 (v2)
 **Autor:** Product Designer + Architect + Tech Lead
 
 ---
@@ -22,16 +22,18 @@ Esta ADR define o **DS padrão** e **alternativas suportadas**.
 
 ## Decisão
 
-### Default: Material Design 3
+### Default por plataforma (v2)
 
-Adotar **Material Design 3** (Material You) como Design System padrão do template.
+O default único (Material 3 em tudo) descolou da prática: os projetos web reais da squad usam shadcn/Tailwind — default que ninguém segue não é default. v2 adota **default por plataforma**:
 
-**Implementações por stack:**
+| Plataforma | Default | Implementação |
+|---|---|---|
+| **Web (React)** | **shadcn/ui + Tailwind + Radix** | componentes copiados pro repo (ownership total), tokens via CSS variables |
+| **Web (Vue)** | shadcn-vue + Tailwind (ou Vuetify se Material fizer sentido pro produto) | idem |
+| **Mobile Flutter** | Material 3 nativo (`useMaterial3: true`) | inalterado |
+| **Mobile React Native** | `react-native-paper` (Material 3) | inalterado |
 
-- **Web (React):** MUI v6+ (`@mui/material`) ou Material Web Components
-- **Web (Vue):** Vuetify (Material 3 support)
-- **Mobile Flutter:** Material 3 nativo (`useMaterial3: true`)
-- **Mobile React Native:** `react-native-paper` ou `react-native-material-you`
+Material 3 web (MUI v6+ / Vuetify) passa a ALTERNATIVA documentada — preferir quando o produto pede a linguagem Material (ex: suíte que convive com apps Google, brand Material-first) ou paridade visual estrita web↔mobile é requisito.
 
 ### Alternativas suportadas
 
@@ -47,7 +49,7 @@ Product Designer pode escolher alternativa quando há justificativa concreta:
 
 ### Regra de escolha
 
-1. **Manter Material 3 como default** sempre que possível
+1. **Manter o default da plataforma** sempre que possível (web: shadcn/ui + Tailwind; mobile: Material 3)
 2. **Para escolher alternativa:**
    - Justificativa concreta baseada em requisitos do PRD
    - ADR específico do projeto documentando trade-offs
