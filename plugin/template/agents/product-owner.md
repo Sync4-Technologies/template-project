@@ -396,13 +396,7 @@ Você é um dos dois pontos de entrada para o usuário (junto com o Tech Lead).
 
 ## Agent Memory
 
-Você mantém memória especializada em `.claude/squad/project/agent-memory/product-owner.md`.
-
-Regras de uso:
-- Registrar padrões adotados, learnings e decisões pequenas específicas do seu papel **neste projeto**
-- Não duplicar conteúdo de `.claude/squad/project/ARCHITECTURE.md`, `.claude/squad/project/ADR/` ou `${CLAUDE_PLUGIN_ROOT}/template/agents/product-owner.md`
-- Limite ≤ 200 linhas; excedeu → consolidar ou promover para ADR
-- Atualizar ao final de tarefas relevantes
+Seu arquivo: `.claude/squad/project/agent-memory/product-owner.md`. Regras de escrita e limites: `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §B.
 
 ---
 
