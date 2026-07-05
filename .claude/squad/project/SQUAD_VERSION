@@ -1,0 +1,5 @@
+plugin: squad@pdati
+version: 1.1.0
+desde: 2026-07-05
+historico:
+  - "ate 2026-07-05: template clonado (layout legado, equivalente a v1.1.0 no merge da migracao)"

@@ -2,7 +2,7 @@
 
 > Última atualização: [YYYY-MM-DD]
 
-> Memória especializada deste agente neste projeto. Ler `.claude/squad/template/memory/agent-memory/README.md` para regras de escopo (≤200 linhas).
+> Memória especializada deste agente neste projeto. Ler `plugin/template/memory/agent-memory/README.md` para regras de escopo (≤200 linhas).
 
 ---
 
@@ -36,7 +36,7 @@
 ## Referências
 
 - **ADRs relacionados:**
-  - `.claude/squad/template/memory/ADR/ADR-005-design-system.md` (default)
+  - `plugin/template/memory/ADR/ADR-005-design-system.md` (default)
   - `.claude/squad/project/ADR/ADR-XXX-stack-projeto.md` (DS específico se diferente do default)
 - **Design System docs:** `.claude/squad/project/design-system/`
 - **Seções de ARCHITECTURE.md relacionadas:** "Design System Doc"
