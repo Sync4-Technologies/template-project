@@ -55,6 +55,9 @@ Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.c
 
 ## Changelog
 
+### 1.2.0 (2026-07-05)
+- **Dedup de specs (D2)**: seções repetidas dos 14 agentes extraídas para `template/docs/squad-core.md` (§A guardrail de interação, §B agent memory, §C cobertura por modo, §D self-review comum, §E formato de resposta ao TL) — ~480 linhas a menos no total dos specs; cada spec mantém só o que é específico do papel
+
 ### 1.1.0 (2026-07-05)
 - **IA no centro**: seção "Produto de IA" no PRD (custo/interação como RNF, evals, guardrails); `stack-conventions/ai/` (anthropic, rag, evals); gate "sem eval → feature de IA incompleta"; checklist OWASP LLM Top 10 no Security; ADR-006-arquitetura-ia; observabilidade de IA no DevOps
 - **Frontend**: mini-spec do PD obrigatória pra toda tela; checklist visual (self-review §5); gate "rodou e olhou" (screenshots dos 4 estados); ADR-005 v2 (default web = shadcn/ui + Tailwind); biblioteca de page-patterns
