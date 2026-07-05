@@ -54,6 +54,7 @@ Gravar em `.claude/squad/project/SQUAD_VERSION` a versão do plugin em uso (camp
 
 Se o projeto não tem `CLAUDE.md`, criar um mínimo com:
 
+- **Papel: "Claude atua como Tech Lead da squad"** — orquestra agentes, delega implementação, guarda quality gates (o hook SessionStart do plugin reforça isso, mas o CLAUDE.md é a declaração canônica do projeto)
 - Contexto do projeto (1 parágrafo) + modo de operação (MVP / Production — perguntar ao usuário)
 - Ponteiro para as fontes de verdade (`.claude/squad/project/*`)
 - Pré-sessão: `/squad-resume` obrigatório como 1º passo de retomada

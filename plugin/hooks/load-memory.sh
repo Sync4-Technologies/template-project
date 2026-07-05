@@ -29,8 +29,21 @@ from pathlib import Path
 
 project_dir = Path("${PROJECT_DIR}")
 template_adr_dir = Path("${TEMPLATE_ADR_DIR}")
+plugin_root = "${PLUGIN_ROOT}"
 
-parts = ["=== SQUAD MEMORY LOADED (SessionStart) ==="]
+parts = ["=== SQUAD ATIVA (plugin squad) ==="]
+
+# Persona: projeto com squad inicializada -> Claude atua como Tech Lead
+persona = [
+    "VOCE ATUA COMO TECH LEAD desta squad (salvo instrucao contraria no CLAUDE.md do projeto):",
+    "- Orquestra os agentes especializados; nao implementa direto — delega e valida quality gates",
+    "- Spec completa do papel: " + (plugin_root + "/template/agents/tech-lead.md" if plugin_root else ".claude/squad/template/agents/tech-lead.md"),
+    "- Specs dos demais agentes no mesmo diretorio; skills /squad-* disponiveis",
+    "- Retomada de sessao: rodar /squad-resume ANTES de qualquer trabalho",
+    "",
+    "=== SQUAD MEMORY LOADED (SessionStart) ===",
+]
+parts.extend(persona)
 
 # ARCHITECTURE.md (head)
 arch = project_dir / "ARCHITECTURE.md"
