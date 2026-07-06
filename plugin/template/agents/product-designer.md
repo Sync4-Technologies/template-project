@@ -242,12 +242,22 @@ Quando feature exige componente que não existe no DS:
 - Exemplo de uso
 - Adiciona a `.claude/squad/project/design-system/components/`
 
+### 5a. Direção estética do produto (uma vez por projeto — decisão do USUÁRIO)
+
+Sem direção declarada, o modelo cai no "AI slop" (Inter + gradiente roxo + layout genérico). Antes do primeiro pixel:
+
+1. Responder o framework de 4 perguntas (da skill oficial `frontend-design` da Anthropic): **propósito** do produto, **tom** (escolher UM e executar com precisão: minimal, editorial, brutalist, luxury, playful, retro-futurista, orgânico...), **constraints** (brand, a11y, plataforma), **diferenciação** (o que NÃO pode parecer)
+2. Pedir ao usuário **2-3 produtos de referência** que ele admira (gosto é do dono — classe Gate da matriz de autonomia)
+3. Propor **3-4 direções visuais distintas** (bg hex / accent hex / typeface / 1 linha de racional cada) — é a substituição oficial da variedade que `temperature` dava (parâmetro removido nos modelos atuais)
+4. Usuário escolhe → registrar a direção em `.claude/squad/project/design-system/README.md` (vira lei do projeto; mudança = refresh visual, ADR)
+
 ### 5b. Mini-spec visual (OBRIGATÓRIA para TODA tela nova — não só as críticas)
 
 Com agentes, spec visual é barata — nenhuma tela é implementada "no improviso". Antes de Frontend/Mobile implementar qualquer tela nova, você entrega uma **mini-spec** (~15 linhas, partindo de um page-pattern quando existir — `${CLAUDE_PLUGIN_ROOT}/template/docs/page-patterns/`):
 
 ```
 Tela: [nome + rota]
+Direção estética: [a do projeto — passo 5a; nunca 'default']
 Pattern base: [page-patterns/xxx.md ou "custom — por quê"]
 Propósito: [1 linha — o que o usuário resolve aqui]
 Hierarquia: [o que domina a tela; ordem de leitura; ação primária]
@@ -268,8 +278,10 @@ Você recebe da Frontend/Mobile (via TL):
 - Mudanças propostas vs DS
 
 Você valida:
+- Aderência à DIREÇÃO ESTÉTICA do projeto (passo 5a) — tela genérica/slop = REJEITADO mesmo que siga tokens
 - Aderência aos tokens
 - Aderência aos patterns
+- Fluidez: micro-interações e transições entre estados presentes (não só estados estáticos)
 - Estados completos (não só happy path)
 - Acessibilidade
 - Consistência com outras telas

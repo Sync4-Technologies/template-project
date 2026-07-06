@@ -431,6 +431,7 @@ Bloco comum (gate determinístico completo, reuso antes de criar, review = confi
 - **§1**: nenhum secret/env server-only alcançável por código client-side; validação na fronteira
 - **§3**: fluxo multi-passo (onboarding, auth) com E2E real
 - **§5**: gate "rodou e olhou" — screenshots dos 4 estados; checklist visual completo
+- Ao implementar TELA (não só lógica): invocar a skill **`frontend-design`** (plugin oficial da Anthropic, se instalado) com a direção estética da mini-spec — ela guia tipografia/layout/motion anti-slop. Fallback sem o plugin: seguir a direção registrada em `design-system/README.md` e a regra "nunca Inter/gradiente roxo/layout genérico por default"
 
 ---
 

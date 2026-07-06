@@ -42,6 +42,10 @@ Perguntas-chave para o usuário (via TL ou direto):
 - Plataformas (Web only / Web + Mobile)?
 - Acessibilidade tem requisitos além de WCAG 2.1 AA (ex: AAA, regulação específica)?
 
+### 1b. Direção estética (ANTES do DS — decisão do usuário)
+
+Rodar o passo 5a do product-designer.md: framework de 4 perguntas (propósito/tom/constraints/diferenciação — da skill oficial `frontend-design` da Anthropic), pedir 2-3 referências do usuário, propor 3-4 direções (bg/accent/typeface + racional), usuário escolhe. A direção escolhida orienta TODOS os tokens do passo 4. Sem direção declarada = slop garantido.
+
 ### 2. Propor DS
 
 #### Default por plataforma (ver `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-005-design-system.md` — v2)

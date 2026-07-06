@@ -55,6 +55,9 @@ Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.c
 
 ## Changelog
 
+### 1.4.0 (2026-07-05)
+- **Estética e fluidez**: integração com o plugin oficial `frontend-design` da Anthropic (dependência declarada, instalada pelo `/squad-init` em projeto com UI); PD ganha passo 5a "Direção estética" (framework propósito/tom/constraints/diferenciação + 3-4 direções pro usuário escolher + referências do dono); mini-spec herda a direção; review de tela crítica reprova slop mesmo aderente aos tokens; self-review §5 exige micro-interações/transições (`prefers-reduced-motion` respeitado); react.md com regra anti-slop e motion como parte do Done
+
 ### 1.3.0 (2026-07-05)
 - **Governança vira mecanismo**: hook `push-gate` bloqueia `git push` sem gate determinístico rodado no HEAD (marcador gravado pelo `pre-commit-quality`; escape `SQUAD_SKIP_GATE=1`); `/squad-init` INSTALA os gates (hook local + `squad-ci.yml` do projeto com TODO(stack) que falha até ser preenchido)
 - **O plugin se testa**: workflow `plugin-ci` no upstream (validate, frontmatter das skills, smoke dos hooks, checker de referências internas)

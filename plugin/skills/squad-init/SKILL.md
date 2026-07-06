@@ -85,6 +85,16 @@ Regra vira máquina, não prosa. Perguntar ao usuário e, confirmado, executar:
 
 Os demais hooks do plugin (SessionStart carrega memória + persona; reminders) já ficam ativos com o plugin instalado — nada a copiar. Opt-out: desabilitar o plugin no projeto.
 
+### 5b. Plugin complementar (projeto COM UI)
+
+Recomendar instalar o plugin oficial da Anthropic de estética frontend (dependência declarada, não copiada):
+
+```bash
+claude plugin install frontend-design@claude-plugins-official
+```
+
+Registrar no `SQUAD_VERSION` (`plugins-complementares: frontend-design`). O PD usa o framework dele no passo de direção estética; o Frontend Engineer o invoca ao implementar telas.
+
 ### 6. Commit inicial
 
 `chore: squad init — estrutura de memória + SQUAD_VERSION`
