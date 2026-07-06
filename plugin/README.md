@@ -1,4 +1,4 @@
-# Plugin `squad` — AI Software Squad
+# Plugin `dev-squad` — AI Software Squad
 
 Governança completa para projetos conduzidos por squad de agentes Claude Code: 14 specs de agentes, 15 skills, hooks de memória viva e templates de qualidade.
 
@@ -9,10 +9,10 @@ Governança completa para projetos conduzidos por squad de agentes Claude Code: 
 /plugin marketplace add Sync4-Technologies/template-project
 
 # 2. Instalar o plugin (escopo user — vale pra todos os projetos da máquina)
-/plugin install squad@pdati
+/plugin install dev-squad@pdati
 
 # 3. Verificar
-claude plugin list              # squad@pdati — enabled
+claude plugin list              # dev-squad@pdati — enabled
 claude plugin details squad     # 15 skills, 3 hooks, ~870 tok always-on
 
 # 4. Reiniciar a sessão Claude Code (plugin carrega na próxima sessão)
@@ -54,6 +54,9 @@ Skills completas: ver `skills/`. Specs dos agentes: `template/agents/`. Checklis
 Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.claude/squad/project/`, remove as cópias locais de template/skills/hooks (com confirmação) e grava `SQUAD_VERSION`.
 
 ## Changelog
+
+### 1.5.0 (2026-07-05)
+- **Rename**: plugin `squad` → **`dev-squad`** (skills mantêm o prefixo `/squad-*`). Quem instalou como `squad`: `claude plugin uninstall squad@pdati` → `claude plugin marketplace update pdati` → `claude plugin install dev-squad@pdati`
 
 ### 1.4.0 (2026-07-05)
 - **Estética e fluidez**: integração com o plugin oficial `frontend-design` da Anthropic (dependência declarada, instalada pelo `/squad-init` em projeto com UI); PD ganha passo 5a "Direção estética" (framework propósito/tom/constraints/diferenciação + 3-4 direções pro usuário escolher + referências do dono); mini-spec herda a direção; review de tela crítica reprova slop mesmo aderente aos tokens; self-review §5 exige micro-interações/transições (`prefers-reduced-motion` respeitado); react.md com regra anti-slop e motion como parte do Done
