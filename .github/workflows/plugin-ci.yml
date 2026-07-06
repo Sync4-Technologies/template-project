@@ -1,0 +1,51 @@
+name: plugin-ci
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+jobs:
+  frontmatter:
+    name: Frontmatter das skills
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - run: python3 scripts/ci/check-frontmatter.py
+
+  plugin-paths:
+    name: Referências internas do plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 scripts/ci/check-plugin-paths.py
+
+  hooks-smoke:
+    name: Smoke dos hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: scripts/ci/hooks-smoke.sh
+
+  validate:
+    name: claude plugin validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Instalar Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Validar marketplace e plugin
+        run: |
+          claude plugin validate .
+          claude plugin validate plugin
