@@ -392,6 +392,13 @@ export function Greeting({ name }: { name: string }) {
 
 ---
 
+## Aesthetics & motion (anti-slop)
+
+- **Before building any screen, invoke the official Anthropic `frontend-design` skill** (plugin `frontend-design@claude-plugins-official`) with the project aesthetic direction from the PD mini-spec. It forces a committed direction (purpose/tone/constraints/differentiation) instead of the generic default.
+- Fallback when the plugin is not installed — hard rule: NEVER default to generic AI aesthetics (overused fonts like Inter/Roboto/system, purple-gradient-on-white schemes, cookie-cutter layouts). Use the project direction from `design-system/README.md`: distinctive typography, cohesive palette, context-specific character.
+- **Motion is part of Done**: state transitions animate (skeleton→content fade, not pop); interactive elements give hover/focus/press feedback; durations/easings come from the DS `motion.md` tokens; always respect `prefers-reduced-motion`.
+- Variety across proposals comes from propose-then-pick (3-4 directions), not sampling params (`temperature` is rejected on current models).
+
 ## Design Tokens
 
 - **Tailwind config** centralized (colors, spacing, typography)
