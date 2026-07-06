@@ -60,9 +60,30 @@ Se o projeto não tem `CLAUDE.md`, criar um mínimo com:
 - Pré-sessão: `/squad-resume` obrigatório como 1º passo de retomada
 - Regra: **não editar arquivos do plugin/template dentro do projeto** — gap no sistema da squad vai para `LESSONS_LEARNED.md` do projeto e é backportado ao plugin (upstream)
 
-### 5. Hooks (opcional, recomendado)
+### 5. Instalar os gates de qualidade (com confirmação do usuário — recomendado forte)
 
-Os hooks do plugin (SessionStart carrega memória; reminders de ARCHITECTURE/memory) já ficam ativos com o plugin instalado — nada a copiar. Opt-out: desabilitar o plugin no projeto.
+Regra vira máquina, não prosa. Perguntar ao usuário e, confirmado, executar:
+
+1. **Gate local bloqueante** (pre-commit):
+   ```bash
+   mkdir -p .githooks
+   cp ${CLAUDE_PLUGIN_ROOT}/template/ci/pre-commit-quality.example .githooks/pre-commit-quality
+   chmod +x .githooks/pre-commit-quality
+   # encadear: .githooks/pre-commit chama pre-commit-quality (criar se não existir)
+   git config core.hooksPath .githooks
+   ```
+   Em seguida, **adaptar os comandos do hook à stack** do projeto (bloco de detecção no topo do script; comandos vêm da stack-convention → "Standard commands"). Ao passar, o hook grava o marcador `$GIT_DIR/squad-gate-ok` — é ele que o push-gate do plugin verifica.
+
+2. **CI do projeto** (workflow real, não example):
+   ```bash
+   mkdir -p .github/workflows
+   cp ${CLAUDE_PLUGIN_ROOT}/template/ci/squad-ci.yml.template .github/workflows/squad-ci.yml
+   ```
+   **Preencher os `TODO(stack)`** com os comandos da stack-convention (setup, install com lockfile, format/lint/typecheck, testes com cobertura, build). Workflow com TODO restante FALHA de propósito — não deixar placeholder em produção.
+
+3. Informar: o **push-gate** do plugin (hook PreToolUse) bloqueia `git push` sem o gate rodado no HEAD atual; escape consciente `SQUAD_SKIP_GATE=1` (registrar o porquê no PR).
+
+Os demais hooks do plugin (SessionStart carrega memória + persona; reminders) já ficam ativos com o plugin instalado — nada a copiar. Opt-out: desabilitar o plugin no projeto.
 
 ### 6. Commit inicial
 

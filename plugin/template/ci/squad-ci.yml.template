@@ -1,0 +1,61 @@
+# squad-ci — workflow de CI do PROJETO, gerado pelo /squad-init.
+# O engineer que roda o init PREENCHE os comandos com os "Standard commands"
+# da stack-convention do projeto (plugin/template/docs/stack-conventions/).
+# Regra da squad: gate determinístico no CI CONFIRMA o que o gate local já validou.
+name: squad-ci
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  quality:
+    name: Gate determinístico (format + lint + typecheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO(stack): setup da linguagem (setup-node / setup-python / etc.)
+      # TODO(stack): install de dependências (com lockfile congelado)
+      - name: format:check
+        run: 'echo "TODO(stack): comando de format:check da stack-convention" && exit 1'
+      - name: lint
+        run: 'echo "TODO(stack): comando de lint" && exit 1'
+      - name: typecheck
+        run: 'echo "TODO(stack): comando de typecheck" && exit 1'
+
+  tests:
+    name: Testes com cobertura
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO(stack): setup + install
+      - name: testes + cobertura (floor conforme modo — MVP >=60% críticas / Production >=80%)
+        run: 'echo "TODO(stack): comando de teste com cobertura" && exit 1'
+
+  build:
+    name: Build (incl. docker quando houver)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO(stack): setup + install
+      - name: build
+        run: 'echo "TODO(stack): comando de build; se houver Dockerfile, docker build fiel (contexto limpo)" && exit 1'
+
+  memory-check:
+    name: Memória da squad atualizada
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: código de produção mudou -> memória tocada?
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          CHANGED=$(git diff --name-only "$BASE"...HEAD)
+          echo "$CHANGED" | grep -qE '^(src|app|lib|backend|frontend|api|services)/' || { echo "sem código de produção — ok"; exit 0; }
+          echo "$CHANGED" | grep -q '^.claude/squad/project/' && { echo "memória atualizada — ok"; exit 0; }
+          echo "::warning::Código de produção mudou sem atualização em .claude/squad/project/ (DECISIONS_LOG/ARCHITECTURE/agent-memory). Confirme se é intencional."
+          # warning não-bloqueante por default; endurecer para exit 1 em Production Mode

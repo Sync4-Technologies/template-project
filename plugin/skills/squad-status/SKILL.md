@@ -45,8 +45,9 @@ gh pr list --state open --json number,title,headRefName,reviewDecision
 
 # TASK_BOARD counts (Python or grep)
 
-# Métricas de saúde (últimas entradas `saude:` do Session Log — squad-handoff step 5d)
-grep -o "saude: [^|]*" .claude/squad/project/DECISIONS_LOG.md | tail -3
+# Métricas de saúde — coletar do GitHub (fallback: últimas entradas `saude:` do Session Log)
+${CLAUDE_PLUGIN_ROOT}/scripts/squad-metrics.sh --limit 10 2>/dev/null || \
+  grep -o "saude: [^|]*" .claude/squad/project/DECISIONS_LOG.md | tail -3
 ```
 
 Ler:

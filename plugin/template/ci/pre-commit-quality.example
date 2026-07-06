@@ -47,4 +47,10 @@ else
   exit 1
 fi
 
+# Marcador pro push-gate do plugin: registra a árvore validada.
+# Após o commit, HEAD^{tree} == esta árvore -> push liberado.
+GIT_DIR=$(git rev-parse --git-dir 2>/dev/null || echo .git)
+TREE=$(git write-tree 2>/dev/null || git rev-parse "HEAD^{tree}" 2>/dev/null || true)
+[ -n "$TREE" ] && echo "$TREE" > "$GIT_DIR/squad-gate-ok"
+
 echo "[pre-commit-quality] OK — gate determinístico verde."

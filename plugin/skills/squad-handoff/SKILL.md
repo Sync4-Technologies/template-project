@@ -146,13 +146,21 @@ Perguntar: **"O engineer rodou format + lint + typecheck (gate completo, repo in
 
 - Não/incerto → rodar agora; vermelho = resolver antes do handoff (próximo usuário não herda CI quebrado)
 
-### 5d. Métricas de saúde da squad (1 linha no Session Log)
+### 5d. Métricas de saúde da squad (COLETADAS, não auto-relatadas)
 
-Coletar da sessão e registrar junto à entrada do Session Log (formato: `saude: achados-review=N ciclos-ci=N retrabalho=N`):
+Rodar o coletor (dado vem do GitHub — auto-relato mente):
 
-- **Achados de CR/SE por PR** — meta 0 (mede se o self-review funciona; achado repetido → item novo no engineer-self-review.md via loop de feedback)
-- **Ciclos de CI por PR** (push → vermelho → fix → push) — meta 1 (gate determinístico local deveria zerar isso)
-- **Retrabalho** — tasks reabertas ou devolvidas pós-review
+```bash
+${CLAUDE_PLUGIN_ROOT}/scripts/squad-metrics.sh --limit <PRs da sessão>
+```
+
+Colar a linha `saude: ...` do output junto à entrada do Session Log.
+
+- **achados-review** (comentários de review + CHANGES_REQUESTED) — meta 0 (mede se o self-review funciona; achado repetido → item novo no engineer-self-review.md via loop de feedback)
+- **ciclos-ci** (runs failure + 1 por PR) — meta 1 (o push-gate deveria tornar >1 impossível)
+- **retrabalho** (reverts citando PRs do range) — meta 0
+
+Fallback (sem `gh` disponível): registrar auto-relato marcado como `saude(auto-relato): ...` — explicitar que não é dado coletado.
 
 Semiautonomia só é segura com medição — tendência piorando = pauta do próximo checkpoint com o usuário.
 

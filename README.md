@@ -570,6 +570,7 @@ Após atualizar, registrar a nova versão no `SQUAD_VERSION` do projeto (o `/squ
 - **Fonte canônica:** [`plugin/`](plugin/) (skills, hooks, specs de agentes, docs, templates). Toda melhoria entra AQUI primeiro.
 - **Adoção em projeto:** `/squad-init` cria `.claude/squad/project/` (memória viva) + `SQUAD_VERSION` — o projeto carrega só o ESTADO; o comportamento vem do plugin, versionado.
 - **Versionamento:** SemVer no `plugin/.claude-plugin/plugin.json`; update é explícito por máquina/usuário, nunca silencioso. `SQUAD_VERSION` no projeto registra qual governança valia em cada fase.
+- **CI do plugin:** todo PR roda `plugin-ci` (`claude plugin validate` + frontmatter das skills + smoke dos hooks + referências internas — `.github/workflows/plugin-ci.yml`). **Branch protection** (manual, uma vez): em develop e main, exigir os 4 jobs verdes antes de merge (Settings → Branches).
 - **Regra anti-drift:** proibido editar arquivos do plugin/template dentro de um projeto. Gap no sistema → `LESSONS_LEARNED.md` do projeto → backport aqui → bump de versão → projetos atualizam.
 - **Layout legado (clone do template):** projetos existentes ainda clonados migram com `/squad-init` (preserva `project/`, remove cópias locais com confirmação, grava `SQUAD_VERSION`). Este repositório já migrou — usa o próprio plugin (dogfooding); a única cópia do template vive em `plugin/`.
 
