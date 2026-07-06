@@ -55,6 +55,11 @@ Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.c
 
 ## Changelog
 
+### 1.3.0 (2026-07-05)
+- **Governança vira mecanismo**: hook `push-gate` bloqueia `git push` sem gate determinístico rodado no HEAD (marcador gravado pelo `pre-commit-quality`; escape `SQUAD_SKIP_GATE=1`); `/squad-init` INSTALA os gates (hook local + `squad-ci.yml` do projeto com TODO(stack) que falha até ser preenchido)
+- **O plugin se testa**: workflow `plugin-ci` no upstream (validate, frontmatter das skills, smoke dos hooks, checker de referências internas)
+- **Métricas coletadas, não auto-relatadas**: `scripts/squad-metrics.sh` (achados de review, ciclos de CI, retrabalho via gh api); handoff e /squad-status usam o coletor — auto-relato vira fallback explícito
+
 ### 1.2.0 (2026-07-05)
 - **Dedup de specs (D2)**: seções repetidas dos 14 agentes extraídas para `template/docs/squad-core.md` (§A guardrail de interação, §B agent memory, §C cobertura por modo, §D self-review comum, §E formato de resposta ao TL) — ~480 linhas a menos no total dos specs; cada spec mantém só o que é específico do papel
 

@@ -30,6 +30,15 @@
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/memory-update-reminder.sh"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/push-gate.sh"
+          }
+        ]
       }
     ]
   }
