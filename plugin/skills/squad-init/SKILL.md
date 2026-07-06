@@ -109,7 +109,7 @@ Apresentar ao usuário o que foi criado + próximo passo (`/squad-new-project` p
 2. Criar `SQUAD_VERSION` (passo 3)
 3. Remover do projeto: `.claude/squad/template/`, `.claude/skills/squad-*`, `.claude/hooks/{load-memory,architecture-reminder,memory-update-reminder}.sh` e as entradas correspondentes em `.claude/settings.json` (o plugin passa a fornecer tudo)
 4. Confirmar com o usuário ANTES de remover (mostrar lista) — customizações locais do template viram candidatas a backport no upstream, não podem ser perdidas
-5. Commit: `chore: migra squad de template clonado para plugin squad@<versão>`
+5. Commit: `chore: migra squad de template clonado para plugin dev-squad@<versão>`
 
 ---
 

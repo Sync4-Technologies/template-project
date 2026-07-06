@@ -524,8 +524,8 @@ claude plugin marketplace add Sync4-Technologies/template-project
 **2. Instalar o plugin:**
 
 ```bash
-/plugin install squad@pdati
-# ou: claude plugin install squad@pdati
+/plugin install dev-squad@pdati
+# ou: claude plugin install dev-squad@pdati
 ```
 
 Escopo padrão: `user` (vale para todos os projetos da máquina; os hooks são inofensivos em projetos sem squad — retornam vazio).
@@ -533,7 +533,7 @@ Escopo padrão: `user` (vale para todos os projetos da máquina; os hooks são i
 **3. Verificar a instalação:**
 
 ```bash
-claude plugin list                # squad@pdati — Status: enabled
+claude plugin list                # dev-squad@pdati — Status: enabled
 claude plugin details squad       # 15 skills, 3 hooks, ~870 tokens always-on
 ```
 
