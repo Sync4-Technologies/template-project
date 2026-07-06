@@ -75,6 +75,8 @@ Resposta "não" em 1–3 → simplificar/reaproveitar ANTES de enviar pra review
 - [ ] Dark mode íntegro (quando o projeto suporta)
 - [ ] Foco visível + navegação por teclado no fluxo principal (a11y além do axe)
 - [ ] Textos reais/realistas (nomes longos, números grandes) — não "teste 123" que esconde overflow
+- [ ] Aderência à direção estética do projeto (design-system/README) — sem regressão pro genérico (Inter/gradiente roxo/layout cookie-cutter)
+- [ ] Fluidez: transições entre estados (skeleton→conteúdo com fade, não pop), feedback de hover/focus/press nos interativos, motion nos tokens do DS (`motion.md`) — respeitando `prefers-reduced-motion`
 
 ## Loop de melhoria
 

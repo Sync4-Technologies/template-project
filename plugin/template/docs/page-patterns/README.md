@@ -19,4 +19,6 @@ Regras transversais (valem pra todo pattern):
 - **A11y**: foco visível, navegação por teclado no fluxo principal, labels em todo input, contraste AA
 - Textos de exemplo REALISTAS (nomes longos, números grandes) nas validações
 
+**Patterns definem ESTRUTURA, não estética.** A cara da tela vem da direção estética do projeto (product-designer.md passo 5a + skill `frontend-design` da Anthropic) — o mesmo pattern de dashboard fica brutalist num produto e editorial noutro.
+
 Pattern novo: criar aqui quando o mesmo tipo de tela se repetir em ≥2 projetos (mesma regra de skills — ≥N usos).
