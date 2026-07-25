@@ -53,6 +53,8 @@
 
 ## Session Log
 
+[2026-07-05] [Pablo+TL] Sessao de sistema: diagnostico LESSONS_LEARNED (66 acoes) aplicado (P0/P1/P2); squad empacotada como plugin dev-squad v1.0.0->v1.5.0 (marketplace pdati, PRs #12-#28 todos mergeados, tags v1.0.0..v1.5.0). Releases: 1.1.0 IA no centro + frontend + semiautonomia; 1.2.0 squad-core dedup; 1.3.0 mecanismos (plugin-ci, push-gate, squad-metrics); 1.4.0 estetica/fluidez (frontend-design); 1.5.0 rename. Este repo migrado pro proprio plugin (D1); branch protection ativa. Pendente: validacao em batalha. | saude: achados-review=0 ciclos-ci-media=1.0 retrabalho=0 (17 PRs, coletado)
+
 [2026-06-01] [Tech Lead] Onboarding da squad no AgentesIA + cópia dos artefatos para .claude/squad/project/; CLAUDE.md raiz substituído (MVP→Production)
 [2026-06-01] [Architect+Security] ADR-006: egress HTTP seguro (SSRF + pin de IP anti-rebinding) — fecha SEC-001 e DEBT-011
 [2026-06-01] [Backend+QA] SEC-001 + DEBT-011 implementados: `safe_post` em core/safe_http.py, `send_to_webhook` validado, `resolve_validated_url` com pin de IP. 30 testes verdes; ruff+mypy OK nos arquivos tocados. Aguardando Code Review + CI (FEAT-020).
