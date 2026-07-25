@@ -433,7 +433,7 @@ export function Greeting({ name }: { name: string }) {
 
 ## Feature Flags
 
-See `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md` and `${CLAUDE_PLUGIN_ROOT}/template/agents/frontend-engineer.md`.
+See `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md` and `${CLAUDE_PLUGIN_ROOT}/agents/frontend-engineer.md`.
 
 - Flag check at the **route** or **organism** level, never in atoms
 - Local cache + deterministic fallback

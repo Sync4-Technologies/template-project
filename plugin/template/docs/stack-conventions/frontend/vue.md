@@ -371,7 +371,7 @@ Same React targets (LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1).
 
 ## Feature Flags
 
-See `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md` and `${CLAUDE_PLUGIN_ROOT}/template/agents/frontend-engineer.md`.
+See `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md` and `${CLAUDE_PLUGIN_ROOT}/agents/frontend-engineer.md`.
 
 Same React rules:
 - Flag check at route or organism level (not in atoms)

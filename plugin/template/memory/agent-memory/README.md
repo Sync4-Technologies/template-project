@@ -17,7 +17,7 @@
 - Arquitetura geral → vai em `.claude/squad/project/ARCHITECTURE.md`
 - Decisões estruturais → vai em `.claude/squad/project/ADR/`
 - Decisões rápidas que afetam múltiplos agentes → vai em `.claude/squad/project/DECISIONS_LOG.md`
-- Regras gerais do papel → vai em `${CLAUDE_PLUGIN_ROOT}/template/agents/{name}.md`
+- Regras gerais do papel → vai em `${CLAUDE_PLUGIN_ROOT}/template/agents/{name}.md` (main-thread) ou `${CLAUDE_PLUGIN_ROOT}/agents/{name}.md` (subagents)
 - Regras de negócio → vai em `.claude/squad/project/PRD.md` e specs funcionais
 - Melhoria do SISTEMA da squad (gap em spec/skill/hook/processo) → vai em `.claude/squad/project/LESSONS_LEARNED.md` (com arquivo a modificar + ação concreta)
 

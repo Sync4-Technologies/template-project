@@ -99,7 +99,7 @@ Code Reviewer **detalhado** pode ser pulado em Sev1 (responsabilidade sua de TL 
 
 ### 6. COMUNICAR durante incidente
 
-#### Cadência mínima (conforme `${CLAUDE_PLUGIN_ROOT}/template/agents/devops-engineer.md`)
+#### Cadência mínima (conforme `${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md`)
 
 | Severidade | Update interno | Update externo (status page) |
 |-----------|---------------|------------------------------|
@@ -136,7 +136,7 @@ Antes de declarar resolvido:
 - **Sev2:** ≤ 72h após resolução
 - **Sev3+:** opcional; registrar decisão em `.claude/squad/project/DECISIONS_LOG.md`
 
-#### Estrutura (formato em `${CLAUDE_PLUGIN_ROOT}/template/agents/devops-engineer.md`)
+#### Estrutura (formato em `${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md`)
 
 ```
 POST-MORTEM — [título]
@@ -202,6 +202,6 @@ Conforme política de indisponibilidade do usuário (`CLAUDE.md`):
 ## Referências
 
 - TL flow Sev1/Sev2/Sev3+: `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Fluxo de Bug em Produção"
-- DevOps incident comm: `${CLAUDE_PLUGIN_ROOT}/template/agents/devops-engineer.md` → "Comunicação Durante Incidente"
-- Post-mortem template: `${CLAUDE_PLUGIN_ROOT}/template/agents/devops-engineer.md` → "Post-Mortem Blameless"
+- DevOps incident comm: `${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md` → "Comunicação Durante Incidente"
+- Post-mortem template: `${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md` → "Post-Mortem Blameless"
 - CLAUDE.md: "Fluxo de Bug em Produção"
