@@ -83,15 +83,40 @@ Terceiro sintoma do mesmo hook em duas sessoes (UP-01 tag, UP-02 refspec, UP-03 
 | ID | Acao | Arquivo a modificar | Status |
 |----|------|---------------------|--------|
 | UP-03 | RESTAURAR o codigo da 1.5.0: ler `cwd` do payload e usar como PROJECT_ROOT (`${CWD:-${CLAUDE_PROJECT_DIR:-$(pwd)}}`), mais a checagem dupla de squad e o comentario `--git-dir` vs `--git-common-dir`. NAO parsear `cd` do comando — o payload ja traz `cwd` | `plugin/hooks/push-gate.sh` | Feito (v1.7.0) — PR #36, merge `e5a8e22`. UP-01 preservado; validado em 5 cenarios com contra-prova |
-| UP-04 | Ler `SQUAD_SKIP_GATE` tambem de `tool_input.command` (o payload ja traz a string), nao so do env do processo — hoje o escape documentado e inacionavel por agente | `plugin/hooks/push-gate.sh` | Pendente (v1.6.1) |
-| UP-05 | Revisar o desenho do push-gate como um todo (4 falsos positivos em 2 sessoes) antes de aceitar novo remendo pontual | `plugin/hooks/push-gate.sh` | Pendente (v1.7) |
-| UP-06 | Match de `git push` nao pode ser substring da string inteira: bloqueia commit cuja MENSAGEM cita `git push`. Parsear o comando efetivo (primeiro verbo por segmento `&&`/`;`/`\|`) e ignorar corpo de heredoc/aspas | `plugin/hooks/push-gate.sh` | Pendente (v1.6.1) |
+| UP-04 | Ler `SQUAD_SKIP_GATE` tambem de `tool_input.command` (o payload ja traz a string), nao so do env do processo — hoje o escape documentado e inacionavel por agente | `plugin/hooks/push-gate.sh` | Feito (v1.8.0) |
+| UP-05 | Revisar o desenho do push-gate como um todo (4 falsos positivos em 2 sessoes) antes de aceitar novo remendo pontual | `plugin/hooks/push-gate.sh` | Feito (v1.8.0) — decisao do usuario: ADVISORY por padrao (avisa, nao bloqueia); enforce opt-in por projeto |
+| UP-06 | Match de `git push` nao pode ser substring da string inteira: bloqueia commit cuja MENSAGEM cita `git push`. Parsear o comando efetivo (primeiro verbo por segmento `&&`/`;`/`\|`) e ignorar corpo de heredoc/aspas | `plugin/hooks/push-gate.sh` | Feito (v1.8.0) |
 
 ### Principio
 
 Hook que le o comando para decidir SE atua tem que ler o mesmo comando para decidir SOBRE O QUE atua. Inferir o alvo por contexto de processo enquanto o alvo real esta escrito no comando produz falso positivo silencioso — e um gate cuja unica saida acionavel e forjar o marcador ensina exatamente o que ele existe para impedir.
 
 Corolario do quarto furo: reconhecer comando por substring confunde MENCAO com EXECUCAO. O gate precisa parsear o que vai rodar, nao procurar texto no que foi digitado.
+
+---
+
+## 4. Required check que so fica verde apagando a protection e ritual, nao controle (severidade: ALTO)
+
+### O que aconteceu
+
+Billing do GitHub Actions esgotado: todos os jobs falham com 0 steps. Os 4 required checks do repo ficam vermelhos por infra, nao por codigo. Para mergear os PRs #33, #34, #35 e #36, o fluxo foi: DELETE dos required_status_checks -> merge -> PUT restaurando a protection. Quatro vezes no mesmo dia, a mao, com janela em que a branch aceitava merge sem CI nenhum.
+
+Pergunta do usuario que resume o problema: "qual o sentido de bloquear, se vou contornar apagando?"
+
+### Causa raiz
+
+O check obrigatorio tinha UM caminho para o verde (GHA cloud). Quando esse caminho morre por causa externa, o gate nao degrada — vira obstaculo que so se satisfaz sendo removido. O trokey ja tinha resolvido isso no proprio ci.yml (AM-25): `runs-on` parametrizado por variavel de repo, roteando para runner self-hosted com um flip. O plugin-ci deste repo nao tinha o mesmo fallback.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo a modificar | Status |
+|----|------|---------------------|--------|
+| UP-07 | plugin-ci com `runs-on: ${{ vars.CI_RUNNER \|\| 'ubuntu-latest' }}` — billing morto vira `gh variable set CI_RUNNER --body self-hosted`, check roda local e fica verde de verdade | `.github/workflows/plugin-ci.yml` | Feito (v1.8.0) |
+| UP-08 | Registrar o runner self-hosted na maquina do Pablo (de preferencia a nivel de ORG Sync4-Technologies, servindo template-project e trokey com um runner so) — sem isso o UP-07 e so a tomada na parede | acao do usuario (runbook: trokey `ops/self-hosted-runner.md`) | Pendente |
+
+### Principio
+
+Check obrigatorio precisa de caminho alternativo LEGITIMO para o verde. Se a unica saida quando a infra falha e remover o check, o check nao protege nada nesses momentos — só treina todo mundo a remover. Mesmo principio do AM-23 do trokey (gate sem caminho de conformidade acionavel), agora na camada de CI.
 
 ---
 
@@ -102,6 +127,8 @@ Corolario do quarto furo: reconhecer comando por substring confunde MENCAO com E
 | UP-01 | push-gate avisa sobre PR mergeado da branch | plugin/hooks/push-gate.sh | Feito (v1.6.0) |
 | UP-02 | UP-01 isenta push de tag/refspec que nao e a branch | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
 | UP-03 | push-gate: restaurar leitura de `cwd` do payload (regressao 1.5.0 -> 1.6.0) | plugin/hooks/push-gate.sh | Feito (v1.7.0) |
-| UP-04 | push-gate le SQUAD_SKIP_GATE do comando (escape inacionavel por agente) | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
-| UP-05 | Revisar desenho do push-gate (4 falsos positivos em 2 sessoes) | plugin/hooks/push-gate.sh | Pendente (v1.7) |
-| UP-06 | Match de `git push` por substring bloqueia commit que so MENCIONA push | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
+| UP-04 | push-gate le SQUAD_SKIP_GATE do comando (escape inacionavel por agente) | plugin/hooks/push-gate.sh | Feito (v1.8.0) |
+| UP-05 | Revisar desenho do push-gate -> ADVISORY por padrao, enforce opt-in | plugin/hooks/push-gate.sh | Feito (v1.8.0) |
+| UP-06 | Match de `git push` por substring bloqueia commit que so MENCIONA push | plugin/hooks/push-gate.sh | Feito (v1.8.0) |
+| UP-07 | plugin-ci com runner parametrizavel (CI_RUNNER) — fallback legitimo pro billing | .github/workflows/plugin-ci.yml | Feito (v1.8.0) |
+| UP-08 | Registrar runner self-hosted (org-level) na maquina do Pablo | acao do usuario | Pendente |

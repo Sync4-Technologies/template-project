@@ -1,5 +1,13 @@
 name: plugin-ci
 
+# runs-on parametrizado (UP-07, espelha AM-25 do template): com a variável de
+# repositório CI_RUNNER definida, os jobs rodam no runner self-hosted — fallback
+# legítimo quando o billing do GitHub Actions corta o cloud. O check continua
+# rodando e fica verde DE VERDADE; nunca mais suspender/restaurar branch protection
+# para mergear.
+#   gh variable set CI_RUNNER --body self-hosted   # migra para o runner próprio
+#   gh variable delete CI_RUNNER                   # volta para o cloud
+
 on:
   pull_request:
     branches: [develop, main]
@@ -9,7 +17,7 @@ on:
 jobs:
   frontmatter:
     name: Frontmatter das skills
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -20,7 +28,7 @@ jobs:
 
   plugin-paths:
     name: Referências internas do plugin
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,14 +38,14 @@ jobs:
 
   hooks-smoke:
     name: Smoke dos hooks
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       - run: scripts/ci/hooks-smoke.sh
 
   validate:
     name: claude plugin validate
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

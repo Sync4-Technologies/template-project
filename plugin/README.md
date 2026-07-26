@@ -55,6 +55,18 @@ Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.c
 
 ## Changelog
 
+### 1.8.0 (2026-07-26)
+
+Simplificação e agilidade: menos bloqueio, mais aviso — o custo do falso positivo sai do usuário.
+
+- **[BREAKING] push-gate vira ADVISORY por padrão (UP-05)**: avisa quando o gate não validou o HEAD (ou a branch tem PR mergeado — UP-01), mas **não bloqueia mais**. Commit, push e PR fluem sem interrupção. Racional: 4 falsos positivos em 2 sessões (tag, refspec, cross-repo, menção em mensagem) — bloqueio duro transferia o custo do erro do hook para o usuário. Modo enforce (bloqueio duro) é opt-in por projeto: `SQUAD_GATE_ENFORCE=1` no env ou arquivo `.claude/squad/project/gate-enforce`
+- **push-gate reconhece EXECUÇÃO, não menção (UP-06)**: detecção de `git push` por primeiro verbo de cada segmento (`&&`, `;`, `|`, quebra de linha), com corpos de heredoc descartados — commit cuja mensagem cita `git push` não dispara mais o hook
+- **`SQUAD_SKIP_GATE=1` aceito inline no comando (UP-04)**: o hook roda no processo do harness, antes do shell do comando existir — o prefixo inline nunca chegava ao env, tornando o escape documentado inacionável por agente
+- **plugin-ci com runner parametrizável (UP-07)**: `runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}` no próprio CI do plugin (o template já tinha via AM-25). Billing do Actions morto deixa de significar "suspender/restaurar branch protection para mergear": `gh variable set CI_RUNNER --body self-hosted` e o check roda local e fica verde de verdade. Princípio: check obrigatório precisa de caminho alternativo legítimo para o verde — gate que só se satisfaz sendo removido é ritual, não controle
+- **Ciclo de atualização do plugin fecha nas duas pontas**: `/squad-handoff` (passo 9) roda `claude plugin update dev-squad` ao ENCERRAR a sessão — o restart que vem a seguir aplica de graça, e a próxima sessão já nasce na versão nova. `/squad-resume` (passo 0) confere na retomada e avisa se ainda há update pendente (rede de segurança para sessão que não teve handoff). Compara também com `SQUAD_VERSION` do projeto para apontar reconciliação pendente. Regressões já entraram por sessão rodando hook antigo (UP-01 no release da 1.6.0)
+- **Delegação de merge (tech-lead.md)**: default continua "merge é do usuário", mas o usuário pode delegar ao TL explicitamente, com escopo e prazo, registrado em `DECISIONS_LOG` — expira sozinho, não sobrevive à sessão salvo prazo explícito
+- **Advisor em Fable 5**: `model: claude-fable-5` no frontmatter do advisor (era `opus`)
+
 ### 1.7.0 (2026-07-26)
 
 Backport das lições da batalha em `trokey-franchising` (AM-18 a AM-35).
