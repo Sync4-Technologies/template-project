@@ -49,9 +49,59 @@ Gate novo se testa contra o proprio fluxo de release antes de valer — o refspe
 
 ---
 
+## 3. push-gate valida o repo da SESSAO, nao o repo do push (severidade: ALTO)
+
+### O que aconteceu
+
+Sessao aberta no `template-project`; trabalho de reconciliacao feito no `trokey-franchising` via `cd /Users/.../trokey-franchising && git push ...`. O gate do trokey foi rodado por inteiro e passou (170 suites, 1370 testes), gravando o marcador correto: `squad-gate-ok` == `HEAD^{tree}` == `1827245`.
+
+O push foi bloqueado assim mesmo. `CLAUDE_PROJECT_DIR` estava VAZIO, entao o hook caiu no fallback `$(pwd)` — o cwd do processo do harness, que e o worktree do `template-project`. Resultado: leu o marcador (inexistente) e o HEAD do `template-project` e barrou um push cujo gate estava legitimamente verde, em outro repositorio, que ele nunca olhou.
+
+Agravante: nenhuma saida legitima sobra pro agente. `SQUAD_SKIP_GATE=1` inline nao chega ao hook (ele le o env do processo do harness, que existe antes do shell do comando — ver AM-23 do trokey). A unica saida ao alcance seria escrever o marcador do repo errado na mao, ou seja, forjar a atestacao. Push teve que ser delegado ao terminal do usuario.
+
+### Causa raiz
+
+**REGRESSAO, nao bug novo.** A 1.5.0 ja resolvia isto:
+
+```sh
+PROJECT_ROOT="${CWD:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"   # 1.5.0 — le `cwd` do payload
+PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(pwd)}"           # 1.6.0 — worktree-awareness perdida
+```
+
+O comentario da 1.5.0 nomeava o bug: *"`cwd` e a worktree onde o `git push` esta sendo executado — usar isso em vez de `$CLAUDE_PROJECT_DIR` corrige o bug worktree-blind"*. A 1.6.0 adicionou o UP-01 partindo de uma base sem o fix e perdeu tres blocos: a leitura de `cwd`, a checagem dupla de squad (PROJECT_ROOT + CLAUDE_PROJECT_DIR) e o comentario que proibia `--git-common-dir`.
+
+O sintoma que observei (cross-repo) e o mesmo que o AM-18 do trokey descreve para subagent em worktree isolada: o hook le o marcador do lugar errado. Uma causa, dois sintomas.
+
+**O payload ja traz `cwd`** — nao ha o que parsear do comando. A correcao e RESTAURAR o codigo da 1.5.0, nao inventar parsing de `cd`.
+
+Terceiro sintoma do mesmo hook em duas sessoes (UP-01 tag, UP-02 refspec, UP-03 cross-repo). Pelo criterio do proprio LESSONS do trokey (AM-22: workaround repetido e sinal de modelo errado), o padrao ja pede revisao do desenho, nao um quarto remendo pontual.
+
+**Quarto furo, descoberto ao escrever esta propria licao:** o commit que registra UP-03 foi BLOQUEADO pelo push-gate. O comando era `git switch && git add && git commit -F -`, sem nenhum push — mas o heredoc da mensagem citava `` `cd <repo> && git push` `` ao descrever o bug. O teste do hook e `case "$CMD" in *"git push"*)`, substring na string inteira do comando: qualquer commit, script ou documentacao que MENCIONE `git push` e tratado como push. O gate barra quem escreve sobre ele.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo a modificar | Status |
+|----|------|---------------------|--------|
+| UP-03 | RESTAURAR o codigo da 1.5.0: ler `cwd` do payload e usar como PROJECT_ROOT (`${CWD:-${CLAUDE_PROJECT_DIR:-$(pwd)}}`), mais a checagem dupla de squad e o comentario `--git-dir` vs `--git-common-dir`. NAO parsear `cd` do comando — o payload ja traz `cwd` | `plugin/hooks/push-gate.sh` | Feito (v1.7.0) — PR #36, merge `e5a8e22`. UP-01 preservado; validado em 5 cenarios com contra-prova |
+| UP-04 | Ler `SQUAD_SKIP_GATE` tambem de `tool_input.command` (o payload ja traz a string), nao so do env do processo — hoje o escape documentado e inacionavel por agente | `plugin/hooks/push-gate.sh` | Pendente (v1.6.1) |
+| UP-05 | Revisar o desenho do push-gate como um todo (4 falsos positivos em 2 sessoes) antes de aceitar novo remendo pontual | `plugin/hooks/push-gate.sh` | Pendente (v1.7) |
+| UP-06 | Match de `git push` nao pode ser substring da string inteira: bloqueia commit cuja MENSAGEM cita `git push`. Parsear o comando efetivo (primeiro verbo por segmento `&&`/`;`/`\|`) e ignorar corpo de heredoc/aspas | `plugin/hooks/push-gate.sh` | Pendente (v1.6.1) |
+
+### Principio
+
+Hook que le o comando para decidir SE atua tem que ler o mesmo comando para decidir SOBRE O QUE atua. Inferir o alvo por contexto de processo enquanto o alvo real esta escrito no comando produz falso positivo silencioso — e um gate cuja unica saida acionavel e forjar o marcador ensina exatamente o que ele existe para impedir.
+
+Corolario do quarto furo: reconhecer comando por substring confunde MENCAO com EXECUCAO. O gate precisa parsear o que vai rodar, nao procurar texto no que foi digitado.
+
+---
+
 ## Indice de acoes
 
 | ID | Acao (resumo) | Arquivo-alvo | Status |
 |----|---------------|--------------|--------|
 | UP-01 | push-gate avisa sobre PR mergeado da branch | plugin/hooks/push-gate.sh | Feito (v1.6.0) |
 | UP-02 | UP-01 isenta push de tag/refspec que nao e a branch | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
+| UP-03 | push-gate: restaurar leitura de `cwd` do payload (regressao 1.5.0 -> 1.6.0) | plugin/hooks/push-gate.sh | Feito (v1.7.0) |
+| UP-04 | push-gate le SQUAD_SKIP_GATE do comando (escape inacionavel por agente) | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
+| UP-05 | Revisar desenho do push-gate (4 falsos positivos em 2 sessoes) | plugin/hooks/push-gate.sh | Pendente (v1.7) |
+| UP-06 | Match de `git push` por substring bloqueia commit que so MENCIONA push | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
