@@ -53,6 +53,8 @@
 
 ## Session Log
 
+[2026-07-26] [Pablo+TL] Sessao de sistema: v1.6.0 released (PR #31 -> develop `5ab8b44`, #32 -> main `7ab9f8d`, tag v1.6.0) — 11 subagents nativos em plugin/agents/ (10 executores + advisor; security split Fase1/Fase2), Protocolo de Duvida (squad-core §F), Modo Delegado (lista critica de 6 no TL), UP-01 no push-gate. 9 agents user-scope duplicados movidos pra ~/.claude/agents-disabled. Plugin 1.6.0 instalado. Billing do Actions morto: merges via suspender/restaurar required checks (Pablo a mao; protecoes verificadas restauradas). UP-02 registrado no LESSONS (UP-01 x push de tag). Pendente: batalha trokey-franchising com v1.6; billing. | saude: achados-review=0 retrabalho=0; ciclos-ci-media=9.0 POLUIDO por outage de billing (jobs 0-steps), nao e sinal de qualidade (2 PRs)
+
 [2026-07-05] [Pablo+TL] Sessao de sistema: diagnostico LESSONS_LEARNED (66 acoes) aplicado (P0/P1/P2); squad empacotada como plugin dev-squad v1.0.0->v1.5.0 (marketplace pdati, PRs #12-#28 todos mergeados, tags v1.0.0..v1.5.0). Releases: 1.1.0 IA no centro + frontend + semiautonomia; 1.2.0 squad-core dedup; 1.3.0 mecanismos (plugin-ci, push-gate, squad-metrics); 1.4.0 estetica/fluidez (frontend-design); 1.5.0 rename. Este repo migrado pro proprio plugin (D1); branch protection ativa. Pendente: validacao em batalha. | saude: achados-review=0 ciclos-ci-media=1.0 retrabalho=0 (17 PRs, coletado)
 
 [2026-06-01] [Tech Lead] Onboarding da squad no AgentesIA + cópia dos artefatos para .claude/squad/project/; CLAUDE.md raiz substituído (MVP→Production)
