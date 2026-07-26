@@ -20,10 +20,14 @@ jobs:
     runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
+      # setup-python só no cloud: no runner self-hosted (macOS) o instalador do
+      # toolcache exige sudo e caminho /Users/runner — usa-se o python3 da máquina
       - uses: actions/setup-python@v5
+        if: ${{ vars.CI_RUNNER == '' }}
         with:
           python-version: "3.12"
       - run: pip install pyyaml
+        if: ${{ vars.CI_RUNNER == '' }}
       - run: python3 scripts/ci/check-frontmatter.py
 
   plugin-paths:
@@ -32,6 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+        if: ${{ vars.CI_RUNNER == '' }}
         with:
           python-version: "3.12"
       - run: python3 scripts/ci/check-plugin-paths.py
