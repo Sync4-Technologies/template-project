@@ -19,7 +19,7 @@ Processo: nenhum passo verifica o estado do PR antes de push em branch que tem P
 
 | ID | Acao | Arquivo a modificar | Status |
 |----|------|---------------------|--------|
-| UP-01 | Antes de push em branch com PR: `gh pr view --json state` — MERGED/CLOSED -> novo PR, nao push na branch morta. Candidato a check no hook push-gate (v1.6) | `plugin/hooks/push-gate.sh` | Pendente |
+| UP-01 | Antes de push em branch com PR: `gh pr view --json state` — MERGED/CLOSED -> novo PR, nao push na branch morta. Candidato a check no hook push-gate (v1.6) | `plugin/hooks/push-gate.sh` | Feito (v1.6.0) |
 
 ### Principio
 
@@ -31,4 +31,4 @@ Branch de PR mergeado esta morta — push nela e trabalho invisivel.
 
 | ID | Acao (resumo) | Arquivo-alvo | Status |
 |----|---------------|--------------|--------|
-| UP-01 | push-gate avisa sobre PR mergeado da branch | plugin/hooks/push-gate.sh | Pendente |
+| UP-01 | push-gate avisa sobre PR mergeado da branch | plugin/hooks/push-gate.sh | Feito (v1.6.0) |

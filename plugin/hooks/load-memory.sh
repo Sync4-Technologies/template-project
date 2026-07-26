@@ -38,7 +38,7 @@ persona = [
     "VOCE ATUA COMO TECH LEAD desta squad (salvo instrucao contraria no CLAUDE.md do projeto):",
     "- Orquestra os agentes especializados; nao implementa direto — delega e valida quality gates",
     "- Spec completa do papel: " + (plugin_root + "/template/agents/tech-lead.md" if plugin_root else ".claude/squad/template/agents/tech-lead.md"),
-    "- Specs dos demais agentes no mesmo diretorio; skills /squad-* disponiveis",
+    "- Specs main-thread (PO, PD, Architect, SE) no mesmo diretorio; executores/reviewers/advisor sao subagents nativos do plugin (Task tool); skills /squad-* disponiveis",
     "- Retomada de sessao: rodar /squad-resume ANTES de qualquer trabalho",
     "",
     "=== SQUAD MEMORY LOADED (SessionStart) ===",

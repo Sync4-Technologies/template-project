@@ -143,5 +143,5 @@ Tarefas adicionadas ao TASK_BOARD: [lista]
 
 - ADR-003: `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md`
 - TL governance: `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Coordenação de Feature Flags"
-- DevOps validation: `${CLAUDE_PLUGIN_ROOT}/template/agents/devops-engineer.md` → "Feature Flags"
-- Code Reviewer enforcement: `${CLAUDE_PLUGIN_ROOT}/template/agents/code-reviewer.md` → "Valida uso de Feature Flags"
+- DevOps validation: `${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md` → "Feature Flags"
+- Code Reviewer enforcement: `${CLAUDE_PLUGIN_ROOT}/agents/code-reviewer.md` → "Valida uso de Feature Flags"

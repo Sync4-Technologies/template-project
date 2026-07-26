@@ -1,7 +1,7 @@
 {
   "name": "dev-squad",
-  "version": "1.5.0",
-  "description": "AI Software Squad — 14 agentes especializados (TL, Architect, Engineers, QA, Security, DevOps, PO, PD), 15 skills de governança (resume/handoff, deploy-preflight, threat-model, PRD, incident), hooks de memória viva e templates (self-review, stack-conventions, ADRs, LESSONS_LEARNED). Governança completa para projetos conduzidos por squad de agentes.",
+  "version": "1.6.0",
+  "description": "AI Software Squad — 11 subagents nativos (engineers, QA, reviewers, advisor) + 5 papéis main-thread (TL, PO, Architect, PD, SE), 15 skills de governança (resume/handoff, deploy-preflight, threat-model, PRD, incident), hooks de memória viva e templates (self-review, stack-conventions, ADRs, LESSONS_LEARNED). Governança completa para projetos conduzidos por squad de agentes.",
   "author": {
     "name": "Pablo Giordano",
     "email": "pablo@pdati.com.br"

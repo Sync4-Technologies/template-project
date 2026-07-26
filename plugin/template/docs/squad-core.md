@@ -1,6 +1,6 @@
 # Squad Core — regras comuns a todos os agentes
 
-> Referenciado pelos specs em `${CLAUDE_PLUGIN_ROOT}/template/agents/*.md` — as regras abaixo valem para TODOS os agentes (exceções indicadas). Extraído dos specs para eliminar ~500 linhas de repetição (custo de todo spawn).
+> Referenciado pelos specs main-thread em `${CLAUDE_PLUGIN_ROOT}/template/agents/*.md` (TL, PO, PD, Architect, SE) e pelos subagents nativos em `${CLAUDE_PLUGIN_ROOT}/agents/*.md` (executores + reviewers + advisor) — as regras abaixo valem para TODOS os agentes (exceções indicadas). Extraído dos specs para eliminar ~500 linhas de repetição (custo de todo spawn).
 
 ---
 
@@ -56,3 +56,20 @@ Riscos: [se houver]
 ```
 
 Bullets, sem prosa, sem repetir o pedido. Referenciar paths em vez de colar conteúdo.
+
+## §F — Protocolo de Dúvida (subagents)
+
+Subagent NÃO interrompe o usuário nem o TL no meio da execução — o canal é o relatório final.
+
+- Dúvida bloqueante (regra de negócio ambígua, contrato faltando, pré-condição ausente) → **PARAR imediatamente. NUNCA inventar ou "interpretar por conta própria".**
+- Entregar o que estava seguro até o ponto da dúvida + relatório §E com seção adicional:
+
+```
+Dúvidas: [perguntas objetivas, uma por linha, com a opção que você tomaria se tivesse que escolher]
+```
+
+- O TL responde e **continua a MESMA execução** (contexto preservado) — não re-delega do zero.
+- Dúvida não-bloqueante (não impede o resto da tarefa) → seguir, registrar em `Pendências`.
+- Chutar em dúvida bloqueante é falha grave: retrabalho + decisão de negócio tomada por quem não tem autoridade.
+
+Escalada acima do TL: TL, PO, PD, Architect e SE (main thread) podem acionar o subagent **advisor** (`${CLAUDE_PLUGIN_ROOT}/agents/advisor.md`) para segunda opinião independente — critério: 2+ opções defensáveis e custo de errar alto. Subagents não spawnam subagents: executor com dúvida → TL; TL com dúvida → advisor ou usuário.
