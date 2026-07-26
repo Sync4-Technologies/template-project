@@ -132,3 +132,4 @@ Check obrigatorio precisa de caminho alternativo LEGITIMO para o verde. Se a uni
 | UP-06 | Match de `git push` por substring bloqueia commit que so MENCIONA push | plugin/hooks/push-gate.sh | Feito (v1.8.0) |
 | UP-07 | plugin-ci com runner parametrizavel (CI_RUNNER) — fallback legitimo pro billing | .github/workflows/plugin-ci.yml | Feito (v1.8.0) |
 | UP-08 | Registrar runner self-hosted (org-level) na maquina do Pablo | acao do usuario | Pendente |
+| UP-09 | Skills mandavam `claude plugin update dev-squad` — CLI exige id COMPLETO `dev-squad@pdati`; nome curto falha com "Plugin not found" (falhou pro usuario na 1a tentativa real do passo novo) | plugin/skills/squad-resume + squad-handoff | Feito (v1.8.1) |

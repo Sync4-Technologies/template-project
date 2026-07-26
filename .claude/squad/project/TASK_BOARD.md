@@ -6,12 +6,12 @@
 
 ## Current Focus
 
-- **Ultima sessao:** 2026-07-26 por Pablo (sessao de SISTEMA: v1.6.0 released — subagents nativos + advisor + Modo Delegado + UP-01; produto AgentesIA nao foi tocado)
+- **Ultima sessao:** 2026-07-26 por Pablo (2a sessao SISTEMA do dia: v1.7.0 released + v1.8.0 no PR #37; produto AgentesIA nao foi tocado)
 - **Em andamento:** OPS-RAILWAY (deploy Railway piloto — Vinicius) segue como estava
-- **Proximo passo (sistema):** batalha no trokey-franchising com a v1.6 valendo (squad-init JA RODADO la; plugin 1.6.0 user-scope — basta sessao nova + /squad-resume); achados -> LESSONS -> v1.6.1/v1.7 (UP-02 ja na fila)
+- **Proximo passo (sistema):** 1) UP-08: registrar runner self-hosted ORG-level Sync4 (runbook: trokey ops/self-hosted-runner.md) + gh variable set CI_RUNNER --body self-hosted nos 2 repos — mata a danca de protection de vez; 2) batalha no trokey em sessao nova (plugin 1.8.0 ja instalado user-scope, aplica no restart; governanca la reconciliada em 1.6 via trokey#86)
 - **Proximo passo (produto):** retomar OPS-RAILWAY com /squad-resume + rodar /squad-deploy-preflight antes do deploy
-- **Bloqueios:** billing do GitHub Actions esgotado — CI nao roda; merge em develop/main exige suspender/restaurar required checks a mao (feito nos #31/#32) ate resolver
-- **Branch ativo:** claude/squad-resume-b3e72a (worktree do upstream; tudo mergeado ate v1.6.0, tag pushada)
+- **Bloqueios:** billing do GitHub Actions esgotado — checks vermelhos 0-steps; ate o UP-08, merge em develop/main exige suspender/restaurar required checks a mao (feito 7x hoje: #33-#38, trokey#86)
+- **Branch ativo:** chore/handoff-v180 (worktree dreamy-elion; v1.8.0 released: PR #37->develop, #38->main 58713b4, tag pushada, plugin atualizado 1.6.0->1.8.0 user-scope)
 - **Modo do projeto:** Production
 
 ---

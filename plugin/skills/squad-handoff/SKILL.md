@@ -225,7 +225,8 @@ Se há mudanças em memory files (TASK_BOARD, DECISIONS_LOG, agent-memory) decor
 O harness só aplica versão nova de plugin no restart da sessão. O handoff é o momento perfeito: a sessão está acabando de qualquer forma, então atualizar AGORA significa que o próximo `/squad-resume` já entra na versão nova — sem sessão perdida rodando hook/skill antigo.
 
 ```bash
-claude plugin update dev-squad 2>&1 | tail -3
+claude plugin update dev-squad@pdati 2>&1 | tail -3
+# id COMPLETO nome@marketplace — so "dev-squad" falha com "Plugin not found"
 ```
 
 - Reportou atualização → informar no handoff message: "Plugin atualizado para X.Y.Z — aplica na próxima sessão."
