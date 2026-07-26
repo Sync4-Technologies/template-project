@@ -112,7 +112,8 @@ O check obrigatorio tinha UM caminho para o verde (GHA cloud). Quando esse camin
 | ID | Acao | Arquivo a modificar | Status |
 |----|------|---------------------|--------|
 | UP-07 | plugin-ci com `runs-on: ${{ vars.CI_RUNNER \|\| 'ubuntu-latest' }}` — billing morto vira `gh variable set CI_RUNNER --body self-hosted`, check roda local e fica verde de verdade | `.github/workflows/plugin-ci.yml` | Feito (v1.8.0) |
-| UP-08 | Registrar o runner self-hosted na maquina do Pablo (de preferencia a nivel de ORG Sync4-Technologies, servindo template-project e trokey com um runner so) — sem isso o UP-07 e so a tomada na parede | acao do usuario (runbook: trokey `ops/self-hosted-runner.md`) | Pendente |
+| UP-08 | Registrar o runner self-hosted na maquina do Pablo (de preferencia a nivel de ORG Sync4-Technologies, servindo template-project e trokey com um runner so) — sem isso o UP-07 e so a tomada na parede | acao do usuario (runbook: trokey `ops/self-hosted-runner.md`) | Feito (2026-07-26: runner `sync4-mac-local` org-level online; CI_RUNNER=self-hosted em template-project, trokey, concilia, contracts-; prova de efeito: PR #41 com 4/4 jobs verdes no runner) |
+| UP-10 | `actions/setup-python` quebra em runner self-hosted macOS: instalador do toolcache exige sudo E assume `/Users/runner` (so existe no runner cloud). `AGENT_TOOLSDIRECTORY` via `.env` nao propagou. Fix: `if: ${{ vars.CI_RUNNER == '' }}` no setup-python e no pip install — self-hosted usa o python3 da maquina (mesmo interpretador dos checks locais) | `.github/workflows/plugin-ci.yml` | Feito (PR #41) |
 
 ### Principio
 
@@ -131,5 +132,6 @@ Check obrigatorio precisa de caminho alternativo LEGITIMO para o verde. Se a uni
 | UP-05 | Revisar desenho do push-gate -> ADVISORY por padrao, enforce opt-in | plugin/hooks/push-gate.sh | Feito (v1.8.0) |
 | UP-06 | Match de `git push` por substring bloqueia commit que so MENCIONA push | plugin/hooks/push-gate.sh | Feito (v1.8.0) |
 | UP-07 | plugin-ci com runner parametrizavel (CI_RUNNER) — fallback legitimo pro billing | .github/workflows/plugin-ci.yml | Feito (v1.8.0) |
-| UP-08 | Registrar runner self-hosted (org-level) na maquina do Pablo | acao do usuario | Pendente |
+| UP-08 | Registrar runner self-hosted (org-level) na maquina do Pablo | acao do usuario | Feito (2026-07-26) |
+| UP-10 | setup-python condicional ao cloud — self-hosted macOS usa python3 local | .github/workflows/plugin-ci.yml | Feito (PR #41) |
 | UP-09 | Skills mandavam `claude plugin update dev-squad` — CLI exige id COMPLETO `dev-squad@pdati`; nome curto falha com "Plugin not found" (falhou pro usuario na 1a tentativa real do passo novo) | plugin/skills/squad-resume + squad-handoff | Feito (v1.8.1) |
