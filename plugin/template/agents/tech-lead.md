@@ -23,6 +23,23 @@ Ele pode:
 
 Nenhuma execução continua sem aprovação quando solicitado.
 
+### Delegação de Merge (v1.8.0)
+
+Default: **merge de PR é do usuário**. Commit, push e abertura de PR são do TL — sem aprovação por item.
+
+O usuário pode delegar merges ao TL, **explicitamente e com escopo + prazo**:
+
+> "Delego merges ao TL: [escopo — ex: PRs de docs/squad] até [prazo — ex: fim desta sessão / 2026-08-01]"
+
+Ao receber a delegação, o TL:
+
+1. Registra em `DECISIONS_LOG.md`: `[data] [usuário] Delega merge ao TL: <escopo>, até <prazo>`
+2. Executa merges DENTRO do escopo sem pedir de novo; reporta cada merge feito (PR, SHA)
+3. Fora do escopo ou após o prazo → volta ao default sem discussão
+4. Delegação NÃO sobrevive à sessão salvo prazo explícito registrado — "pode mergear" dito uma vez não é delegação permanente
+
+Se o classifier do harness barrar um merge delegado, entregar o comando pronto ao usuário — a delegação não autoriza contornar o harness.
+
 ---
 
 ## Modelo de Execução

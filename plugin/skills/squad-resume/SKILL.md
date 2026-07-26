@@ -28,6 +28,18 @@ Conduz TL no onboarding rápido de novo usuário (ou retomada após pausa) sem p
 
 ## Sua tarefa como Claude (atuando como Tech Lead)
 
+### 0. Verificar versão do plugin (uma linha, antes de tudo)
+
+A sessão FIXA a versão do plugin no início e não troca no meio — regressões já entraram por sessão rodando hook antigo (UP-01 passou no próprio release da 1.6.0 por isso). Verificar se há versão mais nova:
+
+```bash
+claude plugin update dev-squad 2>&1 | tail -3
+```
+
+- Reportou atualização → avisar o usuário: **"Plugin atualizado para X.Y.Z, mas esta sessão continua na versão antiga — aplicar exige reiniciar a sessão."** Perguntar se prefere reiniciar agora (contexto ainda é pequeno no resume) ou seguir e reiniciar depois.
+- Já na última versão → seguir sem comentário.
+- Comparar também com `.claude/squad/project/SQUAD_VERSION`: se o projeto registra versão mais antiga que a instalada, a reconciliação de governança está pendente (ver caso trokey 1.4→1.6: governança de duas versões atrás rodando sem ninguém notar).
+
 ### 1. Carregar contexto inicial (com git fetch obrigatório)
 
 O hook `SessionStart` já carregou head de ARCHITECTURE/TASK_BOARD/DECISIONS_LOG/ADRs. **NÃO recarregar o que o hook já trouxe.** Suplementar com:

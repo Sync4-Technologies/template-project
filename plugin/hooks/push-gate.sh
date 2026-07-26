@@ -1,35 +1,64 @@
 #!/usr/bin/env bash
 # Hook: PreToolUse (matcher: Bash)
-# Bloqueia `git push` se o gate determinístico não validou a árvore do HEAD atual.
+# ADVISORY por padrão (v1.8.0): avisa quando o gate determinístico não validou o
+# HEAD atual, mas NÃO bloqueia. Quem decide é o usuário/TL, não o hook.
 # Mecânica: pre-commit-quality grava a árvore validada em $GIT_DIR/squad-gate-ok;
-# aqui comparamos com HEAD^{tree}. Regra vira máquina (PLANO_V1.3.0 Fase E2).
+# aqui comparamos com HEAD^{tree}.
 #
-# Só atua quando:
-#   - o comando contém `git push`
-#   - o projeto tem squad inicializada (.claude/squad/project/)
-#   - SQUAD_SKIP_GATE != 1 (escape consciente, análogo ao --no-verify)
-# Fora disso: exit 0 (inofensivo).
+# Racional da mudança (UP-05): 4 falsos positivos em 2 sessões (tag, refspec,
+# cross-repo, menção em mensagem de commit) — bloqueio duro transfere o custo do
+# erro do hook para o usuário. Aviso carrega a mesma informação sem sequestrar o fluxo.
+#
+# Modo ENFORCE (bloqueio duro, opt-in por projeto):
+#   - env SQUAD_GATE_ENFORCE=1 (via "env" no settings.json do projeto), OU
+#   - arquivo .claude/squad/project/gate-enforce presente no repo-alvo
+#
+# Escape (só relevante no modo enforce): SQUAD_SKIP_GATE=1 — aceito tanto no env
+# do processo quanto INLINE no comando (UP-04: o hook roda no processo do harness,
+# antes do shell do comando existir, então o prefixo inline não chegava ao env).
 set -u
 
-# Extrai `cwd` + `command` do payload JSON do hook (stdin) em UMA chamada python
-# (stdin não pode ser lido duas vezes). `cwd` é a worktree onde o `git push` está
-# sendo executado — usar isso em vez de $CLAUDE_PROJECT_DIR corrige o bug
-# worktree-blind: subagents em worktrees isoladas gravam o marker em
-# .git/worktrees/<name>/squad-gate-ok, mas $CLAUDE_PROJECT_DIR aponta pra main
-# worktree — o hook lia o marker do lugar errado e bloqueava pushes legítimos.
+# Extrai tudo do payload em UMA chamada python (stdin não pode ser lido duas vezes).
+# `cwd` é a worktree onde o comando roda — usar isso em vez de $CLAUDE_PROJECT_DIR
+# corrige o bug worktree-blind (AM-18/UP-03; fix da 1.5.0 restaurado na 1.7.0).
+# A detecção de `git push` é por PRIMEIRO VERBO de cada segmento (&&, ;, |, quebra
+# de linha), com corpos de heredoc removidos antes (UP-06: substring na string
+# inteira tratava MENÇÃO como EXECUÇÃO — commit cuja mensagem citava `git push`
+# era barrado).
 PAYLOAD=$(python3 -c '
-import json, sys
+import json, sys, re
 try:
     d = json.load(sys.stdin)
-    print(d.get("cwd", "") or "")
-    print(d.get("tool_input", {}).get("command", "") or "")
+    cwd = d.get("cwd", "") or ""
+    cmd = d.get("tool_input", {}).get("command", "") or ""
 except Exception:
-    print("")
-    print("")
+    print(""); print("0"); print("0"); sys.exit(0)
+
+# Melhor esforço: descarta corpos de heredoc (<<EOF ... EOF) antes de analisar.
+stripped = re.sub(
+    r"<<-?\s*([\x27\"]?)(\w+)\1.*?\n\s*\2\s*(\n|$)", "\n", cmd, flags=re.S
+)
+
+push = 0
+for seg in re.split(r"&&|\|\||;|\||\n", stripped):
+    seg = seg.strip()
+    # pula atribuicoes de env no inicio do segmento (VAR=x git push ...)
+    while re.match(r"^[A-Za-z_][A-Za-z0-9_]*=\S*\s+", seg):
+        seg = re.sub(r"^[A-Za-z_][A-Za-z0-9_]*=\S*\s+", "", seg, count=1)
+    if re.match(r"^(command\s+)?git(\s+(-C\s+\S+|-c\s+\S+|--[\w-]+(=\S+)?))*\s+push(\s|$)", seg):
+        push = 1
+        break
+
+skip = 1 if re.search(r"(^|\s)SQUAD_SKIP_GATE=1(\s|$)", cmd) else 0
+print(cwd); print(push); print(skip)
 ' 2>/dev/null)
 
 CWD=$(printf '%s\n' "$PAYLOAD" | sed -n '1p')
-CMD=$(printf '%s\n' "$PAYLOAD" | sed -n '2p')
+IS_PUSH=$(printf '%s\n' "$PAYLOAD" | sed -n '2p')
+SKIP_INLINE=$(printf '%s\n' "$PAYLOAD" | sed -n '3p')
+
+# Não é git push (executado, não mencionado) -> seguir
+[ "$IS_PUSH" = "1" ] || exit 0
 
 # PROJECT_ROOT prioriza o cwd real do comando (worktree correto). Fallback para
 # $CLAUDE_PROJECT_DIR e $(pwd) para compatibilidade com Claude Code sem `cwd` no payload.
@@ -42,20 +71,29 @@ if [ ! -d "${PROJECT_ROOT}/.claude/squad/project" ] && \
   exit 0
 fi
 
-# Escape consciente
-if [ "${SQUAD_SKIP_GATE:-0}" = "1" ]; then
+# Modo do gate: advisory (padrão) ou enforce (opt-in do projeto)
+ENFORCE=0
+if [ "${SQUAD_GATE_ENFORCE:-0}" = "1" ] || [ -f "${PROJECT_ROOT}/.claude/squad/project/gate-enforce" ]; then
+  ENFORCE=1
+fi
+
+# Escape consciente — env do processo OU inline no comando (UP-04)
+if [ "${SQUAD_SKIP_GATE:-0}" = "1" ] || [ "$SKIP_INLINE" = "1" ]; then
   echo "[push-gate] SQUAD_SKIP_GATE=1 — gate pulado conscientemente (registrar o porquê no PR)." >&2
   exit 0
 fi
 
-# Não é git push -> seguir
-case "$CMD" in
-  *"git push"*) ;;
-  *) exit 0 ;;
-esac
-
 cd "$PROJECT_ROOT" 2>/dev/null || exit 0
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
+
+# Saída: no modo enforce bloqueia (exit 2); no advisory avisa e deixa passar (exit 0).
+finish() {
+  if [ "$ENFORCE" = "1" ]; then
+    echo "[push-gate] BLOQUEADO (modo enforce ativo neste projeto). Escape consciente: SQUAD_SKIP_GATE=1 inline no comando." >&2
+    exit 2
+  fi
+  exit 0
+}
 
 # UP-01: branch com PR já MERGED/CLOSED está morta — push nela é trabalho invisível.
 # Fail-open: sem gh, sem auth ou timeout -> não interferir.
@@ -64,12 +102,11 @@ if [ -n "$BRANCH" ] && command -v gh >/dev/null 2>&1; then
   PR_STATE=$(gh pr view "$BRANCH" --json state --jq .state 2>/dev/null || echo "")
   if [ "$PR_STATE" = "MERGED" ] || [ "$PR_STATE" = "CLOSED" ]; then
     cat >&2 <<UPMSG
-[push-gate] BLOQUEADO (UP-01): a branch '$BRANCH' tem PR $PR_STATE — branch morta.
-Push aqui é trabalho invisível. Crie branch nova a partir da base atualizada e abra novo PR:
+[push-gate] AVISO (UP-01): a branch '$BRANCH' tem PR $PR_STATE — branch morta.
+Push aqui tende a ser trabalho invisível. O caminho normal é branch nova a partir da base:
   git fetch origin && git switch -c <nova-branch> origin/<base>
-Escape consciente (raro — ex: reabrir PR fechado de propósito): SQUAD_SKIP_GATE=1 git push ...
 UPMSG
-    exit 2
+    finish
   fi
 fi
 
@@ -85,11 +122,10 @@ if [ "$MARKER" = "$HEAD_TREE" ]; then
 fi
 
 cat >&2 <<'MSG'
-[push-gate] BLOQUEADO: o gate determinístico não validou o HEAD atual.
-Antes de pushar, rode o gate completo do repositório (format + lint + typecheck + testes):
+[push-gate] AVISO: o gate determinístico não validou o HEAD atual.
+Recomendado antes do push: rodar o gate completo (format + lint + typecheck + testes):
   .githooks/pre-commit-quality   (grava o marcador ao passar)
 Se o hook não está instalado neste projeto, instale via /squad-init (passo de gates).
 Rebase/amend invalida o marcador — re-rodar o gate é o comportamento esperado.
-Escape consciente (emergência, nunca rotina): SQUAD_SKIP_GATE=1 git push ...
 MSG
-exit 2
+finish
