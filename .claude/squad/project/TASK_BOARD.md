@@ -7,9 +7,9 @@
 ## Current Focus
 
 - **Ultima sessao:** 2026-07-26 por Pablo (3a sessao do dia: governanca reconciliada — repo assumido como upstream do plugin; produto AgentesIA arquivado; UP-08 em execucao)
-- **Em andamento:** UP-08 — runner self-hosted org-level Sync4 (runner staged em ~/actions-runner, aguardando config.sh + svc.sh pelo Pablo; depois CI_RUNNER=self-hosted nos 2 repos)
-- **Proximo passo:** 1) validar CI verde no runner com o PR desta limpeza; 2) batalha trokey em sessao nova (plugin 1.8.0 aplicado)
-- **Bloqueios:** billing GitHub Actions esgotado (previsto voltar 2026-08-01) — UP-08 e o contorno; ate runner ativo, merge exige suspender/restaurar required checks
+- **Em andamento:** GOV-UPSTREAM no PR #41 (CI 4/4 verde no runner self-hosted — primeira vez sem danca de protection desde o billing morrer)
+- **Proximo passo:** 1) merge PR #41 -> develop -> main, tag v1.8.1, marketplace update; 2) batalha trokey em sessao nova (plugin 1.8.1)
+- **Bloqueios:** nenhum — UP-08 ativo contorna o billing (revert quando billing voltar ~2026-08-01: card UP-08-REVERT)
 - **Branch ativo:** chore/governanca-upstream-up08 (worktree suspicious-meninsky)
 - **Modo do projeto:** Production
 
@@ -36,8 +36,7 @@
 
 | ID | Tarefa | Agente | Responsável |
 |----|--------|--------|------------|
-| UP-08 | Runner self-hosted org-level Sync4 + `CI_RUNNER=self-hosted` nos 2 repos | DevOps / TL | Pablo (config/svc) + TL |
-| GOV-UPSTREAM | Governança reconciliada: board/arquitetura/CLAUDE.md refletem upstream do plugin; AgentesIA arquivado | TL | TL |
+| GOV-UPSTREAM | Governança reconciliada: board/arquitetura/CLAUDE.md refletem upstream do plugin; AgentesIA arquivado | TL | TL (PR #41 — CI verde, aguardando merge) |
 
 ---
 
@@ -57,5 +56,6 @@
 | v1.6.0 | 11 subagents nativos + advisor, Protocolo de Dúvida, Modo Delegado, UP-01 | 2026-07-26 (PRs #31/#32) |
 | v1.7.0 | Backport trokey AM-18..35 (AM-18 era regressão da 1.6.0) | 2026-07-26 (PRs #33–#36) |
 | v1.8.0 | Push-gate advisory, menção≠execução, skip inline, CI_RUNNER, ciclo update handoff/resume, delegação de merge | 2026-07-26 (PRs #37/#38, tag `58713b4`) |
+| UP-08 | Runner self-hosted org-level `sync4-mac-local` + `CI_RUNNER=self-hosted` (template-project, trokey, concilia, contracts-) + UP-10 (setup-python condicional) — 4/4 jobs verdes no PR #41 | 2026-07-26 |
 
 **Histórico do produto AgentesIA:** ver `archive/agentesia/TASK_BOARD.md`.
