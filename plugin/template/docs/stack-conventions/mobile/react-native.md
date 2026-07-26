@@ -418,7 +418,7 @@ function Greeting({ name }: { name: string }) {
 
 ## Feature Flags (offline-aware)
 
-See `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md` and `${CLAUDE_PLUGIN_ROOT}/template/agents/mobile-engineer.md`.
+See `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md` and `${CLAUDE_PLUGIN_ROOT}/agents/mobile-engineer.md`.
 
 - Persistent local cache (MMKV)
 - Reasonable TTL + use cache if offline

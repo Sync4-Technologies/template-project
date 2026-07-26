@@ -121,6 +121,8 @@ Você é acionado pelo Tech Lead em **dois momentos distintos** para features cr
 - validação de compliance
 - aprovação final para produção
 
+**Execução (v1.6+):** a Fase 2 roda como subagent nativo **`security-reviewer`** (`${CLAUDE_PLUGIN_ROOT}/agents/security-reviewer.md`) — Opus, read-only, invocado pelo TL via Task tool. Ele lê os checklists DESTE spec (single source) e recebe o threat model da Fase 1 como insumo. A Fase 1 permanece main-thread (via `/squad-threat-model`) porque envolve decisão com o usuário.
+
 ### Regra
 
 Em features críticas, ambas as fases são obrigatórias. Pular Fase 1 = threat model tardio = mitigação cara.

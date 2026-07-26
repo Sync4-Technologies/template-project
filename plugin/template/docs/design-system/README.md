@@ -211,6 +211,6 @@ Tabela com tokens equivalentes em dark mode.
 - Repos externos suportados: `external-repos.md`
 - Template `source.md` (Path 1): `source.md.template`
 - Product Designer: `${CLAUDE_PLUGIN_ROOT}/template/agents/product-designer.md`
-- Frontend Engineer: `${CLAUDE_PLUGIN_ROOT}/template/agents/frontend-engineer.md`
-- Mobile Engineer: `${CLAUDE_PLUGIN_ROOT}/template/agents/mobile-engineer.md`
+- Frontend Engineer: `${CLAUDE_PLUGIN_ROOT}/agents/frontend-engineer.md`
+- Mobile Engineer: `${CLAUDE_PLUGIN_ROOT}/agents/mobile-engineer.md`
 - Architect (estrutura técnica): `${CLAUDE_PLUGIN_ROOT}/template/agents/architect.md`

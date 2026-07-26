@@ -454,7 +454,7 @@ class AppTheme {
 
 ## Feature Flags (offline-aware)
 
-See `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md` and `${CLAUDE_PLUGIN_ROOT}/template/agents/mobile-engineer.md`.
+See `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md` and `${CLAUDE_PLUGIN_ROOT}/agents/mobile-engineer.md`.
 
 - Persistent local cache (shared_preferences or flutter_secure_storage)
 - Reasonable TTL + use cache if offline

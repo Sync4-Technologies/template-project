@@ -83,6 +83,6 @@ Diff entre o que o código EXIGE e o que o provider TEM:
 
 ## Referências
 
-- DevOps spec: `${CLAUDE_PLUGIN_ROOT}/template/agents/devops-engineer.md` → "Verificação Ativa de Deploy" e "Padrões PaaS + Docker"
+- DevOps spec: `${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md` → "Verificação Ativa de Deploy" e "Padrões PaaS + Docker"
 - Self-review: `${CLAUDE_PLUGIN_ROOT}/template/docs/engineer-self-review.md` → §0 (gate docker fiel)
 - Stack gotchas: `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/nodejs.md` → "Deployment & runtime gotchas"

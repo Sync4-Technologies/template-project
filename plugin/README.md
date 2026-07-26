@@ -1,6 +1,6 @@
 # Plugin `dev-squad` — AI Software Squad
 
-Governança completa para projetos conduzidos por squad de agentes Claude Code: 14 specs de agentes, 15 skills, hooks de memória viva e templates de qualidade.
+Governança completa para projetos conduzidos por squad de agentes Claude Code: 5 papéis main-thread + 11 subagents nativos, 15 skills, hooks de memória viva e templates de qualidade.
 
 ## Instalação
 
@@ -33,13 +33,13 @@ Passo a passo completo com troubleshooting: README do repositório → "Distribu
 | Encerrar sessão | `/squad-handoff` |
 | Antes de deploy em PaaS | `/squad-deploy-preflight` |
 
-Skills completas: ver `skills/`. Specs dos agentes: `template/agents/`. Checklist de qualidade dos engineers: `template/docs/engineer-self-review.md`.
+Skills completas: ver `skills/`. Specs main-thread (TL, PO, PD, Architect, SE): `template/agents/`. Subagents nativos (engineers, QA, reviewers, advisor): `agents/`. Checklist de qualidade dos engineers: `template/docs/engineer-self-review.md`.
 
 ## Arquitetura: plugin × projeto
 
 | Vive no plugin (estático, versionado aqui) | Vive no projeto (estado) |
 |---|---|
-| Specs dos 14 agentes, 15 skills, 3 hooks, docs (self-review, stack-conventions, design-system), templates (PRD, ADR, LESSONS_LEARNED), CI examples | `.claude/squad/project/` — ARCHITECTURE, TASK_BOARD, DECISIONS_LOG, ADRs do projeto, agent-memory, LESSONS_LEARNED, contracts, `SQUAD_VERSION` |
+| Specs main-thread (5) + subagents nativos (11), 15 skills, 3 hooks, docs (self-review, stack-conventions, design-system), templates (PRD, ADR, LESSONS_LEARNED), CI examples | `.claude/squad/project/` — ARCHITECTURE, TASK_BOARD, DECISIONS_LOG, ADRs do projeto, agent-memory, LESSONS_LEARNED, contracts, `SQUAD_VERSION` |
 
 **Regra de governança:** não editar arquivos do plugin dentro de um projeto. Gap no sistema da squad → registrar no `LESSONS_LEARNED.md` do projeto (skill `/squad-handoff`, step 2c) → backportar aqui (upstream) → nova versão → projetos atualizam explicitamente. Isso fecha o ciclo de drift que motivou o plugin.
 
@@ -54,6 +54,14 @@ Skills completas: ver `skills/`. Specs dos agentes: `template/agents/`. Checklis
 Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.claude/squad/project/`, remove as cópias locais de template/skills/hooks (com confirmação) e grava `SQUAD_VERSION`.
 
 ## Changelog
+
+### 1.6.0 (2026-07-25)
+- **Subagents nativos**: 10 executores (backend/frontend/mobile/data/ai/devops engineer, qa-engineer, code-reviewer, security-reviewer, support-engineer) viram agentes nativos do plugin em `agents/` — modelo por papel resolvido pelo frontmatter (`model: sonnet`/`opus` → sempre a versão mais recente), tools restritas por mecanismo (reviewers e advisor read-only), contexto isolado por delegação. Papéis de decisão (TL, PO, Architect, PD, SE Fase 1) permanecem main-thread em `template/agents/`
+- **Security split**: Fase 1 (threat model, decisão com usuário) main-thread; Fase 2 (revisão pós-implementação) = subagent `security-reviewer` Opus read-only que lê os checklists do spec do SE (single source)
+- **Advisor**: subagent Opus read-only de segunda opinião — TL/PO/PD/Architect/SE acionam em dúvida genuína (2+ opções defensáveis, custo de errar alto); contexto limpo elimina viés de ancoragem
+- **Protocolo de Dúvida** (squad-core §F): subagent com dúvida bloqueante PARA e retorna `Dúvidas:` no relatório — nunca inventa; TL responde e continua a mesma execução
+- **Modo Delegado** (TL → Matriz de Autonomia): usuário declara delegação explícita → só a lista crítica interrompe (irreversível/destrutivo, dinheiro, segurança, contrato público, escopo, arquitetura nível ADR); resto decide + registra `[AUTO]` no DECISIONS_LOG; gates de qualidade seguem mecânicos
+- **UP-01**: push-gate bloqueia push em branch cujo PR já está MERGED/CLOSED (branch morta = trabalho invisível); fail-open sem `gh`
 
 ### 1.5.0 (2026-07-05)
 - **Rename**: plugin `squad` → **`dev-squad`** (skills mantêm o prefixo `/squad-*`). Quem instalou como `squad`: `claude plugin uninstall squad@pdati` → `claude plugin marketplace update pdati` → `claude plugin install dev-squad@pdati`

@@ -45,6 +45,22 @@ GIT_DIR=$(git rev-parse --git-dir 2>/dev/null) || exit 0
 HEAD_TREE=$(git rev-parse "HEAD^{tree}" 2>/dev/null) || exit 0
 MARKER=$(cat "$GIT_DIR/squad-gate-ok" 2>/dev/null || echo "")
 
+# UP-01: branch com PR já MERGED/CLOSED está morta — push nela é trabalho invisível.
+# Fail-open: sem gh, sem auth ou timeout -> não interferir.
+BRANCH=$(git branch --show-current 2>/dev/null)
+if [ -n "$BRANCH" ] && command -v gh >/dev/null 2>&1; then
+  PR_STATE=$(gh pr view "$BRANCH" --json state --jq .state 2>/dev/null || echo "")
+  if [ "$PR_STATE" = "MERGED" ] || [ "$PR_STATE" = "CLOSED" ]; then
+    cat >&2 <<UPMSG
+[push-gate] BLOQUEADO (UP-01): a branch '$BRANCH' tem PR $PR_STATE — branch morta.
+Push aqui é trabalho invisível. Crie branch nova a partir da base atualizada e abra novo PR:
+  git fetch origin && git switch -c <nova-branch> origin/<base>
+Escape consciente (raro — ex: reabrir PR fechado de propósito): SQUAD_SKIP_GATE=1 git push ...
+UPMSG
+    exit 2
+  fi
+fi
+
 if [ "$MARKER" = "$HEAD_TREE" ]; then
   exit 0
 fi
