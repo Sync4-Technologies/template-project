@@ -82,7 +82,7 @@ Terceiro sintoma do mesmo hook em duas sessoes (UP-01 tag, UP-02 refspec, UP-03 
 
 | ID | Acao | Arquivo a modificar | Status |
 |----|------|---------------------|--------|
-| UP-03 | RESTAURAR o codigo da 1.5.0: ler `cwd` do payload e usar como PROJECT_ROOT (`${CWD:-${CLAUDE_PROJECT_DIR:-$(pwd)}}`), mais a checagem dupla de squad e o comentario `--git-dir` vs `--git-common-dir`. NAO parsear `cd` do comando — o payload ja traz `cwd` | `plugin/hooks/push-gate.sh` | Em curso — fix + harness de 5 cenarios produzidos em sessao paralela (mesmo achado pelo lado do AM-18 do trokey) |
+| UP-03 | RESTAURAR o codigo da 1.5.0: ler `cwd` do payload e usar como PROJECT_ROOT (`${CWD:-${CLAUDE_PROJECT_DIR:-$(pwd)}}`), mais a checagem dupla de squad e o comentario `--git-dir` vs `--git-common-dir`. NAO parsear `cd` do comando — o payload ja traz `cwd` | `plugin/hooks/push-gate.sh` | Feito (v1.7.0) — PR #36, merge `e5a8e22`. UP-01 preservado; validado em 5 cenarios com contra-prova |
 | UP-04 | Ler `SQUAD_SKIP_GATE` tambem de `tool_input.command` (o payload ja traz a string), nao so do env do processo — hoje o escape documentado e inacionavel por agente | `plugin/hooks/push-gate.sh` | Pendente (v1.6.1) |
 | UP-05 | Revisar o desenho do push-gate como um todo (4 falsos positivos em 2 sessoes) antes de aceitar novo remendo pontual | `plugin/hooks/push-gate.sh` | Pendente (v1.7) |
 | UP-06 | Match de `git push` nao pode ser substring da string inteira: bloqueia commit cuja MENSAGEM cita `git push`. Parsear o comando efetivo (primeiro verbo por segmento `&&`/`;`/`\|`) e ignorar corpo de heredoc/aspas | `plugin/hooks/push-gate.sh` | Pendente (v1.6.1) |
@@ -101,7 +101,7 @@ Corolario do quarto furo: reconhecer comando por substring confunde MENCAO com E
 |----|---------------|--------------|--------|
 | UP-01 | push-gate avisa sobre PR mergeado da branch | plugin/hooks/push-gate.sh | Feito (v1.6.0) |
 | UP-02 | UP-01 isenta push de tag/refspec que nao e a branch | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
-| UP-03 | push-gate: restaurar leitura de `cwd` do payload (regressao 1.5.0 -> 1.6.0) | plugin/hooks/push-gate.sh | Em curso (sessao paralela) |
+| UP-03 | push-gate: restaurar leitura de `cwd` do payload (regressao 1.5.0 -> 1.6.0) | plugin/hooks/push-gate.sh | Feito (v1.7.0) |
 | UP-04 | push-gate le SQUAD_SKIP_GATE do comando (escape inacionavel por agente) | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
 | UP-05 | Revisar desenho do push-gate (4 falsos positivos em 2 sessoes) | plugin/hooks/push-gate.sh | Pendente (v1.7) |
 | UP-06 | Match de `git push` por substring bloqueia commit que so MENCIONA push | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
