@@ -40,9 +40,10 @@ Cria a estrutura de **memória viva** do projeto. O conteúdo estático (specs d
 ├── SQUAD_VERSION        (versão do plugin — ver passo 3)
 ├── ADR/                 (vazio — ADRs do projeto)
 ├── agent-memory/        (um .md por agente, a partir de ${CLAUDE_PLUGIN_ROOT}/template/memory/agent-memory/)
-├── contracts/           (contratos versionados do projeto)
 └── docs/                (docs específicos do projeto)
 ```
+
+**NÃO criar `contracts/` na memória da squad.** Os contratos vivem na fonte única do repositório — o pacote que os apps importam e o build compila (ex: `packages/contracts/src/`). Copiar contrato para a memória cria dois arquivos mantidos à mão, sem nada que force a sincronia: a cópia diverge em silêncio e passa a mentir. Convenção completa em `${CLAUDE_PLUGIN_ROOT}/template/contracts/README.md`.
 
 Cabeçalhos mínimos (TASK_BOARD, DECISIONS_LOG) seguem o formato dos exemplos em `${CLAUDE_PLUGIN_ROOT}/template/memory/`. Memória SEM emojis (marcadores ASCII: `[OK]`, `[!]`, `->`).
 
@@ -65,14 +66,37 @@ Se o projeto não tem `CLAUDE.md`, criar um mínimo com:
 Regra vira máquina, não prosa. Perguntar ao usuário e, confirmado, executar:
 
 1. **Gate local bloqueante** (pre-commit):
+
    ```bash
    mkdir -p .githooks
    cp ${CLAUDE_PLUGIN_ROOT}/template/ci/pre-commit-quality.example .githooks/pre-commit-quality
    chmod +x .githooks/pre-commit-quality
-   # encadear: .githooks/pre-commit chama pre-commit-quality (criar se não existir)
-   git config core.hooksPath .githooks
    ```
+
+   **Antes de mexer em `core.hooksPath`, DETECTE o gerenciador de hooks do projeto (AM-34).** Sobrescrever `core.hooksPath` num repo que usa husky/lefthook **desliga o gerenciador** — quem instala percebe e não aplica, e o gate fica órfão: arquivo presente, ninguém chamando. É o pior dos dois mundos, e passa despercebido porque o artefato existe.
+
+   ```bash
+   git config core.hooksPath   # husky => .husky/_ ; lefthook => .lefthook ; vazio => sem gerenciador
+   ls .husky/pre-commit .lefthook.yml .pre-commit-config.yaml 2>/dev/null
+   ```
+
+   | Situação | Ação |
+   |---|---|
+   | **husky** (`core.hooksPath` = `.husky/_`) | NÃO tocar em `core.hooksPath`. Encadear: acrescentar `./.githooks/pre-commit-quality` ao final de `.husky/pre-commit` (depois do `lint-staged`) |
+   | **lefthook** | Adicionar um `command` no hook `pre-commit` do `lefthook.yml` apontando pro script |
+   | **pre-commit (Python)** | Adicionar um hook `local` de `entry: .githooks/pre-commit-quality` no `.pre-commit-config.yaml` |
+   | **nenhum gerenciador** | Aí sim: `.githooks/pre-commit` chamando o script + `git config core.hooksPath .githooks` |
+
    Em seguida, **adaptar os comandos do hook à stack** do projeto (bloco de detecção no topo do script; comandos vêm da stack-convention → "Standard commands"). Ao passar, o hook grava o marcador `$GIT_DIR/squad-gate-ok` — é ele que o push-gate do plugin verifica.
+
+   **Provar o efeito antes de declarar feito (AM-35).** Instalado não é ativo. Faça **um commit real** e confira:
+
+   ```bash
+   [ "$(cat "$(git rev-parse --git-dir)/squad-gate-ok" 2>/dev/null)" = "$(git rev-parse 'HEAD^{tree}')" ] \
+     && echo "gate CONECTADO" || echo "gate ORFAO — o hook não está na cadeia"
+   ```
+
+   Marcador defasado depois de um commit = gate órfão. Não marcar o passo como concluído nesse estado: ou encadeia, ou registra explicitamente como pendência aceita (no `SQUAD_VERSION` e no `LESSONS_LEARNED`), com a decisão do usuário.
 
 2. **CI do projeto** (workflow real, não example):
    ```bash

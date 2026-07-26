@@ -2,6 +2,13 @@
 # O engineer que roda o init PREENCHE os comandos com os "Standard commands"
 # da stack-convention do projeto (plugin/template/docs/stack-conventions/).
 # Regra da squad: gate determinístico no CI CONFIRMA o que o gate local já validou.
+#
+# runs-on parametrizado (AM-25): com a variável de repositório `CI_RUNNER` definida,
+# os jobs vão para um runner self-hosted; sem ela, seguem no `ubuntu-latest`. Um flip
+# de UMA variável tira o CI do cloud (billing travado, cota estourada) e o traz de volta,
+# sem editar o workflow nem abrir PR.
+#   gh variable set CI_RUNNER --body self-hosted   # migra para o runner próprio
+#   gh variable delete CI_RUNNER                   # volta para o cloud
 name: squad-ci
 
 on:
@@ -13,7 +20,7 @@ on:
 jobs:
   quality:
     name: Gate determinístico (format + lint + typecheck)
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       # TODO(stack): setup da linguagem (setup-node / setup-python / etc.)
@@ -27,7 +34,7 @@ jobs:
 
   tests:
     name: Testes com cobertura
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       # TODO(stack): setup + install
@@ -36,7 +43,7 @@ jobs:
 
   build:
     name: Build (incl. docker quando houver)
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       # TODO(stack): setup + install
@@ -45,7 +52,7 @@ jobs:
 
   memory-check:
     name: Memória da squad atualizada
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4

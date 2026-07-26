@@ -11,26 +11,42 @@
 # Fora disso: exit 0 (inofensivo).
 set -u
 
-PROJECT_ROOT="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+# Extrai `cwd` + `command` do payload JSON do hook (stdin) em UMA chamada python
+# (stdin não pode ser lido duas vezes). `cwd` é a worktree onde o `git push` está
+# sendo executado — usar isso em vez de $CLAUDE_PROJECT_DIR corrige o bug
+# worktree-blind: subagents em worktrees isoladas gravam o marker em
+# .git/worktrees/<name>/squad-gate-ok, mas $CLAUDE_PROJECT_DIR aponta pra main
+# worktree — o hook lia o marker do lugar errado e bloqueava pushes legítimos.
+PAYLOAD=$(python3 -c '
+import json, sys
+try:
+    d = json.load(sys.stdin)
+    print(d.get("cwd", "") or "")
+    print(d.get("tool_input", {}).get("command", "") or "")
+except Exception:
+    print("")
+    print("")
+' 2>/dev/null)
 
-# Sem squad no projeto -> não interferir
-[ -d "${PROJECT_ROOT}/.claude/squad/project" ] || exit 0
+CWD=$(printf '%s\n' "$PAYLOAD" | sed -n '1p')
+CMD=$(printf '%s\n' "$PAYLOAD" | sed -n '2p')
+
+# PROJECT_ROOT prioriza o cwd real do comando (worktree correto). Fallback para
+# $CLAUDE_PROJECT_DIR e $(pwd) para compatibilidade com Claude Code sem `cwd` no payload.
+PROJECT_ROOT="${CWD:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"
+
+# Sem squad no projeto — checa tanto PROJECT_ROOT quanto $CLAUDE_PROJECT_DIR pra
+# cobrir subagent worktree (que compartilha o marker/config do main via git object db).
+if [ ! -d "${PROJECT_ROOT}/.claude/squad/project" ] && \
+   [ ! -d "${CLAUDE_PROJECT_DIR:-/nonexistent}/.claude/squad/project" ]; then
+  exit 0
+fi
 
 # Escape consciente
 if [ "${SQUAD_SKIP_GATE:-0}" = "1" ]; then
   echo "[push-gate] SQUAD_SKIP_GATE=1 — gate pulado conscientemente (registrar o porquê no PR)." >&2
   exit 0
 fi
-
-# Extrair o comando do payload JSON do hook (stdin)
-CMD=$(python3 -c '
-import json, sys
-try:
-    d = json.load(sys.stdin)
-    print(d.get("tool_input", {}).get("command", ""))
-except Exception:
-    print("")
-' 2>/dev/null)
 
 # Não é git push -> seguir
 case "$CMD" in
@@ -40,10 +56,6 @@ esac
 
 cd "$PROJECT_ROOT" 2>/dev/null || exit 0
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
-
-GIT_DIR=$(git rev-parse --git-dir 2>/dev/null) || exit 0
-HEAD_TREE=$(git rev-parse "HEAD^{tree}" 2>/dev/null) || exit 0
-MARKER=$(cat "$GIT_DIR/squad-gate-ok" 2>/dev/null || echo "")
 
 # UP-01: branch com PR já MERGED/CLOSED está morta — push nela é trabalho invisível.
 # Fail-open: sem gh, sem auth ou timeout -> não interferir.
@@ -60,6 +72,13 @@ UPMSG
     exit 2
   fi
 fi
+
+# `--git-dir` num worktree retorna `.git/worktrees/<name>` — é onde o
+# pre-commit-quality do subagent grava o marker. NÃO usar `--git-common-dir`,
+# que retorna o `.git` compartilhado (main worktree) e reintroduz o bug.
+GIT_DIR=$(git rev-parse --git-dir 2>/dev/null) || exit 0
+HEAD_TREE=$(git rev-parse "HEAD^{tree}" 2>/dev/null) || exit 0
+MARKER=$(cat "$GIT_DIR/squad-gate-ok" 2>/dev/null || echo "")
 
 if [ "$MARKER" = "$HEAD_TREE" ]; then
   exit 0

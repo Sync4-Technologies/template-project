@@ -42,7 +42,7 @@ Documente:
 Análise estruturada:
 
 #### Contratos
-- [ ] Contratos em `.claude/squad/project/contracts/` afetados? Quais?
+- [ ] Contratos no pacote de contratos do repo (ex: `packages/contracts/src/`) afetados? Quais?
 - [ ] Mudança breaking ou non-breaking?
 - [ ] Backend, Frontend, Mobile, AI afetados?
 

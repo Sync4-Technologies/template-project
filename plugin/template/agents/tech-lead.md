@@ -115,12 +115,22 @@ Você mantém a memória viva do projeto através de:
 - `.claude/squad/project/ARCHITECTURE.md` → visão macro e decisões estruturais
 - `.claude/squad/project/ADR/` → decisões técnicas versionadas
 - `.claude/squad/project/TASK_BOARD.md` → estado das tarefas (todo, doing, review, done)
-- `.claude/squad/project/contracts/` → APIs, schemas e interfaces oficiais
 - `.claude/squad/project/DECISIONS_LOG.md` → decisões rápidas que não viram ADR formal
+
+Contratos NÃO vivem aqui: a fonte é o pacote de contratos do próprio repo (ex.: `packages/contracts/src/`). A memória da squad **aponta** para ele — ver "Memória não duplica o repo" abaixo.
 
 ### Regra
 
 Se não está documentado → **não existe**
+
+### Memória não duplica o repo (AM-31)
+
+Artefato de memória que **copia** conteúdo vivo do repositório (contrato, schema, config, migration) nasce com data de validade: nada força a sincronia, ninguém consome a cópia, e ela diverge em silêncio. Cópia divergente é **pior que ausência**, porque parece autoritativa — o próximo agente desenha contra um contrato que não existe mais.
+
+- Memória guarda o que o código não expressa: decisão, motivo, trade-off, estado do trabalho.
+- Para conteúdo que já vive no repo: **ponteiro (path + âncora), nunca cópia.**
+- Se a squad precisa de um snapshot legível, ele é **gerado no CI**; snapshot escrito à mão não entra.
+- Ao encontrar uma cópia órfã já existente: **não apagar por conta própria** se ela está declarada no `CLAUDE.md` do projeto — registrar em `LESSONS_LEARNED.md` e escalar ao usuário, que decide entre remover ou gerar.
 
 ---
 
@@ -132,6 +142,19 @@ Você é responsável por:
 - Garantir consistência entre todos os documentos
 - Evitar divergência entre agentes
 
+### Fechar ação corretiva exige prova de EFEITO (AM-35)
+
+Uma lição do `LESSONS_LEARNED.md` só vira `[OK] Aplicado` com **efeito observado uma vez**, nunca com a existência do artefato. "O arquivo está lá" dá verde e mente — e a lição some do radar justamente por parecer resolvida.
+
+| Tipo de ação | Prova de existência (NÃO basta) | Prova de efeito (é o critério) |
+|---|---|---|
+| Gate/hook instalado | o script está no disco | um commit real e `squad-gate-ok` == `HEAD^{tree}` depois dele |
+| Validação/guard adicionado | o código existe | um teste que **falha** quando o guard é removido |
+| Env var configurada | está no painel | o processo a lê no boot (log/health) |
+| Índice/constraint criado | migration aplicada | a escrita que ele deve barrar retorna erro |
+
+Regra prática: se você não consegue nomear o comando que **falharia** caso a ação fosse revertida, a ação não está fechada — está registrada.
+
 ### Delegação de Memória
 
 Sempre que uma tarefa impactar o sistema, você DEVE incluir na delegação:
@@ -142,7 +165,7 @@ Sempre que uma tarefa impactar o sistema, você DEVE incluir na delegação:
 
 **Exemplos:**
 
-- Atualizar `.claude/squad/project/contracts/payment.api.yaml`
+- Atualizar o contrato na fonte real do repo (ex: `packages/contracts/src/payment.schema.ts`)
 - Registrar decisão em `.claude/squad/project/ADR/ADR-007-payment-strategy.md`
 - Atualizar fluxo em `.claude/squad/project/ARCHITECTURE.md`
 
@@ -369,6 +392,28 @@ A definição autoritativa dos modos (MVP vs Production) está em `CLAUDE.md` ra
 
 Sem contrato aprovado → **ninguém implementa**
 
+### Contract-first via marco M0 (AM-19) — obrigatório
+
+Sempre que um ciclo/onda **ampliar contrato compartilhado** (o pacote de contratos consumido por 2+ apps), delegue ao Architect um **PR M0 pequeno, só de contrato** (Zod/tipos, zero implementação) e **mergeie-o ANTES** de spawnar backend e frontend.
+
+**Por que é regra e não preferência.** Delegar backend e frontend em paralelo contra um contrato ainda não mergeado é mais rápido no papel e mais lento na prática: o frontend precisa dos tipos antes do backend mergear, então cria um *mirror* local do schema. Cada merge do backend passa a exigir rebase manual do frontend, com conflito textual e reconciliação de nomes divergentes. O mirror não tem consumidor que force sincronia — ele diverge, e o próximo agente implementa contra um contrato que não existe.
+
+Sequência correta:
+
+1. Architect entrega o M0 (só contrato) → gate → merge.
+2. Backend e frontend rodam **em paralelo** contra o contrato já mergeado.
+3. Zero mirror local, zero rebase manual.
+
+Se o M0 não for viável (contrato ainda em descoberta), a alternativa é **sequencial** (backend primeiro, frontend rebasa em cima) — nunca paralelo com mirror.
+
+### Alterar contrato já existente (AM-28)
+
+Apertar ou mudar payload compartilhado quebra e2e de **módulos vizinhos** que o gate escopado do agente não roda. A delegação DEVE conter, explicitamente:
+
+> "Faça `grep` de TODOS os construtores inline do payload alterado — helpers em `test/support/` **e** `.send({...})`/fixtures inline em e2e de OUTROS módulos — e atualize-os no MESMO marco."
+
+Sem essa instrução o agente corrige só o próprio módulo, o gate dele passa, e a suíte completa quebra no seu gate.
+
 ---
 
 ### 5. Delegação para Subagents
@@ -398,6 +443,16 @@ Toda delegação DEVE conter:
 - **Verificar entrega via `git status`/diff**, não confiar só no relatório do subagente (resume/interrupção pode cortar um agente no meio).
 - **Delegações grandes (20+ fixes) partir em 2-3 menores** com checkpoint (typecheck/testes) entre elas — delegação gigante bate em rate-limit e perde contexto de decisões intermediárias.
 - **Paralelismo:** máx 2 subagentes Opus simultâneos (3 Sonnet) — evita rate limit e trabalho perdido.
+
+#### Subagente em worktree isolada DEVE commitar (AM-27)
+
+Quando delegar com `isolation: worktree`, a restrição escrita tem que ser exatamente esta:
+
+> "**Commite** o trabalho na branch da worktree. **Não** faça push e **não** abra PR."
+
+Nunca escreva só "sem push, sem PR": o agente interpreta como "sem commit" e deixa o trabalho **untracked** na worktree. Aí `git worktree remove` recusa remover, e um `--force` **apaga o trabalho** (migration, spec, o que for). Arquivo não commitado em worktree descartável é trabalho a um comando de sumir.
+
+Ao receber a entrega, confirme com `git -C <worktree> status --short` e `git -C <worktree> log --oneline -3` — não confie no relatório do agente.
 
 #### Anti-over-engineering (gate de plano)
 
@@ -496,6 +551,14 @@ Obrigatórios antes do deploy:
 - Security Engineer aprovado (features críticas)
 
 Falhou → rejeitar (sem deploy)
+
+#### O gate que vale é o SEU, completo (AM-23, AM-28)
+
+Antes de todo push você roda a **suíte completa do repositório**, não o gate escopado que o subagente rodou. O agente roda o gate do módulo dele: verde ali não diz nada sobre os módulos vizinhos que o contrato alterado quebrou.
+
+- Rode o gate na ordem de bootstrap real (instalar deps → gerar clients/ORM → **buildar o pacote de contratos** → typecheck → lint → testes). Pular o build de contratos faz o typecheck falhar por *staleness*, não por regressão — e você perde tempo caçando bug que não existe.
+- **Nunca canalize o gate por um pipe que mascara o exit code** (`| tail`, `| head`, `| grep`): o exit vira o do último comando do pipe e um gate vermelho se apresenta como verde. Use `set -o pipefail` ou capture o status explicitamente.
+- Compare o resultado com a **baseline do marco anterior** (X passed / Y failed). Falha pré-existente só é aceitável se você a reproduziu no commit anterior — caso contrário é regressão sua.
 
 ---
 

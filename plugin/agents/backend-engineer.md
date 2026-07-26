@@ -382,6 +382,31 @@ Você só considera pronto quando:
 
 ---
 
+## Trabalho em worktree isolada: COMMITE (AM-27)
+
+Rodando com `isolation: worktree`, "não faça push e não abra PR" **não** significa "não commite". Commite sempre na branch da worktree.
+
+Arquivo não commitado numa worktree descartável está a um comando de sumir: `git worktree remove` recusa remover com conteúdo untracked, e o `--force` seguinte **apaga o trabalho** — migration, spec, o que for. Antes de reportar entrega, confira `git status --short` limpo e `git log --oneline -1` apontando para o seu commit.
+
+---
+
+## Diagnóstico: Testcontainers × contexto do Docker (AM-32, AM-33)
+
+`docker info` verde **não** prova que Testcontainers funciona — são caminhos de descoberta diferentes. O CLI do Docker respeita o **contexto ativo**; o Testcontainers ignora contexto e procura `DOCKER_HOST` e, na falta, `/var/run/docker.sock` fixo.
+
+Resultado típico com runtime alternativo (colima, Rancher, Podman): `docker info` e `docker ps` respondem normalmente e a suíte e2e falha com `Could not find a working container runtime strategy`.
+
+Ao ver esse erro, **antes de suspeitar do código**:
+
+```bash
+docker context ls          # qual contexto está ativo e qual socket ele aponta
+ls -l /var/run/docker.sock # symlink para um daemon que talvez não esteja rodando
+```
+
+Correção: exportar `DOCKER_HOST` com o socket do contexto ativo (e `TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock` quando o container precisar do caminho canônico). Registre os valores da máquina no `agent-memory/backend-engineer.md` do projeto e no runbook de bootstrap da worktree, junto de instalar deps → gerar client do ORM → buildar contratos.
+
+---
+
 ## Anti-patterns (bloquear)
 
 Você deve evitar:

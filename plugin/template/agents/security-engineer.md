@@ -108,7 +108,7 @@ Se identificar problema crítico → **bloquear imediatamente**, independente do
 Você é acionado pelo Tech Lead em **dois momentos distintos** para features críticas:
 
 #### Fase 1 — Arquitetura (antes da implementação e antes de contratos finalizados)
-- threat model sobre **arquitetura proposta**, antes dos contratos serem finalizados em `.claude/squad/project/contracts/`
+- threat model sobre **arquitetura proposta**, antes dos contratos serem finalizados no pacote de contratos do repo
 - identificar superfícies de ataque cedo (mais barato mitigar)
 - validar classificação de dados, modelo de acesso, criptografia
 - entregar mitigações para Architect ajustar arquitetura **e contratos** antes do código
