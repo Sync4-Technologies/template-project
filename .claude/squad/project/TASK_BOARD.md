@@ -6,12 +6,12 @@
 
 ## Current Focus
 
-- **Ultima sessao:** 2026-07-05 por Pablo (sessao de SISTEMA: squad clonada -> plugin dev-squad v1.0.0..v1.5.0; produto AgentesIA nao foi tocado)
+- **Ultima sessao:** 2026-07-26 por Pablo (sessao de SISTEMA: v1.6.0 released — subagents nativos + advisor + Modo Delegado + UP-01; produto AgentesIA nao foi tocado)
 - **Em andamento:** OPS-RAILWAY (deploy Railway piloto — Vinicius) segue como estava
-- **Proximo passo (sistema):** validar a squad em batalha — rodar 1 feature ponta-a-ponta num projeto real com os gates novos (candidato: trokey-franchising via /squad-init); o que sair alimenta LESSONS_LEARNED -> v1.6
+- **Proximo passo (sistema):** batalha no trokey-franchising com a v1.6 valendo (squad-init JA RODADO la; plugin 1.6.0 user-scope — basta sessao nova + /squad-resume); achados -> LESSONS -> v1.6.1/v1.7 (UP-02 ja na fila)
 - **Proximo passo (produto):** retomar OPS-RAILWAY com /squad-resume + rodar /squad-deploy-preflight antes do deploy
-- **Bloqueios:** nenhum
-- **Branch ativo:** claude/suspicious-meninsky-d1d61d (worktree do upstream; tudo mergeado ate v1.5.0)
+- **Bloqueios:** billing do GitHub Actions esgotado — CI nao roda; merge em develop/main exige suspender/restaurar required checks a mao (feito nos #31/#32) ate resolver
+- **Branch ativo:** claude/squad-resume-b3e72a (worktree do upstream; tudo mergeado ate v1.6.0, tag pushada)
 - **Modo do projeto:** Production
 
 ---
