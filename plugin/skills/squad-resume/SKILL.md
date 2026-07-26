@@ -33,7 +33,8 @@ Conduz TL no onboarding rápido de novo usuário (ou retomada após pausa) sem p
 A sessão FIXA a versão do plugin no início e não troca no meio — regressões já entraram por sessão rodando hook antigo (UP-01 passou no próprio release da 1.6.0 por isso). Verificar se há versão mais nova:
 
 ```bash
-claude plugin update dev-squad 2>&1 | tail -3
+claude plugin update dev-squad@pdati 2>&1 | tail -3
+# id COMPLETO nome@marketplace — so "dev-squad" falha com "Plugin not found"
 ```
 
 - Reportou atualização → avisar o usuário: **"Plugin atualizado para X.Y.Z, mas esta sessão continua na versão antiga — aplicar exige reiniciar a sessão."** Perguntar se prefere reiniciar agora (contexto ainda é pequeno no resume) ou seguir e reiniciar depois.
