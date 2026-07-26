@@ -220,6 +220,20 @@ Se há mudanças em memory files (TASK_BOARD, DECISIONS_LOG, agent-memory) decor
 - Criar commit dedicado: `chore: handoff prep — update memory and current focus`
 - Push se aplicável
 
+### 9. Atualizar o plugin ANTES do fim da sessão (o restart aplica de graça)
+
+O harness só aplica versão nova de plugin no restart da sessão. O handoff é o momento perfeito: a sessão está acabando de qualquer forma, então atualizar AGORA significa que o próximo `/squad-resume` já entra na versão nova — sem sessão perdida rodando hook/skill antigo.
+
+```bash
+claude plugin update dev-squad 2>&1 | tail -3
+```
+
+- Reportou atualização → informar no handoff message: "Plugin atualizado para X.Y.Z — aplica na próxima sessão."
+- Já na última versão → seguir sem comentário.
+- Se a versão nova muda governança (gates, hooks, fluxos), registrar uma linha no Session Log — o próximo usuário precisa saber sob quais regras vai operar.
+
+Par com o passo 0 do `/squad-resume` (verificação na retomada): o handoff atualiza, o resume confere. Se ambos rodam, nenhuma sessão opera com plugin defasado sem saber. Regressões já entraram exatamente por esse furo (UP-01 passou no próprio release da 1.6.0 porque a sessão rodava o hook 1.5.0).
+
 ---
 
 ## Anti-patterns (rejeitar)

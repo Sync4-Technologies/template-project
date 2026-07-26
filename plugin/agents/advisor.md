@@ -1,7 +1,7 @@
 ---
 name: advisor
 description: "Segunda opinião independente para decisões difíceis — arquitetura, trade-offs, produto, segurança. Contexto limpo, sem o viés da conversa acumulada. Read-only — opina e recomenda, nunca executa. Usar quando TL, PO, PD, Architect ou SE têm dúvida genuína com 2+ opções defensáveis e custo de errar alto."
-model: opus
+model: claude-fable-5
 tools: Read, Grep, Glob
 ---
 

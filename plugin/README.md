@@ -55,6 +55,33 @@ Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.c
 
 ## Changelog
 
+### 1.8.0 (2026-07-26)
+
+Simplificação e agilidade: menos bloqueio, mais aviso — o custo do falso positivo sai do usuário.
+
+- **[BREAKING] push-gate vira ADVISORY por padrão (UP-05)**: avisa quando o gate não validou o HEAD (ou a branch tem PR mergeado — UP-01), mas **não bloqueia mais**. Commit, push e PR fluem sem interrupção. Racional: 4 falsos positivos em 2 sessões (tag, refspec, cross-repo, menção em mensagem) — bloqueio duro transferia o custo do erro do hook para o usuário. Modo enforce (bloqueio duro) é opt-in por projeto: `SQUAD_GATE_ENFORCE=1` no env ou arquivo `.claude/squad/project/gate-enforce`
+- **push-gate reconhece EXECUÇÃO, não menção (UP-06)**: detecção de `git push` por primeiro verbo de cada segmento (`&&`, `;`, `|`, quebra de linha), com corpos de heredoc descartados — commit cuja mensagem cita `git push` não dispara mais o hook
+- **`SQUAD_SKIP_GATE=1` aceito inline no comando (UP-04)**: o hook roda no processo do harness, antes do shell do comando existir — o prefixo inline nunca chegava ao env, tornando o escape documentado inacionável por agente
+- **plugin-ci com runner parametrizável (UP-07)**: `runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}` no próprio CI do plugin (o template já tinha via AM-25). Billing do Actions morto deixa de significar "suspender/restaurar branch protection para mergear": `gh variable set CI_RUNNER --body self-hosted` e o check roda local e fica verde de verdade. Princípio: check obrigatório precisa de caminho alternativo legítimo para o verde — gate que só se satisfaz sendo removido é ritual, não controle
+- **Ciclo de atualização do plugin fecha nas duas pontas**: `/squad-handoff` (passo 9) roda `claude plugin update dev-squad` ao ENCERRAR a sessão — o restart que vem a seguir aplica de graça, e a próxima sessão já nasce na versão nova. `/squad-resume` (passo 0) confere na retomada e avisa se ainda há update pendente (rede de segurança para sessão que não teve handoff). Compara também com `SQUAD_VERSION` do projeto para apontar reconciliação pendente. Regressões já entraram por sessão rodando hook antigo (UP-01 no release da 1.6.0)
+- **Delegação de merge (tech-lead.md)**: default continua "merge é do usuário", mas o usuário pode delegar ao TL explicitamente, com escopo e prazo, registrado em `DECISIONS_LOG` — expira sozinho, não sobrevive à sessão salvo prazo explícito
+- **Advisor em Fable 5**: `model: claude-fable-5` no frontmatter do advisor (era `opus`)
+
+### 1.7.0 (2026-07-26)
+
+Backport das lições da batalha em `trokey-franchising` (AM-18 a AM-35).
+
+- **[fix] push-gate volta a ser worktree-aware (AM-18 — regressão)**: o `PROJECT_ROOT` derivava de `$CLAUDE_PROJECT_DIR`, que aponta para a main worktree; subagents com `isolation: worktree` gravavam marcador legítimo em `.git/worktrees/<nome>/squad-gate-ok` e tinham o push bloqueado. O hook agora lê o `cwd` do payload do PreToolUse (fallback `$CLAUDE_PROJECT_DIR`/`$(pwd)`). O fix existia na 1.5.0 e **foi perdido na 1.6.0** ao adicionar o UP-01 sobre a base antiga; UP-01 preservado. Validado em 5 cenários (worktree com marcador válido passa; main sem marcador bloqueia; `SQUAD_SKIP_GATE=1` passa; não-push é no-op; contra-prova com o hook 1.6.0 bloqueando o caso legítimo)
+- **Fonte única de contrato (AM-30)**: o Architect não versiona mais cópia do contrato em `.claude/squad/project/contracts/` — a fonte é o pacote de contratos do repo, e a memória guarda ponteiro. Snapshot legível, se necessário, é gerado no CI. `/squad-init` deixa de criar o diretório; 6 referências ao espelho atualizadas (README, security-engineer, security-reviewer, squad-scope-change, squad-new-project, tech-lead)
+- **Contract-first via marco M0 (AM-19)**: ampliar contrato compartilhado exige PR só-de-contrato mergeado ANTES de paralelizar backend e frontend — elimina o mirror local e o rebase manual em cadeia
+- **Gate encadeado, não sobrescrito (AM-34)**: `/squad-init` passo 5 detecta husky/lefthook/pre-commit e **encadeia** o `pre-commit-quality`, mantendo o `core.hooksPath` do gerenciador. Sobrescrever desligava o husky, então a instrução não era aplicada e o gate ficava órfão — arquivo presente, ninguém chamando
+- **Fechamento por efeito, não por existência (AM-35)**: ação corretiva só vira `[OK] Aplicado` com efeito observado uma vez (tabela de critérios no `tech-lead.md`); `/squad-resume` passa a conferir na retomada se o marcador do gate bate com o `HEAD`
+- **Alteração de contrato compartilhado (AM-28)**: a delegação passa a exigir varredura dos construtores inline do payload (helpers de teste e `.send({...})` em e2e de outros módulos) no mesmo marco; o gate que vale é o completo do TL, com aviso sobre pipe mascarando exit code
+- **Subagente em worktree DEVE commitar (AM-27)**: "sem push, sem PR" era lido como "sem commit" e deixava trabalho untracked que o `git worktree remove --force` apaga. Explicitado no `tech-lead.md` e no `backend-engineer.md`
+- **Memória não duplica o repo (AM-31)**: regra geral no `tech-lead.md` — cópia de artefato vivo sem gerador diverge em silêncio e mente pior que a ausência
+- **Diagnóstico Testcontainers × contexto do Docker (AM-32/33)** no `backend-engineer.md`: `docker info` verde não prova runtime para o Testcontainers (contexto vs socket fixo)
+- **CI com runner parametrizável (AM-25)**: `runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}` no template — um flip de variável tira o CI do cloud quando o billing trava, sem editar workflow
+
 ### 1.6.0 (2026-07-25)
 - **Subagents nativos**: 10 executores (backend/frontend/mobile/data/ai/devops engineer, qa-engineer, code-reviewer, security-reviewer, support-engineer) viram agentes nativos do plugin em `agents/` — modelo por papel resolvido pelo frontmatter (`model: sonnet`/`opus` → sempre a versão mais recente), tools restritas por mecanismo (reviewers e advisor read-only), contexto isolado por delegação. Papéis de decisão (TL, PO, Architect, PD, SE Fase 1) permanecem main-thread em `template/agents/`
 - **Security split**: Fase 1 (threat model, decisão com usuário) main-thread; Fase 2 (revisão pós-implementação) = subagent `security-reviewer` Opus read-only que lê os checklists do spec do SE (single source)

@@ -613,7 +613,7 @@ Após atualizar, registrar a nova versão no `SQUAD_VERSION` do projeto (o `/squ
 | Decisões versionadas | `.claude/squad/project/ADR/` |
 | Decisões rápidas | `.claude/squad/project/DECISIONS_LOG.md` |
 | Tarefas em andamento | `.claude/squad/project/TASK_BOARD.md` |
-| Contratos do sistema | `.claude/squad/project/contracts/` |
+| Contratos do sistema | pacote de contratos do repo (ex: `packages/contracts/src/`) — fonte única, nunca copiado para a memória |
 | PRD e specs | `/docs/` |
 | Padrões de squad | Aqui (este README) |
 

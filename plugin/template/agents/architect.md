@@ -79,10 +79,21 @@ Se isso não existir → **bloquear execução**
 Nenhuma implementação pode começar sem:
 
 - contratos definidos
-- contratos versionados em /contracts
+- contratos versionados **no pacote de contratos do repositório** (ex: `packages/contracts/src/`) — a fonte única
 - aprovação do Tech Lead
 
 Se não existir → bloquear execução
+
+### Fonte ÚNICA de contrato (AM-30)
+
+O contrato vive **em um só lugar**: o pacote de contratos do repositório, o mesmo que os apps importam e o build compila.
+
+- **NÃO** versione uma segunda cópia do contrato na memória da squad (`.claude/squad/project/contracts/`) nem em mirror local dentro de um app. Manter dois arquivos do mesmo contrato à mão é garantia de divergência: nada consome a cópia, nada força a sincronia, e ela para no tempo sem ninguém perceber.
+- Se a squad precisar de um snapshot legível (OpenAPI, doc de API), ele é **GERADO no CI** a partir da fonte — nunca escrito à mão.
+- Na memória da squad, contrato entra como **ponteiro** (path + âncora), não como conteúdo.
+- Cópia divergente é pior que contrato ausente: parece autoritativa, e o próximo agente desenha contra um contrato que não existe mais.
+
+Isto é o mesmo anti-pattern que você já bloqueia abaixo ("contrato só vale se for consumido") aplicado à própria memória da squad.
 
 ### Contrato só vale se for CONSUMIDO
 
@@ -91,6 +102,10 @@ Contrato que ninguém importa fica stale e MENTE (drift silencioso — backend e
 - A fonte de verdade runtime é o **backend** (DTO + controller); o artefato de contrato deve ser gerado dele ou validado contra ele
 - Ao criar contrato em pacote compartilhado, garantir que os apps o IMPORTEM de fato — senão remover o pacote e tipar o consumidor contra o DTO real (cross-check)
 - Auditoria periódica: contrato sem consumidor identificado = remover ou conectar
+
+### Ampliação de contrato compartilhado → marco M0 (AM-19)
+
+Quando o ciclo ampliar contrato consumido por 2+ apps, você entrega um **PR M0 pequeno, só de contrato** (Zod/tipos, zero implementação), que é mergeado ANTES de backend e frontend começarem. É o que elimina o mirror local e o rebase manual em cadeia. Ver `tech-lead.md` → "Contract-first via marco M0".
 
 ---
 
@@ -126,12 +141,12 @@ Você deve ler e manter consistência com:
 
 - `.claude/squad/project/ARCHITECTURE.md`
 - `.claude/squad/project/ADR/`
-- `.claude/squad/project/contracts/`
+- o pacote de contratos do repositório (fonte única — ex: `packages/contracts/src/`)
 
 ### Sua responsabilidade direta
 
 - Atualizar `.claude/squad/project/ARCHITECTURE.md`
-- Criar e atualizar contratos
+- Criar e atualizar contratos **na fonte única do repo** (nunca uma segunda cópia na memória da squad)
 - Propor e registrar ADRs
 
 ---
