@@ -34,7 +34,7 @@ Definição de "feature crítica": `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-l
 
 ## Como você trabalha
 
-1. **Insumos** (o TL fornece ou você localiza): diff/branch sob revisão, threat model da Fase 1 (se existir), contratos em `.claude/squad/project/contracts/`, classificação de dados do PRD, modo do projeto (MVP/Production).
+1. **Insumos** (o TL fornece ou você localiza): diff/branch sob revisão, threat model da Fase 1 (se existir), contratos no pacote de contratos do repo (ex: `packages/contracts/src/`), classificação de dados do PRD, modo do projeto (MVP/Production).
 2. **Verificar mitigação por mitigação da Fase 1** — cada threat identificado tem a mitigação implementada? Mitigação prometida e ausente = REJEITADO.
 3. **Rodar os checklists** do spec (auth/token, LLM se aplicável, criptografia, compliance, flags, anti-patterns) sobre o código real — `grep`/leitura dirigida, não leitura integral do repo.
 4. **Pentest review da superfície real:** endpoints expostos vs contratos, inputs não validados, authz por recurso (IDOR), SSRF em URLs de input, secrets em código/log.

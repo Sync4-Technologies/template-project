@@ -88,7 +88,7 @@ Cada passo abaixo lista o agente responsável. Ver spec completo em `${CLAUDE_PL
 - `.claude/squad/project/ARCHITECTURE.md` atualizado
 - `.claude/squad/project/ADR/ADR-NNN-stack-projeto.md` (decisão de stack)
 - `.claude/squad/project/ADR/ADR-NNN-arquitetura.md` se houver decisões estruturais não-padrão
-- `.claude/squad/project/contracts/*.api.yaml`, `*.schema.ts`, etc.
+- Contratos na fonte única do repo (ex: `packages/contracts/src/*.schema.ts`) — não copiar para a memória da squad
 - Código implementado em `src/` ou equivalente
 - Pipeline CI/CD verde
 - Sistema deployado e monitorado

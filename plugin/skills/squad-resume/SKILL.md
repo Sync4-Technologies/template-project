@@ -84,6 +84,19 @@ Apresentar como bloco "Desde última sessão" no resumo. Delta vazio + Current F
 
 Com base no "Próximo passo" do Current Focus, carregar SÓ o `agent-memory/{agente-relevante}.md` (backend → `backend-engineer.md`, frontend → `frontend-engineer.md`, deploy → `devops-engineer.md`, etc.). Não carregar a memória de todos os agentes — só a de quem vai executar (economia de tokens).
 
+### 3c. Conferir se o gate local está CONECTADO (AM-35)
+
+Barato e não-negociável — uma linha. O gate pode existir no disco e nunca ter rodado:
+
+```bash
+[ "$(cat "$(git rev-parse --git-dir)/squad-gate-ok" 2>/dev/null)" = "$(git rev-parse 'HEAD^{tree}')" ] \
+  && echo "gate OK no HEAD" || echo "gate NAO validou o HEAD atual"
+```
+
+Marcador defasado em relação ao `HEAD` **depois de commits recentes** é sinal de gate órfão — instalado mas fora da cadeia de hooks (causa típica: `core.hooksPath` de um gerenciador como husky que não chama o script; ver `/squad-init` passo 5). Não é o mesmo que "ainda não commitei nada": compare com a data do último commit.
+
+Se estiver órfão: reportar no bloco "Contexto crítico" do resumo, **não consertar sozinho** — encadear hook é mudança de infra do repo e pode já ter sido adiada por decisão do usuário (conferir `SQUAD_VERSION` e `LESSONS_LEARNED` antes de propor).
+
 ### 4. Listar PRs abertos
 
 Para cada PR aberto, identificar:
@@ -184,6 +197,7 @@ Use `/squad-resume` para começar trabalho. Use `/squad-status` para checar prog
 - **Pular `git fetch` / confiar no Current Focus sem cross-check no git remoto** → re-implementar trabalho já mergeado
 - **Re-resumir o projeto inteiro a cada retomada** → o resumo é delta + próximo passo + bloqueios, não a história do projeto (tokens)
 - Carregar agent-memory de todos os agentes → só a do agente do próximo passo
+- **Tratar lição marcada `[OK] Aplicado` como resolvida sem prova de efeito** → ação fechada contra a existência do arquivo some do radar justamente por parecer resolvida (AM-35)
 
 ---
 
