@@ -1,5 +1,6 @@
 plugin: dev-squad@pdati
-version: 1.1.0
-desde: 2026-07-05
+version: 1.8.0
+desde: 2026-07-26
 historico:
   - "ate 2026-07-05: template clonado (layout legado, equivalente a v1.1.0 no merge da migracao)"
+  - "2026-07-26: reconciliacao 1.1.0 -> 1.8.0 (registro estava defasado; plugin user-scope ja em 1.8.0). Governanca reescrita: repo assumido como upstream do plugin, produto AgentesIA arquivado em archive/agentesia/"

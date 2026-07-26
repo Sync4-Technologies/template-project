@@ -1,41 +1,30 @@
-# CLAUDE.md — AgentesIA Squad
+# CLAUDE.md — dev-squad (upstream do plugin)
 
 > Este arquivo prevalece sobre ~/.claude/CLAUDE.md global.
-> Governança, fluxos e gates para o projeto AgentesIA.
+> Governança para o desenvolvimento do **plugin dev-squad** (marketplace pdati).
 
 ---
 
 ## Contexto do projeto
 
-Plataforma multi-tenant SaaS para criação e operação de agentes de IA conectados ao WhatsApp.
-Stack: FastAPI (backend) + React/TypeScript (frontend) + PostgreSQL + Redis/arq.
+Este repositório é o upstream do plugin `dev-squad`: aqui o plugin é desenvolvido, testado, versionado e publicado. O repo consome o próprio plugin (dogfooding, decisão D1 de 2026-07-05).
 
-**Modo de operação atual: Production Mode** (confirmado pelo usuário no kickoff)
+O produto AgentesIA que originou este repo está **arquivado** em `.claude/squad/project/archive/agentesia/` (2026-07-26). Não há código de produto aqui.
 
----
-
-## Modo de operação
-
-### Production Mode (atual)
-- Cobertura de testes: ≥ 80% geral / ≥ 95% em regras críticas (auth, billing, runtime)
-- Observabilidade: completa (logs + métricas + tracing + alertas) — FEAT-019 vira pré-requisito de Squad Done
-- SRE: SLOs definidos, error budgets, rollback testado
-- Post-mortem: formal (Sev1 ≤ 48h / Sev2 ≤ 72h)
-- Security Engineer: **obrigatório** em toda feature crítica (auth, billing, dados pessoais, tools, integrações)
-- CI/CD: pipeline obrigatório (FEAT-020) antes de deploy
+**Modo de operação: Production Mode**
 
 ---
 
 ## Agentes ativos neste projeto
 
-| Agente | Foco imediato |
-|--------|--------------|
-| Tech Lead | Orquestração, priorização, quality gates |
-| Backend Engineer | FastAPI, SQLAlchemy, runtime, services |
-| Frontend Engineer | React, TanStack Query, hooks, páginas |
-| Security Engineer | SSRF, rate limit, auth |
-| QA Engineer | Testes unitários e de integração |
-| Code Reviewer | OWASP no código, qualidade |
+| Agente | Foco |
+|--------|------|
+| Tech Lead | Orquestração, releases, quality gates, LESSONS |
+| DevOps Engineer | CI (plugin-ci), runner, branch protection |
+| QA Engineer | Checks locais, smoke de hooks |
+| Code Reviewer | Qualidade de skills/hooks/agents do plugin |
+
+Trabalho aqui é majoritariamente de **sistema** (governança, skills, hooks, templates) — engineers de produto (backend/frontend/mobile) raramente são acionados.
 
 ---
 
@@ -43,37 +32,24 @@ Stack: FastAPI (backend) + React/TypeScript (frontend) + PostgreSQL + Redis/arq.
 
 | Tópico | Arquivo |
 |--------|---------|
-| Arquitetura atual | `.claude/squad/project/ARCHITECTURE.md` |
-| Backlog priorizado | `.claude/squad/project/TASK_BOARD.md` |
-| Decisões rápidas | `.claude/squad/project/DECISIONS_LOG.md` |
-| ADRs | `.claude/squad/project/ADR/` |
-| PRD | `.claude/squad/project/PRD.md` (a criar) |
+| Arquitetura do repo | `.claude/squad/project/ARCHITECTURE.md` |
+| Backlog | `.claude/squad/project/TASK_BOARD.md` |
+| Decisões + Session Log | `.claude/squad/project/DECISIONS_LOG.md` |
+| Lições (UP-*/AM-*) | `.claude/squad/project/LESSONS_LEARNED.md` |
+| Versão da governança | `.claude/squad/project/SQUAD_VERSION` |
+| Produto arquivado | `.claude/squad/project/archive/agentesia/` |
 
 ---
 
 ## Regras críticas do projeto
 
-### Segurança
-1. **Nunca** aceitar `webhook_url` sem passar por `validate_external_url` (SEC-001 aberto)
-2. **Nunca** commitar `.env`, `.env.docker` ou `cookies.txt`
-3. Credenciais de provedor **sempre** criptografadas com Fernet antes de persistir
-4. SSRF guard obrigatório em qualquer URL fornecida por tenant
-
-### Backend
-5. Toda nova rota protegida usa `require_verified_tenant` (salvo webhooks e billing/webhook)
-6. Novos services seguem padrão de `auth_service` / `billing_service` (não inline no router)
-7. Pool arq: não criar/fechar pool por request — usar pool reutilizável
-8. Débito de créditos: usar update atômico, não read-then-write
-
-### Frontend
-9. Novos hooks de dados usam TanStack Query — sem fetch manual
-10. Estado de servidor: nunca duplicar em useState o que está no cache do RQ
-11. Imports de hooks: sempre do arquivo dedicado, não de `useData.ts` diretamente
-12. Cores: sempre usar tokens CSS (`var(--primary)`) — nunca HSL hardcoded
-
-### Qualidade
-13. TDD: QA define cenários antes de implementar
-14. Nenhum dado fake apresentado como real ao usuário
+1. **Toda mudança em skill/hook/agent roda os checks locais ANTES de commitar**: `scripts/ci/*.py`, `plugin/hooks` smoke, `claude plugin validate` — pegaram bugs reais em toda release
+2. Release segue o fluxo: branch → PR `develop` (plugin-ci verde) → PR `develop`→`main` → tag `vX.Y.Z` → `claude plugin marketplace update pdati` + `claude plugin update dev-squad@pdati`
+3. Plugin atualizado **só aplica na sessão seguinte** — nunca assumir que a sessão atual roda a versão recém-instalada (UP-01/UP-09)
+4. Branch protection com `enforce_admins` em `develop` e `main` — sem porta dos fundos; exceção via ritual documentado (UP-02)
+5. Mudança validada em batalha antes de considerar madura: campo atual é trokey-franchising; achados viram LESSONS (UP-*/AM-*)
+6. Versionamento SemVer; breaking change em skill/hook = major-minor com `!` no commit
+7. Nunca commitar `.env` ou credenciais; tokens de runner/registro não vão para o repo
 
 ---
 
@@ -81,42 +57,13 @@ Stack: FastAPI (backend) + React/TypeScript (frontend) + PostgreSQL + Redis/arq.
 
 | Gate | Quem decide | Bloqueia |
 |------|------------|---------|
-| PRD aprovado | Usuário | Toda execução |
-| Arquitetura aprovada | Usuário | Implementação |
-| SEC-001 fechado | Security Engineer | Deploy de qualquer feature que use tools |
-| Testes definidos | QA | Implementação (TDD) |
-| CI verde | Pipeline | Revisões |
-| QA aprovou | QA | Code Review |
-| Code Reviewer aprovou | CR | Deploy |
-
----
-
-## Fluxos ativos
-
-### Fluxo de bug (padrão)
-1. Identificar no TASK_BOARD.md (BUG-*)
-2. QA define cenário de teste que reproduz
-3. Backend/Frontend corrige
-4. QA valida
-5. Code Reviewer aprova
-6. Mover para Done
-
-### Fluxo de feature nova
-1. PO valida contra PRD (ou cria entry no PRD)
-2. Security Engineer consultado se a feature toca auth/billing/dados pessoais/tools
-3. Architect define contrato (API ou tipo TypeScript)
-4. QA define cenários
-5. Engineer implementa
-6. Code Review → Security Review (se aplicável)
-7. Done
+| Checks locais verdes | Engineer | Commit |
+| plugin-ci verde (4 jobs) | Pipeline | Merge em develop/main |
+| Code Reviewer aprovou | CR | Release |
+| LESSONS atualizado | TL | Encerramento de release com achados |
 
 ---
 
 ## Contexto para carregar no início de cada sessão
 
-Sempre ler antes de começar:
-1. `.claude/squad/project/ARCHITECTURE.md` — estado atual
-2. `.claude/squad/project/TASK_BOARD.md` — o que está pendente
-3. `.claude/squad/project/DECISIONS_LOG.md` — decisões tomadas
-
-Se retomando sessão: rodar `/squad-resume` para o Tech Lead apresentar o estado.
+O hook SessionStart já carrega head de ARCHITECTURE/TASK_BOARD/DECISIONS_LOG. Se retomando sessão: rodar `/squad-resume` para o Tech Lead apresentar o estado.
