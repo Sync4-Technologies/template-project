@@ -1,7 +1,7 @@
 # ARCHITECTURE.md — dev-squad (upstream)
 
 > Fonte de verdade da arquitetura deste repositório. Atualizar a cada mudança estrutural.
-> Última atualização: 2026-07-28 (v1.9.0: 16ª skill /squad-audit + template feature-spec)
+> Última atualização: 2026-07-28 (v1.10.0: Fase 1 dieta de tokens — squad-core §H-§N fonte única, /squad-design funde o trio, −6.058 linhas; 14 skills)
 
 ---
 
@@ -14,7 +14,7 @@ Este repositório é o **upstream do plugin `dev-squad`** (marketplace `pdati`):
 ```
 plugin/                      # o plugin em si (fonte publicada)
 ├── agents/                  # 11 subagents nativos (engineers, QA, reviewers, advisor)
-├── skills/                  # 16 skills /squad-* (resume, handoff, init, audit, preflight, ...)
+├── skills/                  # 14 skills /squad-* (resume, handoff, init, audit, design, preflight, ...)
 ├── hooks/                   # hooks.json + load-memory, push-gate, reminders
 ├── scripts/                 # scripts internos do plugin
 └── template/                # templates copiados por /squad-init (agents main-thread, ADRs, memória)
@@ -27,9 +27,11 @@ memory/                      # memória auxiliar
 ## Fluxo de release
 
 1. Branch `feat/*` ou `chore/*` → PR para `develop` (plugin-ci: 4 jobs)
-2. PR `develop` → `main` (release)
-3. Tag `vX.Y.Z` + `claude plugin marketplace update pdati` + `claude plugin update dev-squad@pdati`
-4. Plugin aplica na sessão seguinte (restart)
+2. **Changelog da versão no `plugin/README.md` entra no PR da release** (UP-13 — a 1.9.0 saiu sem)
+3. PR `develop` → `main` (release)
+4. Tag `vX.Y.Z` SÓ após confirmar `gh pr view --json state` == MERGED **e** `git fetch` + merge visível em `origin/main` (UP-11 — leitura pós-merge pode vir stale; nunca encadear merge+tag)
+5. `claude plugin marketplace update pdati` + `claude plugin update dev-squad@pdati`
+6. Plugin aplica na sessão seguinte (restart)
 
 Versão instalada user-scope; projetos consumidores (ex.: trokey-franchising) reconciliam governança via `SQUAD_VERSION`.
 
