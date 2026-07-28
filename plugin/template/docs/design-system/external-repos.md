@@ -22,7 +22,7 @@ Quando squad central decide criar/adotar novo DS canônico:
 2. Estrutura mínima (ver "Estrutura recomendada" abaixo)
 3. Atualizar tabela "Repos suportados" acima
 4. ADR no template (ou ADR específico do projeto piloto) registra adoção
-5. PD passa a oferecer como opção em `/squad-design-system-new`
+5. PD passa a oferecer como opção em `/squad-design (modo new)`
 
 ---
 
@@ -117,7 +117,7 @@ PD deve escolher **inline** (não externo) quando:
 
 - Brand-heavy custom com identidade visual única (raro)
 - Projeto pequeno/curto onde overhead de referência supera ganho
-- Projeto legado onde DS extraído (`/squad-design-extract`) é tão específico que não justifica externalizar
+- Projeto legado onde DS extraído (`/squad-design (modo extract)`) é tão específico que não justifica externalizar
 - Restrição de compliance impede usar repo externo
 
 Cada caso de inline é justificado em ADR específico do projeto.

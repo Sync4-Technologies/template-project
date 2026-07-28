@@ -28,7 +28,6 @@
 | ID | Tarefa | Agente | Observação |
 |----|--------|--------|-----------|
 | BATALHA-TROKEY | Validação em batalha do plugin 1.9.0 no trokey-franchising (estreia do reviewer caçador) | TL | Sessão nova lá; achados → LESSONS → próxima release |
-| FASE-1 | Dieta de tokens (~5.200 linhas cortáveis; squad-core rodada 2, TL 1008→600, fusão trio design) | TL | Após batalha — [plano](docs/PLANO_EVOLUCAO_SQUAD.md) |
 | FASE-2 | Performance/fluxo (hooks early-exit, fast lane, qualificar "feature crítica") | TL | [plano](docs/PLANO_EVOLUCAO_SQUAD.md) |
 | FASE-3 | Métricas acionáveis + OTEL degrau 1 | TL | [plano](docs/PLANO_EVOLUCAO_SQUAD.md) |
 | UP-08-REVERT | Quando billing voltar (~2026-08-01): `gh variable delete CI_RUNNER` nos 4 repos + desligar runner | DevOps | Runbook: trokey `ops/self-hosted-runner.md` §"Quando o billing voltar" |
@@ -39,7 +38,7 @@
 
 | ID | Tarefa | Agente | Responsável |
 |----|--------|--------|------------|
-| — | — | — | — |
+| FASE-1 | Dieta de tokens — PR A em execução (squad-core §H-§N, tech-lead 1012→265, 12 agents enxutos, bugs B1-B5); PR B (skills) e PR C (conventions) pendentes | TL | Pablo |
 
 ---
 

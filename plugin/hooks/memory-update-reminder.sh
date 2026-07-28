@@ -9,18 +9,32 @@ set -u
 # Lê input JSON do stdin
 INPUT="$(cat)"
 
-# Extrai command do tool_input
-COMMAND="$(echo "${INPUT}" | python3 -c "
-import json, sys
+# Detecta EXECUÇÃO de `git commit` (não menção — padrão UP-06 do push-gate):
+# heredocs descartados, split por segmento, primeiro verbo de cada segmento.
+IS_COMMIT="$(echo "${INPUT}" | python3 -c "
+import json, sys, re
 try:
     data = json.load(sys.stdin)
-    print(data.get('tool_input', {}).get('command', ''))
+    cmd = data.get('tool_input', {}).get('command', '') or ''
 except Exception:
-    print('')
+    print('0'); sys.exit(0)
+
+stripped = re.sub(
+    r'<<-?\s*([\x27\"]?)(\w+)\1.*?\n\s*\2\s*(\n|$)', '\n', cmd, flags=re.S
+)
+
+hit = 0
+for seg in re.split(r'&&|\|\||;|\||\n', stripped):
+    toks = seg.strip().split()
+    while toks and re.match(r'^[A-Za-z_][A-Za-z0-9_]*=', toks[0]):
+        toks = toks[1:]
+    if len(toks) >= 2 and toks[0] == 'git' and toks[1] == 'commit':
+        hit = 1
+        break
+print(hit)
 " 2>/dev/null)"
 
-# Só dispara se comando é `git commit`
-if [[ "${COMMAND}" != *"git commit"* ]]; then
+if [[ "${IS_COMMIT}" != "1" ]]; then
   exit 0
 fi
 

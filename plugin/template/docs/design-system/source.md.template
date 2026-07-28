@@ -63,7 +63,7 @@ Exemplo: `https://github.com/Sync4-Technologies/design-system-material3`
 2. PD do projeto avalia changelog do repo externo
 3. PD avalia compatibility com overrides locais (conflitos? deprecations?)
 4. PD bumpa version aqui (`source.md`) e em ADR específico do projeto
-5. Audit visual (`/squad-design-audit`) para detectar regressões
+5. Audit visual (`/squad-design (modo audit)`) para detectar regressões
 6. Tarefas resultantes vão para `.claude/squad/project/TASK_BOARD.md`
 7. Resultado registrado em `.claude/squad/project/DECISIONS_LOG.md` com tag `ds-update`
 

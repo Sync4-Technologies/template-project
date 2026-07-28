@@ -5,9 +5,7 @@ description: Conduz Fluxo 1 (projeto novo sem artefatos) — PO cria PRD, TL cri
 
 # Skill — Squad New Project (Fluxo 1)
 
-> **Owner:** Tech Lead | **Revisão:** 90 dias | **Obsolescência:** workflow descontinuado
-
-Esta skill conduz o **Fluxo 1** de projeto novo sem artefatos prévios, conforme `CLAUDE.md` → "Fluxos de Projeto".
+Conduz o **Fluxo 1** de projeto novo sem artefatos prévios, conforme `CLAUDE.md` → "Fluxos de Projeto".
 
 ---
 
@@ -30,20 +28,20 @@ Esta skill conduz o **Fluxo 1** de projeto novo sem artefatos prévios, conforme
 Cada passo abaixo lista o agente responsável. Ver spec completo em `${CLAUDE_PLUGIN_ROOT}/template/agents/{nome}.md` (papéis main-thread: TL, PO, PD, Architect, SE) ou `${CLAUDE_PLUGIN_ROOT}/agents/{nome}.md` (subagents nativos: engineers, QA, reviewers).
 
 ```
-1. Usuário aciona [Product Owner](../../../${CLAUDE_PLUGIN_ROOT}/template/agents/product-owner.md) (com ou sem briefing prévio)
+1. Usuário aciona Product Owner (com ou sem briefing prévio)
 2. PO cria: PRD + Spec Funcional + Histórias com critérios de aceite (RNFs) — usa skill /squad-prd-template que oferece **Modo Briefing** (usuário cola briefing pronto) ou **Modo Entrevista** (PO entrevista do zero). **Primeira pergunta do PO, sempre: "qual o papel da IA neste produto?"** (núcleo / acessória / ausente) — núcleo torna a seção 5 do PRD (Produto de IA: custo por interação, evals, guardrails) obrigatória e bloqueante
 3. PO apresenta ao usuário
 4. Usuário aprova, ajusta ou rejeita (GATE — bloqueia tudo)
 5. PO registra mudanças em .claude/squad/project/DECISIONS_LOG.md
-6. [Tech Lead](../../../${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md) recebe PRD aprovado → cria plano de execução
-7. TL aciona [Architect](../../../${CLAUDE_PLUGIN_ROOT}/template/agents/architect.md) → define arquitetura + stack — Architect usa skill /squad-stack-decision
-8. TL aciona [Security Engineer](../../../${CLAUDE_PLUGIN_ROOT}/template/agents/security-engineer.md) (Fase 1) para threat model — features críticas — SE usa skill /squad-threat-model
-9. TL aciona [Data Engineer](../../../${CLAUDE_PLUGIN_ROOT}/agents/data-engineer.md) como consultor — quando arquitetura envolver pipelines, DW, ML data prep
+6. Tech Lead recebe PRD aprovado → cria plano de execução
+7. TL aciona Architect → define arquitetura + stack — Architect usa skill /squad-stack-decision
+8. TL aciona Security Engineer (Fase 1) para threat model — features críticas — SE usa skill /squad-threat-model
+9. TL aciona Data Engineer como consultor — quando arquitetura envolver pipelines, DW, ML data prep
 10. Architect ajusta arquitetura conforme threat model (≤2 iterações típicas)
 11. TL apresenta arquitetura ao usuário (decisões de stack + mitigações de segurança)
 12. Usuário aprova, ajusta ou rejeita (GATE — bloqueia implementação)
 13. Architect define contratos em /contracts (OpenAPI / JSON Schema / TypeScript)
-14. [QA Engineer](../../../${CLAUDE_PLUGIN_ROOT}/agents/qa-engineer.md) define testes → Engineers ([Backend](../../../${CLAUDE_PLUGIN_ROOT}/agents/backend-engineer.md) / [Frontend](../../../${CLAUDE_PLUGIN_ROOT}/agents/frontend-engineer.md) / [Mobile](../../../${CLAUDE_PLUGIN_ROOT}/agents/mobile-engineer.md) / [AI](../../../${CLAUDE_PLUGIN_ROOT}/agents/ai-engineer.md)) implementam → CI (testes/lint/build/SAST) → em paralelo após CI verde: QA exploratório + [Code Reviewer](../../../${CLAUDE_PLUGIN_ROOT}/agents/code-reviewer.md) + Security Engineer (Fase 2 features críticas) → Quality Gates (TL integra) → [DevOps](../../../${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md) deploy (canary/blue-green em Production Mode)
+14. QA Engineer define testes → Engineers (Backend / Frontend / Mobile / AI) implementam → CI (testes/lint/build/SAST) → em paralelo após CI verde: QA exploratório + Code Reviewer + Security Engineer (Fase 2 features críticas) → Quality Gates (TL integra) → DevOps deploy (canary/blue-green em Production Mode)
 15. TL valida entrega final e atualiza memória do sistema (ARCHITECTURE.md, DECISIONS_LOG.md, TASK_BOARD.md → Done)
 ```
 
@@ -96,8 +94,5 @@ Cada passo abaixo lista o agente responsável. Ver spec completo em `${CLAUDE_PL
 
 ---
 
-## Referências
-
-- Fluxos completos: `CLAUDE.md` → "Fluxos de Projeto"
-- Definition of Done Global: `CLAUDE.md` → "Definition of Done Global"
-- Modos MVP/Production: `CLAUDE.md` → "MVP vs Production Mode"
+- **Owner:** Tech Lead · **Par:** `/squad-prd-template`, `/squad-stack-decision`, `/squad-threat-model` (passos 2, 7 e 8)
+- **Fonte:** `CLAUDE.md` do projeto → "Fluxos de Projeto", "Definition of Done Global", "MVP vs Production Mode"

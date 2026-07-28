@@ -5,11 +5,7 @@ description: Inicializa a estrutura de memória da squad num projeto (`.claude/s
 
 # Skill — Squad Init (Inicialização de Projeto)
 
-> **Owner:** Tech Lead | **Revisão:** 90 dias | **Obsolescência:** estrutura de memória do projeto mudar
-
 Cria a estrutura de **memória viva** do projeto. O conteúdo estático (specs de agentes, docs, stack-conventions, templates) permanece no plugin — só o ESTADO do projeto vive no repositório.
-
----
 
 ## Quando usar
 
@@ -45,7 +41,12 @@ Cria a estrutura de **memória viva** do projeto. O conteúdo estático (specs d
 
 **NÃO criar `contracts/` na memória da squad.** Os contratos vivem na fonte única do repositório — o pacote que os apps importam e o build compila (ex: `packages/contracts/src/`). Copiar contrato para a memória cria dois arquivos mantidos à mão, sem nada que force a sincronia: a cópia diverge em silêncio e passa a mentir. Convenção completa em `${CLAUDE_PLUGIN_ROOT}/template/contracts/README.md`.
 
-Cabeçalhos mínimos (TASK_BOARD, DECISIONS_LOG) seguem o formato dos exemplos em `${CLAUDE_PLUGIN_ROOT}/template/memory/`. Memória SEM emojis (marcadores ASCII: `[OK]`, `[!]`, `->`).
+Cabeçalhos mínimos (fonte autoritativa — não há arquivo de exemplo):
+
+- **TASK_BOARD.md**: seção `## Current Focus` (Última sessão / Em andamento / Próximo passo / Bloqueios / PR ativo / Branch ativo / Modo do projeto) + colunas `## Bloqueante`, `## Todo`, `## Doing`, `## Review`, `## Done` como tabelas `| ID | Tarefa | Agente | Observação |`
+- **DECISIONS_LOG.md**: tabela `| Data | Quem | Decisão | Contexto | Link |` + seção `## Session Log` (1 entrada por sessão: `[data] [usuário] resumo | saude: métricas (N PRs)`)
+
+Memória SEM emojis (marcadores ASCII: `[OK]`, `[!]`, `->`).
 
 ### 3. Registrar versão da squad
 
@@ -89,14 +90,7 @@ Regra vira máquina, não prosa. Perguntar ao usuário e, confirmado, executar:
 
    Em seguida, **adaptar os comandos do hook à stack** do projeto (bloco de detecção no topo do script; comandos vêm da stack-convention → "Standard commands"). Ao passar, o hook grava o marcador `$GIT_DIR/squad-gate-ok` — é ele que o push-gate do plugin verifica.
 
-   **Provar o efeito antes de declarar feito (AM-35).** Instalado não é ativo. Faça **um commit real** e confira:
-
-   ```bash
-   [ "$(cat "$(git rev-parse --git-dir)/squad-gate-ok" 2>/dev/null)" = "$(git rev-parse 'HEAD^{tree}')" ] \
-     && echo "gate CONECTADO" || echo "gate ORFAO — o hook não está na cadeia"
-   ```
-
-   Marcador defasado depois de um commit = gate órfão. Não marcar o passo como concluído nesse estado: ou encadeia, ou registra explicitamente como pendência aceita (no `SQUAD_VERSION` e no `LESSONS_LEARNED`), com a decisão do usuário.
+   **Provar o efeito antes de declarar feito (AM-35).** Instalado não é ativo. Fazer **um commit real** e rodar o snippet canônico de squad-core §M (`${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md`): marcador acompanhou o HEAD = gate CONECTADO; defasado = gate ÓRFÃO — o hook não está na cadeia. Não marcar o passo como concluído nesse estado: ou encadeia, ou registra explicitamente como pendência aceita (no `SQUAD_VERSION` e no `LESSONS_LEARNED`), com a decisão do usuário.
 
 2. **CI do projeto** (workflow real, não example):
    ```bash
@@ -141,12 +135,8 @@ Apresentar ao usuário o que foi criado + próximo passo (`/squad-new-project` p
 
 - Copiar specs de agentes/docs do plugin pro projeto "por garantia" → duplicação = drift (a razão de o plugin existir)
 - Inicializar sem SQUAD_VERSION → impossível auditar qual governança valia em cada fase
-- Sobrescrever `.claude/squad/project/` existente
 
 ---
 
-## Referências
-
-- Template de memória: `${CLAUDE_PLUGIN_ROOT}/template/memory/`
-- LESSONS template: `${CLAUDE_PLUGIN_ROOT}/template/LESSONS_LEARNED-template.md`
-- Skill seguinte: `/squad-new-project` (projeto novo) ou `/squad-resume` (retomada)
+- **Owner:** Tech Lead · **Par:** `/squad-new-project` (projeto novo) · `/squad-resume` (retomada)
+- **Fonte:** `${CLAUDE_PLUGIN_ROOT}/template/memory/` (estrutura) · `${CLAUDE_PLUGIN_ROOT}/template/LESSONS_LEARNED-template.md`
