@@ -5,8 +5,6 @@ description: Conduz Tech Lead no encerramento de sessão preparando handoff para
 
 # Skill — Squad Handoff (Encerramento de Sessão)
 
-> **Owner:** Tech Lead | **Revisão:** 90 dias | **Obsolescência:** workflow multi-user mudar significativamente
-
 Conduz TL no encerramento de sessão, garantindo que próximo usuário (mesmo ou outro) retome sem perder contexto.
 
 ---
@@ -93,15 +91,7 @@ Perguntas-gatilho (responder cada uma):
 
 ### 3. Atualizar agent-memory dos agentes envolvidos
 
-Para cada agente que teve atuação relevante na sessão:
-
-1. Acionar o agente
-2. Pedir para atualizar `.claude/squad/project/agent-memory/{agent}.md` com:
-   - Padrões adotados nesta sessão
-   - Learnings (o que descobriu, o que evitar)
-   - Decisões pequenas que não viraram DECISIONS_LOG
-
-Confirmar atualização antes de prosseguir.
+**O TL escreve direto** em `.claude/squad/project/agent-memory/{agent}.md` para cada agente com atuação relevante: padrões adotados, learnings, decisões pequenas que não viraram DECISIONS_LOG. Spawnar o agente para escrever a própria memória SÓ quando houve delegação real na sessão com contexto que o TL não viu (relatório §E não capturou tudo) — spawn carrega a spec inteira do agente para escrever ~10 linhas; não pagar esse custo por cerimônia.
 
 **Regras de escrita de memória (todas as memórias do handoff):**
 
@@ -164,23 +154,9 @@ Fallback (sem `gh` disponível): registrar auto-relato marcado como `saude(auto-
 
 Semiautonomia só é segura com medição — tendência piorando = pauta do próximo checkpoint com o usuário.
 
-### 6. Confirmar consistência da memory
+### 6. Consistência da memory
 
-Checklist antes de encerrar (valida o que os steps 2b/2c/3 já fizeram):
-
-- [ ] `ARCHITECTURE.md` atualizado se houve mudança estrutural? (step 2b)
-- [ ] `LESSONS_LEARNED.md` atualizado se houve gap de sistema da squad? (step 2c)
-- [ ] ADRs novos criados em `project/ADR/` se houve decisão estrutural?
-- [ ] `DECISIONS_LOG.md` tem entrada para cada decisão rápida tomada?
-- [ ] `TASK_BOARD.md` Current Focus + cards em colunas corretas?
-- [ ] `agent-memory/{relevantes}.md` atualizados, sem emojis?
-- [ ] Session Log tem entrada da sessão atual (≤5 linhas)?
-- [ ] Métricas de saúde registradas (achados-review / ciclos-ci / retrabalho)? (step 5d)
-- [ ] Deploy verificado no SHA esperado (se houve merge)? (step 5b)
-- [ ] **Anti-redundância:** alguma informação escrita em 2 lugares? → deixar em 1 e referenciar
-- [ ] Mudanças relevantes commitadas (não-commited = invisível para próximo usuário)?
-
-Se qualquer ❌, resolver antes de encerrar.
+Os steps 2-5 SÃO a verificação — não re-conferir item a item o que acabou de ser feito. Só dois cortes transversais antes de encerrar: **anti-redundância** (informação escrita em 2 lugares → deixar em 1 e referenciar) e **decisão estrutural da sessão sem ADR** → criar agora.
 
 ### 7. Gerar handoff message
 
@@ -252,11 +228,4 @@ Par com o passo 0 do `/squad-resume` (verificação na retomada): o handoff atua
 
 ---
 
-## Referências
-
-- TASK_BOARD: `.claude/squad/project/TASK_BOARD.md` → "Current Focus"
-- DECISIONS_LOG: `.claude/squad/project/DECISIONS_LOG.md` → "Session Log"
-- Agent memory: `.claude/squad/project/agent-memory/`
-- Skill par: `/squad-resume` (retomada)
-- TL spec: `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Multi-user Continuity"
-- CLAUDE.md → "Multi-user Continuity"
+Owner: Tech Lead · Skill par: `/squad-resume` · Fonte: `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Multi-user Continuity"

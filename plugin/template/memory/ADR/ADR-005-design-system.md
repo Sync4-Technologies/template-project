@@ -136,7 +136,7 @@ Projeto contém DS completo (sem referenciar repo externo).
 
 **Quando preferir Inline:**
 - Brand-heavy custom com identidade visual radicalmente única
-- Projeto legado onde DS já foi extraído inline (via `/squad-design-extract`)
+- Projeto legado onde DS já foi extraído inline (via `/squad-design (modo extract)`)
 - Restrição de compliance impede repo externo
 - Projeto pequeno/curto onde overhead não justifica
 

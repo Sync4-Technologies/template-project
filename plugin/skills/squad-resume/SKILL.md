@@ -5,24 +5,18 @@ description: Conduz Tech Lead em retomada de projeto por novo usuário (ou mesmo
 
 # Skill — Squad Resume (Retomada de Sessão)
 
-> **Owner:** Tech Lead | **Revisão:** 90 dias | **Obsolescência:** workflow multi-user mudar significativamente
-
 Conduz TL no onboarding rápido de novo usuário (ou retomada após pausa) sem perder contexto do trabalho anterior.
-
----
 
 ## Quando usar
 
 - Usuário (mesmo ou outro) inicia sessão em projeto existente
-- Após pausa >1 dia
-- Quando outro dev/usuário assume trabalho
-- Logo após `git clone` do projeto
+- Após pausa >1 dia · quando outro dev/usuário assume · logo após `git clone`
 
 ## Quando NÃO usar
 
-- Primeira sessão do projeto (use `/squad-new-project` em vez disso)
+- Primeira sessão do projeto → `/squad-new-project`
 - Sessão imediatamente após `/squad-handoff` pelo mesmo usuário (contexto fresco)
-- Apenas para olhar status sem retomar trabalho — use `/squad-status` (mais leve)
+- Apenas olhar status sem retomar trabalho → `/squad-status` (snapshot leve, 1-2 min vs 5-15 min)
 
 ---
 
@@ -61,29 +55,13 @@ git status --short
 
 ### 2. Ler Current Focus
 
-Em `.claude/squad/project/TASK_BOARD.md` → seção "Current Focus":
+Em `.claude/squad/project/TASK_BOARD.md` → "Current Focus": última sessão (quando, quem) · em andamento · próximo passo (acionável) · bloqueios · PR ativo · branch ativo · modo do projeto.
 
-- Última sessão (quando, quem)
-- Em andamento
-- Próximo passo (acionável)
-- Bloqueios
-- PR ativo
-- Branch ativo
-- Modo do projeto
-
-Se "Current Focus" está com `[a preencher]` ou desatualizado (≥7 dias da última sessão e há commits recentes):
-
-→ Alertar usuário: "Current Focus parece desatualizado. Sugiro confirmar estado real antes de prosseguir."
+Se está com `[a preencher]` ou desatualizado (≥7 dias da última sessão e há commits recentes) → alertar: "Current Focus parece desatualizado. Sugiro confirmar estado real antes de prosseguir."
 
 ### 3. Ler últimas 3 entradas de Session Log + calcular session delta
 
-Em `.claude/squad/project/DECISIONS_LOG.md` → seção "Session Log":
-
-Pegar as 3 últimas entradas para entender trajetória recente:
-
-- O que foi feito nas sessões anteriores
-- Decisões tomadas
-- ADRs criados
+Em `.claude/squad/project/DECISIONS_LOG.md` → "Session Log": 3 últimas entradas (o que foi feito, decisões tomadas, ADRs criados).
 
 **Session delta** — o que mudou desde a última entrada do Session Log:
 
@@ -99,83 +77,42 @@ Com base no "Próximo passo" do Current Focus, carregar SÓ o `agent-memory/{age
 
 ### 3c. Conferir se o gate local está CONECTADO (AM-35)
 
-Barato e não-negociável — uma linha. O gate pode existir no disco e nunca ter rodado:
-
-```bash
-[ "$(cat "$(git rev-parse --git-dir)/squad-gate-ok" 2>/dev/null)" = "$(git rev-parse 'HEAD^{tree}')" ] \
-  && echo "gate OK no HEAD" || echo "gate NAO validou o HEAD atual"
-```
-
-Marcador defasado em relação ao `HEAD` **depois de commits recentes** é sinal de gate órfão — instalado mas fora da cadeia de hooks (causa típica: `core.hooksPath` de um gerenciador como husky que não chama o script; ver `/squad-init` passo 5). Não é o mesmo que "ainda não commitei nada": compare com a data do último commit.
+Barato e não-negociável — rodar o snippet canônico de squad-core §M (`${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md`). Marcador defasado APÓS commits recentes = gate órfão — instalado mas fora da cadeia de hooks (causa típica: `core.hooksPath` de um gerenciador como husky que não chama o script; ver `/squad-init` passo 5). Não é o mesmo que "ainda não commitei nada": comparar com a data do último commit.
 
 Se estiver órfão: reportar no bloco "Contexto crítico" do resumo, **não consertar sozinho** — encadear hook é mudança de infra do repo e pode já ter sido adiada por decisão do usuário (conferir `SQUAD_VERSION` e `LESSONS_LEARNED` antes de propor).
 
 ### 4. Listar PRs abertos
 
-Para cada PR aberto, identificar:
-
-- Quem abriu
-- Estado de revisão (aguardando review, aprovado, changes requested)
-- Linkagem com cards em TASK_BOARD `Review`
-- É trabalho do usuário atual ou de outro?
+Para cada PR: quem abriu · estado de revisão (aguardando review, aprovado, changes requested) · linkagem com cards em TASK_BOARD `Review` · é trabalho do usuário atual ou de outro?
 
 ### 5. Listar tarefas ativas (Doing/Review/Blocked)
 
-Em `.claude/squad/project/TASK_BOARD.md`:
-
-- `Doing` — em andamento
-- `Review` — aguardando QA/CR/SE (linkar PR)
-- `Blocked` — com causa explícita
+Em `.claude/squad/project/TASK_BOARD.md`: `Doing` (em andamento) · `Review` (aguardando QA/CR/SE — linkar PR) · `Blocked` (com causa explícita).
 
 ### 6. Apresentar resumo ao usuário
 
-Formato:
+Campos, nesta ordem (compacto — delta + próximo passo, não a história do projeto):
 
 ```
 === RESUME — [Projeto] — YYYY-MM-DD ===
+🎯 Onde estamos: [1-2 linhas]
+📋 Última sessão: [data] por [usuário] — [resumo da entrada do Session Log]
+📦 Desde última sessão (git delta): [commits/PRs em origin — ou "nenhum"]
+🔄 Em andamento: [card — agente — status]
+👀 Em revisão: [PR #N — título — aguardando reviewer]
+🚫 Bloqueios: [se houver]
+➡️ Próximo passo recomendado: [ação concreta do Current Focus, ou inferida]
+⚠️ Contexto crítico: [decisões recentes / overrides de DS / flags ativas / gate órfão]
 
-🎯 Onde estamos:
-[1-2 linhas com estado atual do projeto]
-
-📋 Última sessão: [data] por [usuário]
-[resumo da última entrada de Session Log]
-
-📦 Desde última sessão (git delta):
-- [commits/PRs em origin desde a última entrada — ou "nenhum"]
-
-🔄 Em andamento:
-- [card 1 — agente — status]
-- [card 2 ...]
-
-👀 Em revisão:
-- PR #N: [título] — aguardando [reviewer]
-- ...
-
-🚫 Bloqueios:
-- [se houver]
-
-➡️ Próximo passo recomendado:
-[ação específica e concreta lida do Current Focus, ou inferida]
-
-⚠️ Contexto crítico:
-- [decisões recentes que afetam próximo passo]
-- [overrides em design-system se Path 1]
-- [feature flags ativas relevantes]
-
-Pronto para começar?
-- "sim" → executo próximo passo
-- "ajuste" → você redirecciona
-- "status" → detalhes completos
+Pronto para começar? ("sim" → executo próximo passo · "ajuste" → você redireciona · "status" → detalhes)
 ```
 
 ### 7. Aguardar input do usuário
 
-Possíveis respostas:
-
 - **Confirmar** → prosseguir com próximo passo (delegar ao agente apropriado)
-- **Redirecionar** → user define nova direção; atualizar Current Focus se relevante
+- **Redirecionar** → usuário define nova direção; atualizar Current Focus se relevante
 - **Pedir detalhe** → mostrar TASK_BOARD/agent-memory específico
-- **Recusar e começar algo novo** → user define; documentar mudança de prioridade em DECISIONS_LOG
+- **Recusar e começar algo novo** → usuário define; documentar mudança de prioridade em DECISIONS_LOG
 
 ### 8. Documentar retomada (opcional)
 
@@ -187,39 +124,14 @@ Se a retomada envolve mudança significativa de direção, adicionar entrada em 
 
 ---
 
-## Diferença vs `/squad-status`
-
-| Característica | `/squad-resume` | `/squad-status` |
-|---------------|-----------------|-----------------|
-| Quando | Início de sessão | Qualquer momento |
-| Output | Resumo + próximo passo + aguardar input | Snapshot rápido sem direção |
-| Objetivo | Onboard + retomada | Visibilidade |
-| Duração | 5-15 min | 1-2 min |
-
-Use `/squad-resume` para começar trabalho. Use `/squad-status` para checar progresso sem mudar direção.
-
----
-
 ## Anti-patterns (rejeitar)
 
-- Não ler Current Focus → começar trabalho sem contexto
-- Ignorar PRs abertos → duplicar trabalho de outro usuário
-- Não confirmar direção com usuário → assumir continuidade automática
-- Skip Session Log → perder contexto de decisões recentes
-- Atualizar Current Focus de outra sessão sem confirmar com usuário
 - **Pular `git fetch` / confiar no Current Focus sem cross-check no git remoto** → re-implementar trabalho já mergeado
 - **Re-resumir o projeto inteiro a cada retomada** → o resumo é delta + próximo passo + bloqueios, não a história do projeto (tokens)
-- Carregar agent-memory de todos os agentes → só a do agente do próximo passo
+- Atualizar Current Focus de outra sessão sem confirmar com usuário
 - **Tratar lição marcada `[OK] Aplicado` como resolvida sem prova de efeito** → ação fechada contra a existência do arquivo some do radar justamente por parecer resolvida (AM-35)
 
 ---
 
-## Referências
-
-- TASK_BOARD: `.claude/squad/project/TASK_BOARD.md` → "Current Focus"
-- DECISIONS_LOG: `.claude/squad/project/DECISIONS_LOG.md` → "Session Log"
-- Agent memory: `.claude/squad/project/agent-memory/`
-- Skill par: `/squad-handoff` (encerramento)
-- Skill leve: `/squad-status` (snapshot)
-- TL spec: `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Multi-user Continuity"
-- CLAUDE.md → "Multi-user Continuity"
+- **Owner:** Tech Lead · **Par:** `/squad-handoff` (encerramento) · `/squad-status` (snapshot leve)
+- **Fonte:** `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Multi-user Continuity" · memória em `.claude/squad/project/` (TASK_BOARD → "Current Focus", DECISIONS_LOG → "Session Log")

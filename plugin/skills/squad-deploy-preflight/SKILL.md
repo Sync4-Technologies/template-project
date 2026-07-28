@@ -5,11 +5,7 @@ description: Conduz DevOps Engineer em pre-flight checklist antes de deploy em P
 
 # Skill — Squad Deploy Pre-flight (PaaS)
 
-> **Owner:** DevOps Engineer | **Revisão:** 90 dias | **Obsolescência:** provider PaaS mudar de modelo de build
->
-> Origem: LESSONS_LEARNED Concilia §13/§25/§27 — provisionar 5 serviços custou ~15 commits fix-then-test (~10 min/iteração remota vs 1-2 min local). Cada item abaixo corresponde a um erro real que só apareceu depois do deploy.
-
----
+Origem: LESSONS_LEARNED Concilia §13/§25/§27 — provisionar 5 serviços custou ~15 commits fix-then-test (~10 min/iteração remota vs 1-2 min local). Cada item abaixo corresponde a um erro real que só apareceu depois do deploy.
 
 ## Quando usar
 
@@ -81,8 +77,5 @@ Diff entre o que o código EXIGE e o que o provider TEM:
 
 ---
 
-## Referências
-
-- DevOps spec: `${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md` → "Verificação Ativa de Deploy" e "Padrões PaaS + Docker"
-- Self-review: `${CLAUDE_PLUGIN_ROOT}/template/docs/engineer-self-review.md` → §0 (gate docker fiel)
-- Stack gotchas: `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/nodejs.md` → "Deployment & runtime gotchas"
+- **Owner:** DevOps Engineer
+- **Fonte:** `${CLAUDE_PLUGIN_ROOT}/agents/devops-engineer.md` → "Verificação Ativa de Deploy" e "Padrões PaaS + Docker" · `${CLAUDE_PLUGIN_ROOT}/template/docs/engineer-self-review.md` §0 · `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/nodejs.md` → "Deployment & runtime gotchas"

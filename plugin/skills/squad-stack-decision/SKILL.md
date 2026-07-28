@@ -5,11 +5,7 @@ description: Conduz Architect na decisão de stack do projeto, consultando stack
 
 # Skill — Stack Decision
 
-> **Owner:** Architect | **Revisão:** 90 dias | **Obsolescência:** stack-conventions reorganizadas ou ADR-001 substituído
-
-Esta skill conduz o Architect na decisão de stack do projeto, consultando os documentos em `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/`.
-
----
+Conduz o Architect na decisão de stack do projeto. Autoridade, processo e regra de conflito: `${CLAUDE_PLUGIN_ROOT}/template/agents/architect.md` → "Decisão de Stack" — esta skill estrutura a condução; o spec é a fonte.
 
 ## Quando usar
 
@@ -19,17 +15,13 @@ Esta skill conduz o Architect na decisão de stack do projeto, consultando os do
 
 ## Quando NÃO usar
 
-- Atualização menor de versão de framework (não é decisão de stack)
-- Adicionar lib pontual (não é stack)
-- Customização local de tooling
+- Atualização menor de versão de framework · lib pontual · customização local de tooling — não é decisão de stack
 
 ---
 
 ## Sua tarefa como Claude (atuando como Architect)
 
 ### 1. Coletar input do PRD
-
-Antes de propor opções, leia:
 
 - **PRD** — RNFs (performance, disponibilidade, volumetria, compliance, idiomas)
 - **Contexto da squad** — expertise do time (TL informa)
@@ -38,159 +30,63 @@ Antes de propor opções, leia:
 
 ### 2. Identificar camadas necessárias
 
-Para cada camada, decidir se aplica:
+Backend? (quase sempre) · Frontend web? (há UI no browser?) · Mobile? (app iOS/Android?) · AI? (agentes, prompts, LLM?) · Data? (pipelines, DW, ML data prep?)
 
-- **Backend?** Sempre (com raríssimas exceções)
-- **Frontend web?** Há UI no browser?
-- **Mobile?** Há app iOS/Android?
-- **AI?** Há agentes, prompts, integrações com LLM?
-- **Data?** Há pipelines, DW, ML data prep?
+### 3. Consultar stack-conventions por camada
 
-### 3. Para cada camada, consultar stack-conventions
-
-Para **Backend**:
-
-| Stack | Documento | Critério primário |
-|-------|-----------|-------------------|
-| Node.js + TS | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/nodejs.md` | I/O intensivo, real-time, ecosistema JS |
-| Python | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/python.md` | AI/ML, data, APIs simples |
-| PHP | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/php.md` | CMS, e-commerce, Admin pesado |
-| Java | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/java.md` | Enterprise, alta concorrência |
-| Go | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/backend/go.md` | Performance, microserviços, infra |
-
-Para **Frontend**:
-
-| Stack | Documento | Critério primário |
-|-------|-----------|-------------------|
-| React + Next.js | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/frontend/react.md` | SSR/SSG, ecosistema maduro, SEO |
-| Vue + Nuxt | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/frontend/vue.md` | Curva suave, menos boilerplate |
-
-Para **Mobile**:
-
-| Stack | Documento | Critério primário |
-|-------|-----------|-------------------|
-| Flutter | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/mobile/flutter.md` | Performance nativa, UI consistente |
-| React Native | `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/mobile/react-native.md` | Reúso skill React, OTA updates |
-
-Ler seções **"Quando usar"** e **"Quando NÃO usar"** de cada candidata.
+Índice das stacks suportadas, com critério primário e path de cada documento: `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/README.md`. Para cada candidata, ler as seções **"Quando usar"** e **"Quando NÃO usar"** do documento da stack.
 
 ### 4. Avaliar contra critérios do projeto
 
-Matriz de decisão:
-
-```
-Critério               | Peso | Stack A | Stack B | Stack C
------------------------|------|---------|---------|--------
-Aderência a NFRs       | Alto |  X/10   |  Y/10   |  Z/10
-Expertise do time      | Alto |  X/10   |  Y/10   |  Z/10
-Maturidade da stack    | Médio|  X/10   |  Y/10   |  Z/10
-Compliance suportado   | Alto |  X/10   |  Y/10   |  Z/10
-Custo operacional      | Médio|  X/10   |  Y/10   |  Z/10
-Ecossistema de libs    | Médio|  X/10   |  Y/10   |  Z/10
-Time-to-market         | Médio|  X/10   |  Y/10   |  Z/10
-```
+Matriz de decisão (score por opção, com peso): aderência a NFRs (alto) · expertise do time (alto) · compliance suportado (alto) · maturidade da stack (médio) · custo operacional (médio) · ecossistema de libs (médio) · time-to-market (médio).
 
 ### 5. Avaliar fornecedores externos (se aplicável)
 
-Conforme `${CLAUDE_PLUGIN_ROOT}/template/agents/architect.md` → "Avaliação de Fornecedores Externos":
-
-- Custo total (licença + operação + scaling)
-- Lock-in (estratégia de saída)
-- SLA do fornecedor vs SLA do produto
-- Fallback em indisponibilidade
-- Compliance (LGPD/GDPR/PCI/HIPAA suporta?)
-- Maturidade e suporte
+Critérios (custo, lock-in, SLA, fallback, compliance, maturidade): architect.md → "Avaliação de Fornecedores Externos" — avaliação documentada + fallback definido + ADR.
 
 ### 6. Apresentar 2-3 opções ao Tech Lead
 
-Formato:
+Esqueleto:
 
 ```
-STACK DECISION PROPOSAL — [Camada]
-Data: YYYY-MM-DD
-
-Contexto do projeto:
-- Modo: [MVP / Production]
-- NFRs relevantes: [lista]
-- Expertise do time: [resumo informado pelo TL]
-
-Opções:
-
-### Opção 1 — [Stack A] (RECOMENDADA)
-- Stack convention: ${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/[path]
-- Quando usar (do convention): [resumo]
-- Trade-offs:
-  - Prós: [lista]
-  - Contras: [lista]
-- Aderência aos critérios: [score / justificativa]
-- Eixos de produto (tabela curta — qualidade / simplicidade / facilidade de uso / escalabilidade / resiliência / expansibilidade): [1 linha por eixo onde a opção diverge das demais; simplicidade tem peso igual a escalabilidade]
-
-### Opção 2 — [Stack B]
-[mesma estrutura]
-
-### Opção 3 — [Stack C]
-[mesma estrutura]
-
-Recomendação técnica: Opção [N]
-Motivo: [justificativa em 2-3 linhas]
+STACK DECISION PROPOSAL — [Camada] — YYYY-MM-DD
+Contexto: modo · NFRs relevantes · expertise do time
+Por opção (2-3, uma RECOMENDADA):
+  stack convention (path) · quando usar (do convention) · prós/contras ·
+  aderência aos critérios (score) · eixos de produto (1 linha por eixo onde a opção
+  diverge — qualidade/simplicidade/facilidade/escalabilidade/resiliência/expansibilidade;
+  simplicidade tem peso igual a escalabilidade)
+Recomendação técnica: Opção [N] — motivo (2-3 linhas)
 ```
 
 ### 7. Tech Lead revisa contexto operacional
 
-TL valida:
-- Pipeline existente suporta?
-- Infra disponível compatível?
-- Time tem capacidade real (não só "já viu")?
-- Prazo permite curva de aprendizado se stack nova?
+Pipeline existente suporta? Infra compatível? Time tem capacidade real (não só "já viu")? Prazo permite curva de aprendizado se stack nova?
 
 ### 8. Conflito Architect × Tech Lead
 
-Se TL discorda da sua recomendação:
-- TL pode pedir revisão de trade-offs
-- TL pode pedir opções adicionais
-- TL **não pode** sobrescrever sua decisão técnica unilateralmente
-- Persistindo divergência → escalar ao usuário
+TL pode pedir revisão de trade-offs ou opções adicionais; **não pode** sobrescrever sua decisão técnica unilateralmente. Divergência persistindo → escalar ao usuário (regra completa no spec).
 
 ### 9. Apresentar ao usuário (TL conduz)
 
-TL apresenta opções + recomendação ao usuário. Usuário aprova/ajusta/veta.
+TL apresenta opções + recomendação. Usuário aprova/ajusta/veta — **toda decisão de stack vai ao usuário**.
 
 ### 10. Registrar decisão
 
-Criar `.claude/squad/project/ADR/ADR-NNN-stack-projeto.md` baseado em `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-template.md`:
-
-- Status: Aceita
-- Contexto: por que foi necessária
-- Decisão: stack escolhida + versões
-- Alternativas consideradas: outras opções com motivo de rejeição
-- Trade-offs: o que abrimos mão
-- Consequências: positivas, negativas, neutras
-- Critérios de revisão: quando reavaliar
+Criar `.claude/squad/project/ADR/ADR-NNN-stack-projeto.md` a partir de `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-template.md` — incluir alternativas consideradas (com motivo de rejeição), trade-offs e critérios de revisão.
 
 ### 11. Atualizar ARCHITECTURE.md
 
-`.claude/squad/project/ARCHITECTURE.md` → seção "Stack Tecnológica":
-- Tecnologia escolhida + versão
-- Link para ADR
-- Link para stack convention aplicável
-
-E seção "Stack Conventions Doc" com link para spec ativa.
+`.claude/squad/project/ARCHITECTURE.md` → seção "Stack Tecnológica" (tecnologia + versão, link para ADR e para a convention) e seção "Stack Conventions Doc" (spec ativa).
 
 ---
 
 ## Anti-patterns (rejeitar)
 
-- Escolher stack pela "novidade" sem avaliar maturidade
-- Escolher pelo CV-driven development (dev quer aprender)
-- Ignorar expertise do time
-- Sem ADR registrando decisão
+- Escolher stack pela "novidade" sem avaliar maturidade · CV-driven development (dev quer aprender)
 - Stack hardcoded em código de agentes (deve estar em ADR + ARCHITECTURE.md)
 
 ---
 
-## Referências
-
-- ADR-001 (opções padrão): `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-001-stack.md`
-- Stack conventions: `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/README.md`
-- Architect: `${CLAUDE_PLUGIN_ROOT}/template/agents/architect.md` → "Decisão de Stack"
-- TL papel: `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Decisão de Stack"
+- **Owner:** Architect
+- **Fonte:** `${CLAUDE_PLUGIN_ROOT}/template/agents/architect.md` → "Decisão de Stack" e "Avaliação de Fornecedores Externos" · `${CLAUDE_PLUGIN_ROOT}/template/docs/stack-conventions/README.md` · ADR-001 (opções padrão)

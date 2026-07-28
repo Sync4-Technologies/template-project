@@ -5,35 +5,18 @@ description: Conduz Security Engineer em threat modeling Fase 1 sobre arquitetur
 
 # Skill — Threat Model (Security Engineer Fase 1)
 
-> **Owner:** Security Engineer | **Revisão:** 90 dias | **Obsolescência:** processo de SE Fase 1 mudar significativamente
-
-Esta skill conduz o SE em **threat modeling Fase 1** sobre arquitetura proposta — antes de contratos finalizados, antes de implementação.
-
----
+Conduz o SE em **threat modeling Fase 1** sobre arquitetura proposta — antes de contratos finalizados, antes de implementação. Método, checklists, classificação e anti-patterns vivem em `${CLAUDE_PLUGIN_ROOT}/template/agents/security-engineer.md` — esta skill conduz o fluxo, não duplica o spec.
 
 ## Quando usar
 
 - Architect entregou arquitetura proposta (passo 7 do Fluxo 1)
-- Feature é classificada como **crítica** (ver `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Critério feature crítica")
+- Feature é **crítica** — definição autoritativa: `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` → "Critério feature crítica"
 - Arquitetura ainda permite ajustes (contratos não finalizados)
 
 ## Quando NÃO usar
 
-- Feature não é crítica (skill é para Fase 1 obrigatória apenas em críticas)
-- Arquitetura já está implementada → use Fase 2 manualmente
-- Pentest review pós-implementação → use checklist de SE Fase 2
-
----
-
-## Definição de "feature crítica"
-
-Conforme `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` (fonte autoritativa):
-
-- autenticação e autorização
-- processamento de pagamentos
-- acesso a dados Confidencial ou Restrito
-- integrações com sistemas externos sensíveis
-- qualquer rota que processe dados pessoais (LGPD/GDPR)
+- Feature não é crítica (Fase 1 é obrigatória apenas em críticas)
+- Pós-implementação / pentest review → Fase 2 (subagent `security-reviewer`)
 
 ---
 
@@ -41,141 +24,58 @@ Conforme `${CLAUDE_PLUGIN_ROOT}/template/agents/tech-lead.md` (fonte autoritativ
 
 ### 1. Coletar input
 
-Antes de iniciar, leia:
-
-- Arquitetura proposta (do Architect)
-- PRD → seção RNFs (classificação de dados, compliance, auditoria)
-- `.claude/squad/project/ARCHITECTURE.md` (estado atual)
-- ADRs relacionados
+Arquitetura proposta (do Architect) · PRD → RNFs (classificação de dados, compliance, auditoria) · `.claude/squad/project/ARCHITECTURE.md` · ADRs relacionados.
 
 ### 2. Threat Model (matriz STRIDE adaptada)
 
-Para cada **ativo crítico** identificado, preencha:
+Para cada **ativo crítico** identificado, preencher:
 
 ```
-Ativo: [nome — ex: token JWT, dados de cartão, sessão de usuário]
+Ativo: [ex: token JWT, dados de cartão, sessão de usuário]
 Classificação: [Público / Interno / Confidencial / Restrito]
-Atores: [quem pode atacar — anônimo, autenticado, insider, sistema externo]
-Vetores possíveis:
-  - Injection (SQL, NoSQL, command, LDAP)
-  - Broken authentication
-  - Broken authorization (IDOR, BOLA)
-  - Sensitive data exposure
-  - SSRF
-  - XSS / CSRF (se aplicável)
-  - MITM
-  - Replay attacks
-  - Privilege escalation
-  - Superfície IA (se a feature usa LLM — checklist completo em security-engineer.md → "Checklist LLM/IA"):
-    prompt injection direto e INDIRETO (conteúdo de RAG/fetch como comando),
-    insecure output handling (output do modelo executado/renderizado sem validação),
-    vazamento de PII via contexto/logs de prompt,
-    excessive agency de tools (ação irreversível sem gate),
-    model DoS / estouro de custo
+Atores: [anônimo, autenticado, insider, sistema externo]
+Vetores possíveis: [injection · broken auth · broken authz (IDOR/BOLA) ·
+  sensitive data exposure · SSRF · XSS/CSRF · MITM · replay · privilege escalation]
+  — feature com LLM: cobrir também a superfície IA de
+  security-engineer.md → "Checklist LLM/IA" (ler a seção)
 Impacto se sucesso: [breach, indisponibilidade, perda financeira, regulatório]
 Probabilidade: [Alta / Média / Baixa]
-Mitigação proposta: [controle técnico específico]
-Custo da mitigação: [Baixo / Médio / Alto]
-Aprovação do usuário necessária? [sim / não — sim se mudança arquitetural significativa, custo elevado, ou mudança de escopo]
+Mitigação proposta: [controle técnico específico] | Custo: [Baixo / Médio / Alto]
+Aprovação do usuário necessária? [sim / não]
 ```
 
-### 3. Validações específicas
+### 3. Validações específicas (checklists do spec)
 
-#### Auth/Authz
-- [ ] Autenticação robusta (MFA quando dados sensíveis)
-- [ ] Senhas: Argon2id ou bcrypt cost ≥12
-- [ ] Tokens: expiração curta (≤15min) + refresh rotativo
-- [ ] Autorização por recurso (não só role) — IDOR/BOLA mitigado
-- [ ] Logout invalida sessão no servidor
-- [ ] Rate limiting em endpoints de auth
+Aplicar sobre a arquitetura os checklists de security-engineer.md — **"Revisão de Auth/Authz"**, **"Criptografia"**, **"Compliance"**, **"Padrões obrigatórios de Auth/Token"** e secrets — ler as seções e verificar item a item. Parâmetros e itens de superfície adicionais desta fase:
 
-#### Criptografia
-- [ ] TLS 1.2+ em trânsito (1.3 preferencial)
-- [ ] Dados sensíveis em repouso: AES-256 ou equivalente
-- [ ] Sem criptografia customizada (usa libs estabelecidas)
-- [ ] Gestão de chaves: rotação documentada, armazenamento seguro (KMS/vault)
-- [ ] Sem dados sensíveis em logs / URLs / mensagens de erro
-
-#### Compliance (conforme PRD)
-- [ ] **LGPD/GDPR:** consentimento, direito ao esquecimento, portabilidade, notificação de breach
-- [ ] **PCI DSS:** dados de cartão via gateway (sem PAN no backend), logs sem PAN
-- [ ] **HIPAA:** PHI criptografado, auditoria de acesso
-
-#### Secrets
-- [ ] Sem segredos em código
-- [ ] Sem segredos em logs
-- [ ] Variáveis de ambiente protegidas (vault, secrets manager)
-- [ ] Rotação documentada
-
-#### Surface de ataque
-- [ ] CORS configurado explicitamente (sem `*` com auth)
-- [ ] Headers de segurança (CSP, HSTS, X-Frame-Options)
-- [ ] Input validation em todas as fronteiras
-- [ ] Output encoding correto
+- [ ] Senhas: Argon2id ou bcrypt cost ≥12 · tokens: expiração ≤15min + refresh rotativo
+- [ ] CORS configurado explicitamente (sem `*` com auth) · headers de segurança (CSP, HSTS, X-Frame-Options)
+- [ ] Input validation em todas as fronteiras · output encoding correto
 
 ### 4. Classificar resultado
 
-- **APROVADO** — sem vulnerabilidades críticas/altas
-- **APROVADO COM RECOMENDAÇÕES** — vulnerabilidades baixas/médias; registrar em `.claude/squad/project/TASK_BOARD.md` com tag `security`
-- **REJEITADO** — vulnerabilidade crítica/alta; arquitetura precisa ajuste
+**APROVADO / APROVADO COM RECOMENDAÇÕES / REJEITADO** — critérios em security-engineer.md → "Classificação do resultado". Recomendações → `.claude/squad/project/TASK_BOARD.md` com tag `security`; REJEITADO → arquitetura precisa de ajuste.
 
 ### 5. Mitigações que exigem aprovação do usuário
 
-Quando mitigação implica:
-- Mudança arquitetural significativa
-- Custo elevado (operacional ou licença)
-- Impacto em prazo
-- Trade-off de produto
-- Compliance que exige decisão de negócio
-
-→ **TL apresenta ao usuário**. Decisão registrada em ADR.
+Critérios para escalar (mudança arquitetural significativa, custo elevado, prazo, trade-off de produto, compliance de negócio): security-engineer.md → "Mitigações críticas — aprovação do usuário". **TL apresenta ao usuário**; decisão registrada em ADR.
 
 ### 6. Reportar ao Tech Lead
 
-Formato:
-
 ```
-THREAT MODEL — [Feature]
-Data: [YYYY-MM-DD]
-Modo: [MVP / Production]
-
+THREAT MODEL — [Feature] — YYYY-MM-DD — modo [MVP / Production]
 Resultado: [APROVADO / APROVADO COM RECOMENDAÇÕES / REJEITADO]
-
-Threats identificados: [N]
-Threats críticos/altos: [N]
-
-Tabela de threats: [conforme passo 2]
-
+Threats identificados: [N] (críticos/altos: [N]) — tabela do passo 2
 Mitigações que exigem aprovação do usuário: [lista]
-
-Recomendações para TASK_BOARD: [lista de ações com prioridade]
-
-Próximo passo: [Architect ajusta / Continuar para contratos / Apresentar ao usuário]
+Recomendações para TASK_BOARD: [lista com prioridade]
+Próximo passo: [Architect ajusta / continuar para contratos / apresentar ao usuário]
 ```
 
 ### 7. Loop de feedback com Architect
 
-Threats identificados podem alterar contratos. Architect ajusta arquitetura/contratos antes de prosseguir. Re-validação em ≤ 2 iterações típicas.
+Threats identificados podem alterar contratos. Architect ajusta arquitetura/contratos antes de prosseguir; re-validação em ≤2 iterações típicas.
 
 ---
 
-## Anti-patterns (rejeitar)
-
-- Tokens sem expiração
-- Senhas em texto plano ou hash fraco (MD5, SHA1)
-- Autorização apenas por role (sem verificação de recurso)
-- Dados sensíveis em logs ou URLs
-- CORS aberto (`*`) com autenticação
-- Criptografia customizada
-- Ausência de rate limiting em endpoints de auth
-- Default-allow em flag de auth/authz quando serviço de flags indisponível
-
----
-
-## Referências
-
-- Regras de SE: `${CLAUDE_PLUGIN_ROOT}/template/agents/security-engineer.md`
-- ADR Hexagonal: `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-002-arquitetura-hexagonal.md`
-- ADR Feature Flags: `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md`
-- OWASP Top 10: <https://owasp.org/www-project-top-ten/>
-- STRIDE: <https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats>
+- **Owner:** Security Engineer · **Par:** Fase 2 roda no subagent `security-reviewer`
+- **Fonte:** `${CLAUDE_PLUGIN_ROOT}/template/agents/security-engineer.md` (checklists, classificação, anti-patterns a bloquear)
