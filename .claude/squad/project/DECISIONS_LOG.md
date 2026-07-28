@@ -18,6 +18,7 @@
 [2026-07-28] [Usuário] Loop engineering = princípio no squad-core (§G); SDD = mini-spec leve; **Scrum Master rejeitado** (cerimônia de coordenação humana que agentes não precisam); painel de custo em 2 degraus (OTEL primeiro) | Anti-over-engineering
 [2026-07-28] [Usuário] CI_RUNNER=self-hosted também em concilia e contracts- (dormente: workflows não leem a var; contracts- intocado por ordem do usuário) | Preparação p/ runner org-wide
 [2026-07-28] [PENDENTE-Usuário] Manter runner como default permanente vs voltar ao cloud quando billing retornar (~2026-08-01) | Trade-offs apresentados (disponibilidade, ambiente divergente, recursos); decisão registrará aqui
+[2026-07-28] [Usuário] **Fase 1 (dieta de tokens) ANTECIPADA — executa antes da batalha trokey** (Current Focus dizia após) | Ordem invertida por decisão direta; batalha valida 1.9.0 + Fase 1 juntos. Checklist de reconciliação trokey 1.6→1.9 preparado e entregue antes
 
 ---
 

@@ -45,7 +45,12 @@ Cria a estrutura de **memória viva** do projeto. O conteúdo estático (specs d
 
 **NÃO criar `contracts/` na memória da squad.** Os contratos vivem na fonte única do repositório — o pacote que os apps importam e o build compila (ex: `packages/contracts/src/`). Copiar contrato para a memória cria dois arquivos mantidos à mão, sem nada que force a sincronia: a cópia diverge em silêncio e passa a mentir. Convenção completa em `${CLAUDE_PLUGIN_ROOT}/template/contracts/README.md`.
 
-Cabeçalhos mínimos (TASK_BOARD, DECISIONS_LOG) seguem o formato dos exemplos em `${CLAUDE_PLUGIN_ROOT}/template/memory/`. Memória SEM emojis (marcadores ASCII: `[OK]`, `[!]`, `->`).
+Cabeçalhos mínimos (fonte autoritativa — não há arquivo de exemplo):
+
+- **TASK_BOARD.md**: seção `## Current Focus` (Última sessão / Em andamento / Próximo passo / Bloqueios / PR ativo / Branch ativo / Modo do projeto) + colunas `## Bloqueante`, `## Todo`, `## Doing`, `## Review`, `## Done` como tabelas `| ID | Tarefa | Agente | Observação |`
+- **DECISIONS_LOG.md**: tabela `| Data | Quem | Decisão | Contexto | Link |` + seção `## Session Log` (1 entrada por sessão: `[data] [usuário] resumo | saude: métricas (N PRs)`)
+
+Memória SEM emojis (marcadores ASCII: `[OK]`, `[!]`, `->`).
 
 ### 3. Registrar versão da squad
 
