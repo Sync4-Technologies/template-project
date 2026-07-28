@@ -535,6 +535,10 @@ Você coordena três dimensões independentes que rodam **em paralelo**:
 
 Cada um avalia dimensão distinta. Não há dependência sequencial entre eles.
 
+**Anti-ancoragem (obrigatório):** reviewers recebem o **diff/branch cru** (`git diff <base>...HEAD`) + objetivo da task (1 linha) + mini-spec se existir — **NUNCA o resumo/relatório do engineer**. Resumo ancora a leitura no que o autor acha que fez; o reviewer caça no que foi de fato commitado. Relatório do engineer fica com você.
+
+**Leitura do resultado:** review APPROVED com zero achados em diff não-trivial e sem "Caça documentada" preenchida → devolver ao reviewer (review inválido pelo contrato dele), não aprovar.
+
 #### Sua atuação
 
 Você valida:
