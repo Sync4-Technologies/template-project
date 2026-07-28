@@ -1,6 +1,7 @@
 plugin: dev-squad@pdati
-version: 1.8.0
-desde: 2026-07-26
+version: 1.9.0
+desde: 2026-07-28
 historico:
+  - "2026-07-28: 1.8.0 -> 1.9.0 (v1.8.1 fix UP-09; v1.9.0 Fase 0 — reviewer cacador, QA executa, mini-spec, /squad-audit, par.G). Governanca nova de review vale a partir da proxima sessao"
   - "ate 2026-07-05: template clonado (layout legado, equivalente a v1.1.0 no merge da migracao)"
   - "2026-07-26: reconciliacao 1.1.0 -> 1.8.0 (registro estava defasado; plugin user-scope ja em 1.8.0). Governanca reescrita: repo assumido como upstream do plugin, produto AgentesIA arquivado em archive/agentesia/"

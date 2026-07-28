@@ -1,7 +1,7 @@
 # ARCHITECTURE.md — dev-squad (upstream)
 
 > Fonte de verdade da arquitetura deste repositório. Atualizar a cada mudança estrutural.
-> Última atualização: 2026-07-26 (reconciliação: repo assumido como upstream do plugin; AgentesIA arquivado)
+> Última atualização: 2026-07-28 (v1.9.0: 16ª skill /squad-audit + template feature-spec)
 
 ---
 
@@ -14,7 +14,7 @@ Este repositório é o **upstream do plugin `dev-squad`** (marketplace `pdati`):
 ```
 plugin/                      # o plugin em si (fonte publicada)
 ├── agents/                  # 11 subagents nativos (engineers, QA, reviewers, advisor)
-├── skills/                  # 15 skills /squad-* (resume, handoff, init, preflight, ...)
+├── skills/                  # 16 skills /squad-* (resume, handoff, init, audit, preflight, ...)
 ├── hooks/                   # hooks.json + load-memory, push-gate, reminders
 ├── scripts/                 # scripts internos do plugin
 └── template/                # templates copiados por /squad-init (agents main-thread, ADRs, memória)

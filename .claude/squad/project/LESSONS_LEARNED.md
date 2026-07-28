@@ -121,6 +121,46 @@ Check obrigatorio precisa de caminho alternativo LEGITIMO para o verde. Se a uni
 
 ---
 
+## 5. Gate de review sem metodo nem contrato de evidencia = teatro (severidade: ALTO)
+
+### O que aconteceu
+
+achados-review=0 em 24 PRs ao longo de 3 sessoes, enquanto audits externos pedidos pelo usuario achavam "muitas falhas". Auto-analise (2026-07-28, docs/PLANO_EVOLUCAO_SQUAD.md) achou a causa no DESENHO: code-reviewer instruido a ser "confirmacao, nao descoberta" com "PR sem achados e o normal"; handoff codificava `achados-review — meta 0`; CR em model sonnet; QA nunca executava nada (auditava relatorio do engineer); TL entregava resumo do engineer ao reviewer (ancoragem).
+
+### Causa raiz
+
+Metrica invertida + prompt de confirmacao + ausencia de protocolo de caca e de contrato de evidencia. O sistema PEDIA zero achados e recebia exatamente isso.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-12 | Fase 0 do plano: reviewer cacador (3 passadas, opus, file:line + cenario + Caca documentada), QA executa-ou-nao-aprova, mini-spec SDD, anti-ancoragem no TL, metrica desinvertida (0 em 3+ PRs nao-triviais = alarme), /squad-audit, squad-core par.G loop fechado | plugin/agents/code-reviewer.md, qa-engineer.md, tech-lead.md, squad-handoff, squad-core, squad-audit | Feito (v1.9.0) — prova de efeito pendente: batalha trokey |
+
+### Principio
+
+Metrica cuja meta e zero achados treina o gate a nao achar. Gate de qualidade se mede pelo que ENCONTRA e documenta (caca), nao pelo que aprova. Zero saudavel so existe com caca documentada.
+
+---
+
+## 6. Tag de release antes de confirmar o merge aponta pro commit errado (severidade: BAIXO)
+
+### O que aconteceu
+
+Release v1.9.0: `gh pr merge 44` retornou mensagem pedindo `--admin` (falha transiente de propagacao de checks) e NAO mergeou; o comando seguinte tagueou `origin/main` — que ainda era o main ANTIGO. Tag v1.9.0 nasceu apontando para o release anterior. Detectado na hora (marketplace reportou "already at 1.8.1"), corrigido com tag -f + push -f.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-11 | Fluxo de release: apos `gh pr merge`, SEMPRE confirmar `gh pr view --json state == MERGED` E `git fetch && git log -1 origin/main` conter o merge ANTES de taguear. Encadear merge+tag num comando so e proibido | skills squad-handoff/resume (fluxo de release) + agent-memory tech-lead | Registrado (fix de skill vai na Fase 1) |
+
+### Principio
+
+Tag e imutavel na percepcao dos consumidores — nasceu errada, alguem ja pode ter baixado. Confirmar o estado remoto entre cada par de passos irreversiveis do release.
+
+---
+
 ## Indice de acoes
 
 | ID | Acao (resumo) | Arquivo-alvo | Status |
@@ -134,4 +174,6 @@ Check obrigatorio precisa de caminho alternativo LEGITIMO para o verde. Se a uni
 | UP-07 | plugin-ci com runner parametrizavel (CI_RUNNER) — fallback legitimo pro billing | .github/workflows/plugin-ci.yml | Feito (v1.8.0) |
 | UP-08 | Registrar runner self-hosted (org-level) na maquina do Pablo | acao do usuario | Feito (2026-07-26) |
 | UP-10 | setup-python condicional ao cloud — self-hosted macOS usa python3 local | .github/workflows/plugin-ci.yml | Feito (PR #41) |
+| UP-11 | Release: confirmar MERGED + fetch antes de taguear (tag nasceu no commit errado) | skills de release | Registrado |
+| UP-12 | Review-teatro: reviewer cacador + QA executa + metrica desinvertida (Fase 0 do plano) | agents + skills + squad-core | Feito (v1.9.0), prova pendente na batalha |
 | UP-09 | Skills mandavam `claude plugin update dev-squad` — CLI exige id COMPLETO `dev-squad@pdati`; nome curto falha com "Plugin not found" (falhou pro usuario na 1a tentativa real do passo novo) | plugin/skills/squad-resume + squad-handoff | Feito (v1.8.1) |
