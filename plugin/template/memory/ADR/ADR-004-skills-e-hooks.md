@@ -42,9 +42,7 @@ Adotar **skills e hooks de forma seletiva** para automatizar workflows repetitiv
 #### Skills de Design System
 | Skill | Trigger | Owner |
 |-------|---------|-------|
-| `/squad-design-system-new` | Projeto novo com UI, define DS | PD |
-| `/squad-design-extract` | Projeto legado sem doc, extrai DS | PD |
-| `/squad-design-audit` | Audit periódico de consistência visual | PD |
+| `/squad-design` | Ciclo de vida do DS — modos new (projeto novo), extract (legado sem doc) e audit (drift periódico) | PD |
 
 #### Skills de continuidade multi-usuário
 | Skill | Trigger | Owner |

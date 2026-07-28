@@ -1,6 +1,6 @@
 # Plugin `dev-squad` — AI Software Squad
 
-Governança completa para projetos conduzidos por squad de agentes Claude Code: 5 papéis main-thread + 11 subagents nativos, 16 skills, hooks de memória viva e templates de qualidade.
+Governança completa para projetos conduzidos por squad de agentes Claude Code: 5 papéis main-thread + 11 subagents nativos, 14 skills, hooks de memória viva e templates de qualidade.
 
 ## Instalação
 
@@ -13,7 +13,7 @@ Governança completa para projetos conduzidos por squad de agentes Claude Code: 
 
 # 3. Verificar
 claude plugin list              # dev-squad@pdati — enabled
-claude plugin details squad     # 16 skills, 3 hooks, ~870 tok always-on
+claude plugin details squad     # 14 skills, 3 hooks, ~870 tok always-on
 
 # 4. Reiniciar a sessão Claude Code (plugin carrega na próxima sessão)
 
@@ -39,7 +39,7 @@ Skills completas: ver `skills/`. Specs main-thread (TL, PO, PD, Architect, SE): 
 
 | Vive no plugin (estático, versionado aqui) | Vive no projeto (estado) |
 |---|---|
-| Specs main-thread (5) + subagents nativos (11), 16 skills, 3 hooks, docs (self-review, stack-conventions, design-system), templates (PRD, ADR, LESSONS_LEARNED), CI examples | `.claude/squad/project/` — ARCHITECTURE, TASK_BOARD, DECISIONS_LOG, ADRs do projeto, agent-memory, LESSONS_LEARNED, contracts, `SQUAD_VERSION` |
+| Specs main-thread (5) + subagents nativos (11), 14 skills, 3 hooks, docs (self-review, stack-conventions, design-system), templates (PRD, ADR, LESSONS_LEARNED), CI examples | `.claude/squad/project/` — ARCHITECTURE, TASK_BOARD, DECISIONS_LOG, ADRs do projeto, agent-memory, LESSONS_LEARNED, contracts, `SQUAD_VERSION` |
 
 **Regra de governança:** não editar arquivos do plugin dentro de um projeto. Gap no sistema da squad → registrar no `LESSONS_LEARNED.md` do projeto (skill `/squad-handoff`, step 2c) → backportar aqui (upstream) → nova versão → projetos atualizam explicitamente. Isso fecha o ciclo de drift que motivou o plugin.
 
@@ -54,6 +54,30 @@ Skills completas: ver `skills/`. Specs main-thread (TL, PO, PD, Architect, SE): 
 Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.claude/squad/project/`, remove as cópias locais de template/skills/hooks (com confirmação) e grava `SQUAD_VERSION`.
 
 ## Changelog
+
+### 1.10.0 (2026-07-28)
+
+Fase 1 do plano de evolução: **dieta de tokens** — ~32% do sistema era gordura (duplicação, retórica, cerimônia). Squad-core vira fonte única; specs e skills enxutos sem perda de comportamento.
+
+- **[BREAKING] Trio de design fundido em `/squad-design`**: as skills `/squad-design-system-new`, `/squad-design-extract` e `/squad-design-audit` (728 linhas, ~40% compartilhado) viram UMA skill com modos `new`/`extract`/`audit` (~100 linhas). Núcleo comum (baseline Path 1/2, governança de drift, formato de report) declarado uma vez
+- **squad-core §H-§N (fonte única, rodada 2)**: flags (§H→ADR-003), fronteiras de segurança (§I), UI engineering (§J), DoD comum (§K), ciclo de versão do plugin (§L), snippet gate-ok canônico (§M), formato de skill (§N). Regra compartilhada vive num lugar; specs referenciam
+- **tech-lead.md 1012→268 linhas**: fluxo de revisão narrado 1× (era 3×), gate de arquitetura 1× (era 2×), regimes de espera fundidos na matriz de autonomia, SOLID/OWASP devolvidos aos donos (CR/SE). Removida a frase "Review = confirmação" que contradizia o reviewer caçador da 1.9.0
+- **15 specs de agentes enxutos** (advisor.md como régua): engineers 1917→622, QA/DevOps/Data/Support 1743→498, main-thread 2170→686. Intocáveis preservados e verificados: regras de evidência do QA (1.9.0), método Fase 1 do SE, lessons AM-*/UP-*, âncoras de seção citadas por skills
+- **Skills sem cerimônia**: headers de governança morta removidos (rodapé §N de ≤3 linhas), skills que colavam conteúdo dos specs que citam agora referenciam (threat-model, incident, stack-decision, prd-template), anti-patterns-espelho cortados, templates de relatório em esqueleto
+- **handoff mais barato**: TL escreve agent-memory direto (spawn só quando houve delegação real com contexto que o TL não viu); checklist §6 de double-pass removido
+- **Bugs do diagnóstico**: B1 cabeçalhos de board inline no squad-init (referência fantasma); B2 links quebrados; B3 memory-update-reminder detecta EXECUÇÃO de commit, não menção (UP-06); B4 links `[${VAR}](...)` viram paths; B5 advisor `model: fable`
+
+### 1.9.0 (2026-07-28)
+
+Fase 0 do plano de evolução: **reviewer de verdade** — ataca a causa raiz de `achados-review=0` em 24 PRs (gate de review era teatro por desenho).
+
+- **[BREAKING] code-reviewer reescrito como caçador de defeitos** (389→~95 linhas, molde do security-reviewer): protocolo de 3 passadas (mapa do diff + chamadores; caça dirigida por categoria; adversarial nos pontos de maior risco), `model: opus`, contrato de saída com `file:line` + cenário de falha concreto + severidade, mínimo de 5 hipóteses investigadas documentadas ("Caça documentada") em PR não-trivial. Removida a instrução "PR sem achados é o normal" (complacência por desenho)
+- **QA executa ou não aprova**: aprovação exige comando executado + output real + cobertura extraída pelo próprio QA — auditar relatório do engineer não é validação. Cláusula "ajusta os testes" corrigida: nunca enfraquecer asserção para ficar verde
+- **Mini-spec de feature (SDD leve)**: `specs/<ID>.md` por feature (contrato + critérios de aceite + cenários), criada por Architect+QA, consumida pelo engineer, cobrada pelo CR — template em `template/docs/feature-spec.md`
+- **Anti-ancoragem**: TL entrega ao reviewer o diff cru + objetivo, nunca o resumo do engineer
+- **Métrica desinvertida**: `achados-review=0` em 3+ PRs não-triviais consecutivos = alarme de gate morto no handoff, não sinal de saúde
+- **Nova skill `/squad-audit`**: audit periódico code+security multi-passada com verificação adversarial dos achados
+- **squad-core §G (loop fechado)**: toda delegação define critério de saída verificável por comando + limite de 3 iterações
 
 ### 1.8.0 (2026-07-26)
 

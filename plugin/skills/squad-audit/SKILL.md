@@ -62,7 +62,7 @@ Todo achado **CRIT/ALTO** passa por segunda opinião antes de virar card: spawn 
 - Pular a verificação adversarial de CRIT/ALTO (falso positivo de audit queima confiança no processo)
 - Audit substituindo o review de PR (dimensões diferentes; um não dispensa o outro)
 
-## Referências
+---
 
-- Protocolo de caça: `${CLAUDE_PLUGIN_ROOT}/agents/code-reviewer.md`
-- Checklists de segurança: `${CLAUDE_PLUGIN_ROOT}/template/agents/security-engineer.md`
+- **Owner:** Tech Lead · **Par:** `/squad-incident` (CRIT em produção)
+- **Fonte:** `${CLAUDE_PLUGIN_ROOT}/agents/code-reviewer.md` (protocolo de caça) · `${CLAUDE_PLUGIN_ROOT}/template/agents/security-engineer.md` (checklists de segurança)

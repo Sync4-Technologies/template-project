@@ -57,7 +57,7 @@ Projeto contém DS completo (sem referenciar repo externo).
 
 **Quando usar:**
 - Brand-heavy custom com identidade visual única
-- Projeto legado onde DS já foi extraído inline (`/squad-design-extract`) e não vale externalizar
+- Projeto legado onde DS já foi extraído inline (`/squad-design (modo extract)`) e não vale externalizar
 - Restrição de compliance impede usar repo externo
 
 ADR específico do projeto justifica escolha de inline.
@@ -175,7 +175,7 @@ Tabela com tokens equivalentes em dark mode.
 ## Fluxos relacionados
 
 ### Projeto novo
-1. PD usa `/squad-design-system-new` para conduzir decisão
+1. PD usa `/squad-design (modo new)` para conduzir decisão
 2. **Externo:** preenche `source.md`, identifica overrides → `tokens-override.md`
 3. **Inline:** popula `tokens/`, `components/`, `patterns/`, `accessibility.md` completo
 4. ADR específico do projeto registra escolha
@@ -183,7 +183,7 @@ Tabela com tokens equivalentes em dark mode.
 
 ### Projeto existente (primeira vez aqui)
 1. Tech Lead aciona Product Designer
-2. PD usa `/squad-design-extract` para reverse-engineer da UI atual
+2. PD usa `/squad-design (modo extract)` para reverse-engineer da UI atual
 3. PD avalia: DS extraído é similar a algum externo conhecido (`external-repos.md`)?
    - **Sim:** documenta inline por ora; propõe migração para externo em sprint futura (ADR)
    - **Não:** mantém inline definitivo
@@ -192,11 +192,11 @@ Tabela com tokens equivalentes em dark mode.
 ### Update do DS (Path 1 — Externo)
 1. Squad central libera nova version no repo externo
 2. PD do projeto avalia changelog + compatibility
-3. Bump em `source.md` → nova version + audit visual (`/squad-design-audit`)
+3. Bump em `source.md` → nova version + audit visual (`/squad-design (modo audit)`)
 4. Tarefas resultantes em `TASK_BOARD.md` com tag `ds-update`
 
 ### Audit periódico
-1. PD roda `/squad-design-audit` (sugerido trimestral em produtos maduros)
+1. PD roda `/squad-design (modo audit)` (sugerido trimestral em produtos maduros)
 2. Path 1: compara overrides locais vs baseline do repo externo na version atual
 3. Path 2: compara telas atuais com `tokens/`, `components/`, `patterns/`
 4. Drift documentado em `TASK_BOARD.md` (tag `design-debt`)

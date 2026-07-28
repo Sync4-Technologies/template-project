@@ -5,9 +5,7 @@ description: Conduz Fluxo 1 (projeto novo sem artefatos) — PO cria PRD, TL cri
 
 # Skill — Squad New Project (Fluxo 1)
 
-> **Owner:** Tech Lead | **Revisão:** 90 dias | **Obsolescência:** workflow descontinuado
-
-Esta skill conduz o **Fluxo 1** de projeto novo sem artefatos prévios, conforme `CLAUDE.md` → "Fluxos de Projeto".
+Conduz o **Fluxo 1** de projeto novo sem artefatos prévios, conforme `CLAUDE.md` → "Fluxos de Projeto".
 
 ---
 
@@ -96,8 +94,5 @@ Cada passo abaixo lista o agente responsável. Ver spec completo em `${CLAUDE_PL
 
 ---
 
-## Referências
-
-- Fluxos completos: `CLAUDE.md` → "Fluxos de Projeto"
-- Definition of Done Global: `CLAUDE.md` → "Definition of Done Global"
-- Modos MVP/Production: `CLAUDE.md` → "MVP vs Production Mode"
+- **Owner:** Tech Lead · **Par:** `/squad-prd-template`, `/squad-stack-decision`, `/squad-threat-model` (passos 2, 7 e 8)
+- **Fonte:** `CLAUDE.md` do projeto → "Fluxos de Projeto", "Definition of Done Global", "MVP vs Production Mode"

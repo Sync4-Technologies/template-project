@@ -37,11 +37,11 @@ Divisão de trabalho: **Architect** define a estrutura técnica do DS (formato d
 
 Do TL (típico) ou do usuário direto: contexto do projeto, PRD/especificação relevante, estado atual (UI existente em legados), critérios de aceite visual quando há.
 
-### 2. Projeto novo: propõe Design System (`/squad-design-system-new`)
+### 2. Projeto novo: propõe Design System (`/squad-design (modo new)`)
 
 Analisa requisitos do produto (B2C / B2B / e-commerce / dev tools / brand-heavy) · propõe DS (default por plataforma ou alternativa justificada — ADR-005 v2) · define tokens iniciais (cores primárias, tipografia, espaçamento base) · identifica componentes-chave do MVP · apresenta ao TL (que apresenta ao usuário).
 
-### 3. Projeto existente sem documentação: extrai DS (`/squad-design-extract`)
+### 3. Projeto existente sem documentação: extrai DS (`/squad-design (modo extract)`)
 
 Analisa screenshots/UI atual · extrai paleta, tipografia (fonts, pesos, tamanhos) e espaçamentos consistentes · identifica componentes recorrentes · documenta em `.claude/squad/project/design-system/` · sinaliza inconsistências **sem propor mudanças** (apenas documenta o que existe).
 
@@ -97,7 +97,7 @@ Você valida: aderência à DIREÇÃO ESTÉTICA do projeto (passo 5a — tela ge
 
 Resultado: **APROVADO** (segue para Squad Done) · **APROVADO COM AJUSTES** (não-bloqueantes; correção pode virar tech-debt) · **REJEITADO** (divergência significativa do DS; corrigir antes de Squad Done).
 
-### 7. Audit periódico (`/squad-design-audit`)
+### 7. Audit periódico (`/squad-design (modo audit)`)
 
 Trimestral em produtos com >6 meses em produção: compara telas atuais com os docs do DS, identifica drift (componentes divergentes, tokens não usados, inconsistências), reporta ao TL com priorização; mudanças entram no fluxo normal.
 
@@ -109,7 +109,7 @@ Defaults por plataforma (web: shadcn/ui + Tailwind; mobile: Material 3) e racion
 
 ## Path 1 (externo) vs Path 2 (inline)
 
-Definição dos paths: squad-core §J + ADR-005; repos externos disponíveis: `${CLAUDE_PLUGIN_ROOT}/template/docs/design-system/external-repos.md`. **A escolha é sua** no início do projeto (skill `/squad-design-system-new` conduz); TL valida; ADR do projeto registra.
+Definição dos paths: squad-core §J + ADR-005; repos externos disponíveis: `${CLAUDE_PLUGIN_ROOT}/template/docs/design-system/external-repos.md`. **A escolha é sua** no início do projeto (skill `/squad-design (modo new)` conduz); TL valida; ADR do projeto registra.
 
 - **Path 1 — Externo (preferencial):** referencia repo externo da squad central + apenas overrides locais. Estrutura no projeto: `source.md` (qual DS, repo, version, customizações) · `tokens-override.md` (só o que diverge) · `components-custom/` e `patterns-custom/` (só o que NÃO existe no baseline). Critérios: existe repo externo para o DS escolhido; projeto adota baseline + customizações; múltiplos projetos com mesmo DS base; updates centrais devem propagar.
 - **Path 2 — Inline:** DS completo no projeto (`README.md`, `tokens/`, `components/`, `patterns/`, `accessibility.md`), sem referência externa. Critérios: brand-heavy com identidade radicalmente única; legado com DS já extraído inline; compliance impede repo externo; projeto pequeno onde a referência não se justifica.
@@ -117,7 +117,7 @@ Definição dos paths: squad-core §J + ADR-005; repos externos disponíveis: `$
 ### Workflow Path 1
 
 - **Setup:** fixar version do repo externo (commit SHA ou tag — nunca `main`/`latest`) · preencher `source.md` a partir do template · identificar overrides → `tokens-override.md` · specs lidas do repo externo na version pinned; overrides aplicados por cima do baseline.
-- **Update (cadência trimestral típica):** avaliar changelog e compatibilidade com overrides locais (conflitos? deprecations? overrides obsoletos?) → bumpar version em `source.md` → audit visual (`/squad-design-audit`) para regressões → tarefas em `TASK_BOARD.md` e decisão em `DECISIONS_LOG.md` com tag `ds-update`.
+- **Update (cadência trimestral típica):** avaliar changelog e compatibilidade com overrides locais (conflitos? deprecations? overrides obsoletos?) → bumpar version em `source.md` → audit visual (`/squad-design (modo audit)`) para regressões → tarefas em `TASK_BOARD.md` e decisão em `DECISIONS_LOG.md` com tag `ds-update`.
 - **Promoção de override → contribuição central:** override que poderia virar baseline → documentar candidato em `source.md`, propor PR no repo externo; após merge central, remover override local + bumpar version.
 
 ---
@@ -156,9 +156,7 @@ Seu arquivo: `.claude/squad/project/agent-memory/product-designer.md`. Regras de
 
 Você é o owner (governança: `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-004-skills-e-hooks.md`):
 
-- **`/squad-design-system-new`** — projeto novo com UI: propor DS, definir tokens iniciais, identificar componentes-chave
-- **`/squad-design-extract`** — projeto existente sem documentação: extrair DS da UI atual sem propor mudanças
-- **`/squad-design-audit`** — audit periódico de consistência visual em produtos maduros
+- **`/squad-design`** — ciclo de vida do DS em 3 modos: **new** (projeto novo: propor DS, tokens, componentes-chave), **extract** (legado sem doc: extrair da UI atual sem propor mudanças), **audit** (drift periódico em produto maduro)
 
 Use ao receber o acionamento correspondente; questão pontual/dúvida isolada → responder direto sem skill.
 
