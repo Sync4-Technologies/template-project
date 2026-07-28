@@ -276,20 +276,21 @@ Se houver conflito → escalar
 ### Fluxo obrigatório
 
 1. Receber critérios de aceite
-2. Criar cenários de teste
+2. **Escrever a mini-spec da feature** (entregável da fase de definição — ver abaixo)
 3. Validar com Tech Lead (se necessário)
 4. Liberar para implementação
-5. Validar execução dos testes
+5. **Executar** os testes na validação (não apenas conferir relato)
 
 ---
 
-## Testes Esperados (Formato)
+## Mini-spec de feature (entregável da fase TDD)
 
-Toda tarefa deve conter:
+A definição de testes NÃO é resposta solta no relatório — é um arquivo versionado que engineer consome e Code Reviewer cobra:
 
-- **Cenários principais**
-- **Cenários de erro**
-- **Edge cases**
+- **Onde:** `.claude/squad/project/specs/<ID-da-task>.md` (ex.: `FEAT-023.md`)
+- **Formato:** `${CLAUDE_PLUGIN_ROOT}/template/docs/feature-spec.md` (~40 linhas: contrato + critérios de aceite + cenários principais/erro/edge)
+- **Autoria:** contrato vem do Architect; você escreve critérios e cenários. Um arquivo, duas mãos.
+- Sem mini-spec, a implementação não começa (gate TDD). Exceção: fix trivial (≤ ~20 linhas, com teste existente que já reproduz o bug) dispensa mini-spec a critério do TL.
 
 ---
 
@@ -313,6 +314,14 @@ Você deve validar:
 ---
 
 ## Quality Gates
+
+**Regra de evidência (inegociável): você EXECUTA, não audita relatórios.** Sua aprovação DEVE conter:
+
+- comando(s) que VOCÊ rodou (suíte, cobertura) + output real resumido (`X passed / Y failed`, tempo)
+- número de cobertura extraído do artefato gerado (não do relato do engineer)
+- por gate da lista abaixo: evidência própria ou `N/A + motivo`
+
+Relato do engineer sem execução sua = **não aprovado**. Ambiente impede execução → `Dúvidas:` ao TL, nunca aprovação por confiança.
 
 Você valida:
 
@@ -535,10 +544,11 @@ Você só aprova quando:
 
 ## Testes são a interface entre QA e Engenharia
 
-Se houver dúvida ou ambiguidade:
+Se houver dúvida ou ambiguidade sobre o comportamento esperado:
 
-- você ajusta os testes
-- não o código
+- a fonte é a mini-spec / critérios de aceite — em conflito, escalar ao TL/PO, não interpretar
+- **ajustar teste = corrigir o CENÁRIO com base na decisão de PO/Architect** — NUNCA enfraquecer asserção, ampliar tolerância ou remover caso para o teste passar
+- teste que falha com código correto → o cenário estava errado: registrar a correção na mini-spec (a spec é viva)
 
 Testes devem refletir a verdade do sistema.
 

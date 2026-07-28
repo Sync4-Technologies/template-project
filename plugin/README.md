@@ -1,6 +1,6 @@
 # Plugin `dev-squad` — AI Software Squad
 
-Governança completa para projetos conduzidos por squad de agentes Claude Code: 5 papéis main-thread + 11 subagents nativos, 15 skills, hooks de memória viva e templates de qualidade.
+Governança completa para projetos conduzidos por squad de agentes Claude Code: 5 papéis main-thread + 11 subagents nativos, 16 skills, hooks de memória viva e templates de qualidade.
 
 ## Instalação
 
@@ -13,7 +13,7 @@ Governança completa para projetos conduzidos por squad de agentes Claude Code: 
 
 # 3. Verificar
 claude plugin list              # dev-squad@pdati — enabled
-claude plugin details squad     # 15 skills, 3 hooks, ~870 tok always-on
+claude plugin details squad     # 16 skills, 3 hooks, ~870 tok always-on
 
 # 4. Reiniciar a sessão Claude Code (plugin carrega na próxima sessão)
 
@@ -39,7 +39,7 @@ Skills completas: ver `skills/`. Specs main-thread (TL, PO, PD, Architect, SE): 
 
 | Vive no plugin (estático, versionado aqui) | Vive no projeto (estado) |
 |---|---|
-| Specs main-thread (5) + subagents nativos (11), 15 skills, 3 hooks, docs (self-review, stack-conventions, design-system), templates (PRD, ADR, LESSONS_LEARNED), CI examples | `.claude/squad/project/` — ARCHITECTURE, TASK_BOARD, DECISIONS_LOG, ADRs do projeto, agent-memory, LESSONS_LEARNED, contracts, `SQUAD_VERSION` |
+| Specs main-thread (5) + subagents nativos (11), 16 skills, 3 hooks, docs (self-review, stack-conventions, design-system), templates (PRD, ADR, LESSONS_LEARNED), CI examples | `.claude/squad/project/` — ARCHITECTURE, TASK_BOARD, DECISIONS_LOG, ADRs do projeto, agent-memory, LESSONS_LEARNED, contracts, `SQUAD_VERSION` |
 
 **Regra de governança:** não editar arquivos do plugin dentro de um projeto. Gap no sistema da squad → registrar no `LESSONS_LEARNED.md` do projeto (skill `/squad-handoff`, step 2c) → backportar aqui (upstream) → nova versão → projetos atualizam explicitamente. Isso fecha o ciclo de drift que motivou o plugin.
 
