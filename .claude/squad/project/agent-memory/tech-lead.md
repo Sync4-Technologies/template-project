@@ -38,6 +38,10 @@
 - [2026-07-28] Runner self-hosted org Sync4 (`sync4-mac-local`, ~/actions-runner, servico launchd): setup-python NAO funciona nele (sudo + /Users/runner hardcoded) — plugin-ci usa `if: vars.CI_RUNNER == ''` nos steps de setup (UP-10). AGENT_TOOLSDIRECTORY via .env nao propagou (nao investigado a fundo — o condicional resolveu melhor).
 - [2026-07-28] Classifier bloqueia: comando com geracao de token + instalacao de daemon (config.sh do runner), delecao de tag remota, e as vezes transientemente (retry simples resolve — msg "usually transient"). Padrao mantido: entregar bloco bash pro usuario e verificar o resultado depois.
 - [2026-07-28] Auditoria paralela com subagents general-purpose (2 auditores, ~140k tokens cada) funcionou bem para varredura critica do proprio plugin — prompts com "sem elogio, ranking por impacto, arquivo:linha" produzem material acionavel denso. Limite semanal de uso pode matar os agents no meio (retomar = relancar, cache nao ajuda entre falha e retry).
+- [2026-07-28/2a] `gh pr view` LOGO apos merge pode retornar estado stale (OPEN + main antigo) — reler antes de qualquer conclusao; foi exatamente o cenario que a sequencia UP-11 segurou antes da tag v1.10.0. Nunca agir sobre a primeira leitura pos-acao remota.
+- [2026-07-28/2a] PR BLOCKED com 4/4 checks verdes = double-trigger (UP-14): 2 check-suites por push; a 2a na fila do runner. Diagnostico: `gh api .../check-runs` agrupado por `check_suite.id`. Nao e falha — esperar a 2a suite, nao mexer em protection.
+- [2026-07-28/2a] Dieta de specs em lotes de 3-4 arquivos/subagent com INTOCAVEIS explicitos + verificacao por grep na volta (nunca so o relatorio) = padrao validado. Agentes cortam ALEM da meta quando a prosa e gorda — auto-check contra o original e obrigatorio (no tech-lead repus 2 blocos que o proprio corte derrubou: gate de arquitetura, scope-change).
+- [2026-07-28/2a] Reescrever spec/contrato de agente: no MESMO PR, grep de frases-eco do contrato antigo + ancoras `-> "Secao"` apontando pro arquivo (UP-15). check-plugin-paths valida path, NAO ancora.
 
 <!-- Ex: Refatorações grandes neste projeto exigem feature flag por padrão; mitigamos retrabalho -->
 

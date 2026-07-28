@@ -6,11 +6,11 @@
 
 ## Current Focus
 
-- **Ultima sessao:** 2026-07-28 por Pablo (sessao longa 26->28: UP-08 runner org-level + governanca upstream v1.8.1 + auto-analise da squad + Fase 0 v1.9.0)
-- **Em andamento:** nada — PRs #41-#44 todos mergeados; v1.8.1 e v1.9.0 released
-- **Proximo passo:** 1) BATALHA TROKEY em sessao nova com plugin 1.9.0 — estreia do reviewer cacador em PR real (validar protocolo de caca + regra de evidencia do QA); 2) apos batalha: FASE-1 do plano (dieta de tokens — docs/PLANO_EVOLUCAO_SQUAD.md)
+- **Ultima sessao:** 2026-07-28 por Pablo (2a do dia: Fase 1 dieta de tokens executada e released — v1.10.0; checklist de batalha trokey preparado)
+- **Em andamento:** nada — PRs #47/#48/#49 mergeados; v1.10.0 released e instalada (aplica na proxima sessao)
+- **Proximo passo:** BATALHA TROKEY em sessao nova com plugin 1.10.0 — estreia do reviewer cacador em PR real + primeira rodada da governanca enxuta. Reconciliacao la e 1.6->1.10.0: usar o checklist entregue na sessao (blocos A/B validos; versao-alvo agora 1.10.0; item novo: /squad-design substitui o trio de design)
 - **Bloqueios:** nenhum — runner self-hosted ativo contorna billing (revert ~2026-08-01: card UP-08-REVERT)
-- **Branch ativo:** chore/handoff-v190 (worktree suspicious-meninsky)
+- **Branch ativo:** main (worktree squad-resume-0af529 encerrado no handoff)
 - **Modo do projeto:** Production
 
 ---
@@ -27,7 +27,8 @@
 
 | ID | Tarefa | Agente | Observação |
 |----|--------|--------|-----------|
-| BATALHA-TROKEY | Validação em batalha do plugin 1.9.0 no trokey-franchising (estreia do reviewer caçador) | TL | Sessão nova lá; achados → LESSONS → próxima release |
+| BATALHA-TROKEY | Validação em batalha do plugin 1.10.0 no trokey-franchising (reviewer caçador + governança enxuta da Fase 1) | TL | Sessão nova lá; reconciliação 1.6→1.10.0 com checklist entregue; achados → LESSONS → próxima release |
+| FASE-1C | Dieta opcional: stack-conventions ~1.100 linhas cortáveis (genérico fora; gotchas/comandos ficam) | TL | Baixa prioridade — carrega sob demanda, não pesa em toda sessão |
 | FASE-2 | Performance/fluxo (hooks early-exit, fast lane, qualificar "feature crítica") | TL | [plano](docs/PLANO_EVOLUCAO_SQUAD.md) |
 | FASE-3 | Métricas acionáveis + OTEL degrau 1 | TL | [plano](docs/PLANO_EVOLUCAO_SQUAD.md) |
 | UP-08-REVERT | Quando billing voltar (~2026-08-01): `gh variable delete CI_RUNNER` nos 4 repos + desligar runner | DevOps | Runbook: trokey `ops/self-hosted-runner.md` §"Quando o billing voltar" |
@@ -38,7 +39,7 @@
 
 | ID | Tarefa | Agente | Responsável |
 |----|--------|--------|------------|
-| FASE-1 | Dieta de tokens — PR A em execução (squad-core §H-§N, tech-lead 1012→265, 12 agents enxutos, bugs B1-B5); PR B (skills) e PR C (conventions) pendentes | TL | Pablo |
+| — | — | — | — |
 
 ---
 
@@ -61,5 +62,7 @@
 | UP-08 | Runner self-hosted org-level `sync4-mac-local` + `CI_RUNNER=self-hosted` (template-project, trokey, concilia, contracts-) + UP-10 (setup-python condicional) — 4/4 jobs verdes no PR #41 | 2026-07-26 |
 | GOV-UPSTREAM | Governança upstream: AgentesIA arquivado, board/ARCHITECTURE/CLAUDE.md reescritos, SQUAD_VERSION reconciliado — v1.8.1 | 2026-07-28 (PRs #41/#42, tag `90e95f3`) |
 | FASE-0 | Reviewer caçador (opus, 3 passadas, contrato de evidência), QA executa, mini-spec SDD, anti-ancoragem, métrica desinvertida, /squad-audit, squad-core §G — v1.9.0 | 2026-07-28 (PRs #43/#44, tag `eb71355`) |
+| FASE-1 | Dieta de tokens −6.058 linhas: squad-core §H-§N fonte única, tech-lead 1012→268, 15 specs + 12 skills enxutos, /squad-design funde trio (BREAKING), handoff §3 direto, bugs B1-B5, changelog 1.9.0 retroativo — v1.10.0 | 2026-07-28 (PRs #47/#48/#49, tag `6676309`) |
+| CHECKLIST-TROKEY | Checklist de reconciliação 1.6→1.10 + batalha preparado com estados verificados no repo trokey (espelho contracts/, gate órfão, specs/) | 2026-07-28 (entregue ao usuário) |
 
 **Histórico do produto AgentesIA:** ver `archive/agentesia/TASK_BOARD.md`.
