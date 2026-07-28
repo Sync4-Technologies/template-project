@@ -161,6 +161,60 @@ Tag e imutavel na percepcao dos consumidores — nasceu errada, alguem ja pode t
 
 ---
 
+## 7. Release sem changelog no README passa em todos os gates (severidade: BAIXO)
+
+### O que aconteceu
+
+v1.9.0 released completa (CI verde, tag, marketplace) sem entrada de changelog no plugin/README.md — nenhum check cobra; gap so foi notado no resume da sessao seguinte. Consumidor que atualiza nao tem como saber o que mudou sem ler git log do upstream.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-13 | Changelog da versao no README como passo explicito do fluxo de release | ARCHITECTURE.md (fluxo de release) | Feito (2026-07-28: fluxo atualizado; changelog 1.9.0 escrito retroativamente na v1.10.0) |
+
+### Principio
+
+Passo de release que nenhum gate cobra e passo que some sob pressao. Ou vira item do fluxo escrito, ou vira check.
+
+---
+
+## 8. plugin-ci dispara 2 suites por PR — dobra custo e trava merge (severidade: MEDIO)
+
+### O que aconteceu
+
+Todo PR roda 2 check-suites identicas (gatilhos `push` + `pull_request` sobrepostos). Com required checks, o PR fica BLOCKED ate a SEGUNDA suite fechar mesmo com a primeira 4/4 verde — visto em #44, #46 e de novo no release da v1.10.0 (#49: 4/4 pass e BLOCKED por ~2min). No runner self-hosted, dobra a fila; a metrica ciclos-ci-media (27.0 na sessao) fica poluida e sem sinal.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-14 | Ajustar triggers do workflow para 1 suite por PR (ex.: `pull_request` + `push` restrito a develop/main) | .github/workflows/plugin-ci.yml | Registrado (Fase 2) |
+
+### Principio
+
+Gate duplicado nao e rigor em dobro — e custo em dobro e sinal pela metade.
+
+---
+
+## 9. Reescrita de spec quebra consumidores em silencio: frases-eco e ancoras (severidade: MEDIO)
+
+### O que aconteceu
+
+Na Fase 1 (dieta), dois modos de quebra silenciosa: (a) a Fase 0 reescreveu o code-reviewer mas a frase-eco "Review = confirmacao, nao descoberta" SOBREVIVEU no tech-lead.md — dois arquivos ativos com contratos de review opostos por 1 release; (b) skills citam specs por ancora `arquivo -> "Secao"` e a reescrita renomeou headings — 5 ancoras quebraram (3 do proprio TL), + 2 ja estavam mortas de releases anteriores (flag-audit). check-plugin-paths valida paths, nao ancoras.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-15 | Reescrita de spec exige, no mesmo PR: grep de frases-eco do contrato antigo nos demais arquivos + verificacao das ancoras `-> "Secao"` que apontam pro arquivo reescrito | processo (delegacao de reescrita); candidato a check de CI (ancoras) na Fase 2/3 | Aplicado a mao na Fase 1 (5 realinhadas + 2 mortas corrigidas); check automatico pendente |
+
+### Principio
+
+Contrato entre arquivos vive nos DOIS lados. Reescrever um lado sem varrer o outro deixa o sistema contando duas historias.
+
+---
+
 ## Indice de acoes
 
 | ID | Acao (resumo) | Arquivo-alvo | Status |
@@ -174,6 +228,9 @@ Tag e imutavel na percepcao dos consumidores — nasceu errada, alguem ja pode t
 | UP-07 | plugin-ci com runner parametrizavel (CI_RUNNER) — fallback legitimo pro billing | .github/workflows/plugin-ci.yml | Feito (v1.8.0) |
 | UP-08 | Registrar runner self-hosted (org-level) na maquina do Pablo | acao do usuario | Feito (2026-07-26) |
 | UP-10 | setup-python condicional ao cloud — self-hosted macOS usa python3 local | .github/workflows/plugin-ci.yml | Feito (PR #41) |
-| UP-11 | Release: confirmar MERGED + fetch antes de taguear (tag nasceu no commit errado) | skills de release | Registrado |
+| UP-11 | Release: confirmar MERGED + fetch antes de taguear (tag nasceu no commit errado) | ARCHITECTURE.md (fluxo de release) | [OK] Efeito provado (release v1.10.0: leitura stale pos-merge detectada ANTES da tag; sequencia segurou) |
 | UP-12 | Review-teatro: reviewer cacador + QA executa + metrica desinvertida (Fase 0 do plano) | agents + skills + squad-core | Feito (v1.9.0), prova pendente na batalha |
+| UP-13 | Changelog no README como passo do fluxo de release | ARCHITECTURE.md | Feito (2026-07-28) |
+| UP-14 | plugin-ci: 1 suite por PR (double-trigger dobra custo e trava merge) | .github/workflows/plugin-ci.yml | Registrado (Fase 2) |
+| UP-15 | Reescrita de spec: grep de frases-eco + ancoras no mesmo PR | processo + candidato a check CI | Aplicado a mao (Fase 1); check pendente |
 | UP-09 | Skills mandavam `claude plugin update dev-squad` — CLI exige id COMPLETO `dev-squad@pdati`; nome curto falha com "Plugin not found" (falhou pro usuario na 1a tentativa real do passo novo) | plugin/skills/squad-resume + squad-handoff | Feito (v1.8.1) |
