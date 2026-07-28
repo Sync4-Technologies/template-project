@@ -34,6 +34,10 @@
 - [2026-07-26/2a] Hook 1.6.0 bloqueava ate MENCAO de push (mensagem de commit, grep) — contorno: mensagem via `git commit -F <arquivo>`, teste via script em arquivo (a string nao aparece no tool_input.command). Resolvido de vez no advisory da v1.8.0 (UP-06).
 - [2026-07-26/2a] Amend bloqueado pelo classifier — commit normal em cima resolve e o historico fica mais honesto (correcao visivel em vez de reescrita).
 - [2026-07-26/2a] squad-metrics ciclos-ci-media=20.0 POLUIDO por billing outage (mesma causa da 1a sessao, valor ainda maior) — sem sinal de qualidade real nos 5 PRs da base.
+- [2026-07-28] UP-11: `gh pr merge` pode retornar msg pedindo --admin por propagacao de checks e NAO mergear — o proximo comando (tag!) roda em cima do main VELHO. Sequencia obrigatoria: merge -> `gh pr view --json state` == MERGED -> `git fetch` + confirmar merge em origin/main -> so entao taguear. NUNCA encadear merge+tag.
+- [2026-07-28] Runner self-hosted org Sync4 (`sync4-mac-local`, ~/actions-runner, servico launchd): setup-python NAO funciona nele (sudo + /Users/runner hardcoded) — plugin-ci usa `if: vars.CI_RUNNER == ''` nos steps de setup (UP-10). AGENT_TOOLSDIRECTORY via .env nao propagou (nao investigado a fundo — o condicional resolveu melhor).
+- [2026-07-28] Classifier bloqueia: comando com geracao de token + instalacao de daemon (config.sh do runner), delecao de tag remota, e as vezes transientemente (retry simples resolve — msg "usually transient"). Padrao mantido: entregar bloco bash pro usuario e verificar o resultado depois.
+- [2026-07-28] Auditoria paralela com subagents general-purpose (2 auditores, ~140k tokens cada) funcionou bem para varredura critica do proprio plugin — prompts com "sem elogio, ranking por impacto, arquivo:linha" produzem material acionavel denso. Limite semanal de uso pode matar os agents no meio (retomar = relancar, cache nao ajuda entre falha e retry).
 
 <!-- Ex: Refatorações grandes neste projeto exigem feature flag por padrão; mitigamos retrabalho -->
 
