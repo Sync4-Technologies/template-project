@@ -77,3 +77,50 @@ Escalada acima do TL: TL, PO, PD, Architect e SE (main thread) podem acionar o s
 ## §G — Loop fechado (toda delegação)
 
 Toda delegação define, ANTES do spawn, o **critério de saída verificável por comando** (teste que passa, lint/typecheck limpo, build verde, script de verificação). O executor itera até o critério passar (limite: 3 iterações — travou, volta ao TL via relatório). Tarefa sem critério verificável por comando não é delegável: TL define o critério primeiro ou executa como decisão própria. Aprovação subjetiva ("parece bom") não fecha loop de ninguém.
+
+## §H — Feature flags (governança)
+
+Fonte autoritativa: `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-003-feature-flags.md`. O que todo agente precisa saber:
+
+- Feature crítica nova → flag obrigatória, com metadata: **dono** (TL ou PO), **prazo de remoção** (default 90 dias), **tipo** (`release`/`experiment`/`ops`/`permission`)
+- Kill switch testado em staging antes do deploy; testes cobrem flag on **e** off
+- CR rejeita PR de feature crítica sem flag+metadata; DevOps valida no pipeline; TL conduz review mensal (`/squad-flag-audit`)
+
+## §I — Fronteiras de segurança (quem faz o quê)
+
+- **Engineers**: input validation em toda fronteira, secrets fora do código, self-review §1 — segurança básica não se delega ao SE
+- **Security Engineer**: threat modeling (Fase 1, arquitetura) e revisão de segurança (Fase 2, pré-deploy) em features críticas; compliance; OWASP/NIST como especialidade
+- **Code Reviewer**: caça vulnerabilidade no código entregue (categoria própria do protocolo)
+- **TL**: orquestra os gates; não substitui nenhum dos três
+
+Nenhum agente re-deriva OWASP Top 10 no próprio spec — é responsabilidade viva do SE.
+
+## §J — UI engineering (frontend e mobile)
+
+- **Design System é lei**: Path 1 (DS externo: shadcn/ui, Material 3) usa componentes prontos com overrides documentados; Path 2 (DS próprio) segue tokens do projeto. Fonte: ADR-005 + `.claude/squad/project/design-system/`
+- Zero valor mágico inline — todo estilo via token; Atomic Design como organização default
+- Tela entregue = **4 estados** obrigatórios (loading, empty, error, sucesso) com screenshot no Done
+- i18n: strings externalizadas desde o início (nunca hardcoded) quando o projeto declara i18n
+- A11y mínima: navegação por teclado, labels, contraste AA
+- Dúvida visual → PD via TL; decisão visual (paleta, componente novo, pattern) é sempre orquestrada
+
+## §K — Definition of Done (comum)
+
+Tarefa concluída exige: código implementado · self-review completo com gate determinístico local verde (§D) · testes passando na cobertura do modo (§C) · contratos respeitados · docs/memória atualizadas · QA aprovou com evidência executada · CR aprovou · SE aprovou (feature crítica) · deploy verificado no SHA esperado + smoke E2E (quando a tarefa chega a deploy). Merged ≠ Deployed.
+
+## §L — Ciclo de versão do plugin
+
+A sessão FIXA a versão do plugin no início e não troca no meio. `/squad-handoff` roda `claude plugin update dev-squad@pdati` ao encerrar (o restart aplica); `/squad-resume` confere na retomada e compara com `SQUAD_VERSION` do projeto — registro mais antigo que o instalado = reconciliação pendente. Nunca assumir que a sessão atual roda a versão recém-instalada.
+
+## §M — Verificação do gate local (snippet canônico)
+
+```bash
+[ "$(cat "$(git rev-parse --git-dir)/squad-gate-ok" 2>/dev/null)" = "$(git rev-parse 'HEAD^{tree}')" ] \
+  && echo "gate OK no HEAD" || echo "gate NAO validou o HEAD atual"
+```
+
+Marcador defasado APÓS commits recentes = gate órfão (instalado mas fora da cadeia de hooks — ver `/squad-init` passo 5). Não confundir com "ainda não commitei nada". Skills e specs referenciam este snippet em vez de copiá-lo.
+
+## §N — Formato de skill (padrão do plugin)
+
+Skill não carrega header de governança (Owner/Revisão/Obsolescência — nenhum mecanismo verifica). Rodapé de no máximo 3 linhas: owner + skills-par + fonte autoritativa quando houver. Skill que cita um doc como fonte NÃO cola o conteúdo dele — referencia o path e instrui a leitura.
