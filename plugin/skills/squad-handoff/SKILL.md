@@ -156,7 +156,7 @@ ${CLAUDE_PLUGIN_ROOT}/scripts/squad-metrics.sh --limit <PRs da sessão>
 
 Colar a linha `saude: ...` do output junto à entrada do Session Log.
 
-- **achados-review** (comentários de review + CHANGES_REQUESTED) — meta 0 (mede se o self-review funciona; achado repetido → item novo no engineer-self-review.md via loop de feedback)
+- **achados-review** (comentários de review + CHANGES_REQUESTED) — leitura DUPLA: achado repetido → item novo no engineer-self-review.md (loop de feedback); **0 achados em 3+ PRs não-triviais consecutivos = ALARME de gate morto** (reviewer complacente/teatro), não sinal de saúde — registrar como risco no handoff e pautar com o usuário. Zero saudável só existe acompanhado de "Caça documentada" nos reviews
 - **ciclos-ci** (runs failure + 1 por PR) — meta 1 (o push-gate deveria tornar >1 impossível)
 - **retrabalho** (reverts citando PRs do range) — meta 0
 

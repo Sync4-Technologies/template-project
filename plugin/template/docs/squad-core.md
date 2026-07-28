@@ -39,7 +39,7 @@ Antes de QUALQUER push (inclusive review-fix e resolução de conflito — "muda
 - **§0** gate determinístico no repositório INTEIRO: format + lint + typecheck + testes + build (test runner transpila mas NÃO checa tipos)
 - **§1** segurança self-checada · **§2** clean code (zero duplicação nova; doc ↔ código) · **§3** todo path/branch novo com teste · **§4** simplicidade (as 6 perguntas) · **§5** qualidade visual (frontend/mobile)
 - Antes de implementar: **buscar no codebase** solução existente que resolva — criar novo só se adaptar custar mais que criar
-- Review e Security são **confirmação**, não descoberta. Achado repetitivo de reviewer → vira item novo no self-review
+- Self-review existe para reviewer não gastar caça com o óbvio. Achado repetitivo de reviewer → vira item novo no self-review. Isso reduz o RUÍDO do review — nunca o rigor: reviewers caçam como se o self-review não existisse
 
 O spec de cada engineer lista apenas os focos ESPECÍFICOS do papel.
 
@@ -73,3 +73,7 @@ Dúvidas: [perguntas objetivas, uma por linha, com a opção que você tomaria s
 - Chutar em dúvida bloqueante é falha grave: retrabalho + decisão de negócio tomada por quem não tem autoridade.
 
 Escalada acima do TL: TL, PO, PD, Architect e SE (main thread) podem acionar o subagent **advisor** (`${CLAUDE_PLUGIN_ROOT}/agents/advisor.md`) para segunda opinião independente — critério: 2+ opções defensáveis e custo de errar alto. Subagents não spawnam subagents: executor com dúvida → TL; TL com dúvida → advisor ou usuário.
+
+## §G — Loop fechado (toda delegação)
+
+Toda delegação define, ANTES do spawn, o **critério de saída verificável por comando** (teste que passa, lint/typecheck limpo, build verde, script de verificação). O executor itera até o critério passar (limite: 3 iterações — travou, volta ao TL via relatório). Tarefa sem critério verificável por comando não é delegável: TL define o critério primeiro ou executa como decisão própria. Aprovação subjetiva ("parece bom") não fecha loop de ninguém.
