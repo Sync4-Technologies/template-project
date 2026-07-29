@@ -8,11 +8,18 @@ name: plugin-ci
 #   gh variable set CI_RUNNER --body self-hosted   # migra para o runner próprio
 #   gh variable delete CI_RUNNER                   # volta para o cloud
 
+# UP-14: `push` cobria develop E main, e PR cujo HEAD é develop/main (release
+# develop->main, sync main->develop) ganhava DUAS check-suites no MESMO SHA —
+# push (quando a branch recebeu o merge anterior) + pull_request. Com required
+# checks, o PR ficava BLOCKED até a segunda fechar, mesmo com a primeira 4/4
+# verde (#44, #46, #49). PR de feature branch nunca duplicou. Como nada entra em
+# develop/main fora de PR (enforce_admins), o push em develop era só re-execução
+# do que o PR já validou; em main fica como verificação pós-merge do release.
 on:
   pull_request:
     branches: [develop, main]
   push:
-    branches: [develop, main]
+    branches: [main]
 
 jobs:
   frontmatter:

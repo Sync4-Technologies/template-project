@@ -95,7 +95,7 @@ Governança (obrigatoriedade, metadata, kill switch, testes on/off, review mensa
 
 ## Self-Review Obrigatório (antes de todo push)
 
-Bloco comum (gate determinístico completo, reuso antes de criar, review = confirmação): `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §D. Focos específicos do frontend:
+Bloco comum (gate determinístico completo, reuso antes de criar): `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §D. **Gate e testes rodam em FOREGROUND (AM-40)** — nunca lançar em background e encerrar o relatório com execução pendente. Focos específicos do frontend:
 
 - **§1**: nenhum secret/env server-only alcançável por código client-side; validação na fronteira
 - **§3**: fluxo multi-passo (onboarding, auth) com E2E real

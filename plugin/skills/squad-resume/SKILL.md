@@ -22,18 +22,41 @@ Conduz TL no onboarding rápido de novo usuário (ou retomada após pausa) sem p
 
 ## Sua tarefa como Claude (atuando como Tech Lead)
 
-### 0. Verificar versão do plugin (uma linha, antes de tudo)
+### 0. Versão do plugin: reportar a CARREGADA, não a instalada (AM-36)
 
-A sessão FIXA a versão do plugin no início e não troca no meio — regressões já entraram por sessão rodando hook antigo (UP-01 passou no próprio release da 1.6.0 por isso). Verificar se há versão mais nova:
+A sessão FIXA a versão do plugin no início e não troca no meio. "Instalada" e "em execução nesta sessão" são coisas diferentes — regressões entraram exatamente por essa confusão (UP-01 no release da 1.6.0; sessão trokey rodando 1.6.0 acreditando ser 1.9.0). São **três** números:
 
 ```bash
-claude plugin update dev-squad@pdati 2>&1 | tail -3
-# id COMPLETO nome@marketplace — so "dev-squad" falha com "Plugin not found"
+# 1) versão EM EXECUÇÃO: derivar do path deste próprio SKILL.md (o único dado confiável)
+#    .../plugins/cache/pdati/dev-squad/<VERSAO>/skills/squad-resume/SKILL.md
+# 2) versão instalada (maior no cache)
+ls -1 ~/.claude/plugins/cache/pdati/dev-squad | sort -V | tail -1
+# 3) governança registrada no projeto
+head -1 .claude/squad/project/SQUAD_VERSION
+# e checar se há release mais nova disponível:
+claude plugin update dev-squad@pdati 2>&1 | tail -3   # id COMPLETO nome@marketplace
 ```
 
-- Reportou atualização → avisar o usuário: **"Plugin atualizado para X.Y.Z, mas esta sessão continua na versão antiga — aplicar exige reiniciar a sessão."** Perguntar se prefere reiniciar agora (contexto ainda é pequeno no resume) ou seguir e reiniciar depois.
-- Já na última versão → seguir sem comentário.
-- Comparar também com `.claude/squad/project/SQUAD_VERSION`: se o projeto registra versão mais antiga que a instalada, a reconciliação de governança está pendente (ver caso trokey 1.4→1.6: governança de duas versões atrás rodando sem ninguém notar).
+**Reportar as três no resumo, sempre** (uma linha: `plugin: rodando X.Y.Z · instalado A.B.C · projeto registra D.E.F`). Divergência:
+
+| Situação | Ação |
+|---|---|
+| rodando < instalado | **AVISAR ALTO:** esta sessão NÃO tem a governança nova. Trabalho que depende da versão (estreia de protocolo de review, spec de agente mudada) exige sessão nova — ver AM-37 no `tech-lead.md`. Perguntar se reinicia agora (contexto ainda pequeno) |
+| `plugin update` trouxe versão nova | avisar que aplica só na próxima sessão; oferecer reiniciar |
+| projeto registra < rodando | **reconciliação de governança pendente** → passo 0b (não seguir para o trabalho sem isso) |
+| tudo igual | seguir sem comentário |
+
+### 0b. Reconciliação de governança (quando SQUAD_VERSION < versão em execução)
+
+Detectar não é reconciliar. Governança de duas versões atrás já rodou sem ninguém notar (trokey 1.4→1.6, depois 1.6→1.10). Procedimento:
+
+1. **Ler o que mudou** — changelog do plugin em execução, só o trecho entre a versão registrada e a atual: `${CLAUDE_PLUGIN_ROOT}/README.md` → seção "Changelog". Itens **BREAKING** são os que exigem ação no projeto.
+2. **Montar a lista de ações** a partir dos BREAKING: skill renomeada/fundida (grep do nome antigo no `CLAUDE.md` e na memória do projeto), regra de agente que mudou (conferir se `agent-memory/` contradiz a spec nova), default invertido (ex.: push-gate advisory), artefato novo esperado (ex.: `specs/`).
+3. **Executar o que é mecânico** (renomear referência, criar diretório, atualizar `SQUAD_VERSION` com uma linha por versão pulada).
+4. **Escalar o que é decisão** — item que muda comportamento do projeto (encadear gate, ligar enforce) vai ao usuário com recomendação; não decidir sozinho.
+5. **Registrar** no `DECISIONS_LOG` do projeto: o que foi aplicado, o que ficou adiado e por quê. Adiamento sem registro reaparece como surpresa na próxima reconciliação.
+
+Reconciliação de 2+ versões acumuladas é sessão própria — não empilhar com a primeira tarefa do dia.
 
 ### 1. Carregar contexto inicial (com git fetch obrigatório)
 

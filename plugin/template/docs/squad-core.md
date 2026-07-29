@@ -121,6 +121,8 @@ A sessão FIXA a versão do plugin no início e não troca no meio. `/squad-hand
 
 Marcador defasado APÓS commits recentes = gate órfão (instalado mas fora da cadeia de hooks — ver `/squad-init` passo 5). Não confundir com "ainda não commitei nada". Skills e specs referenciam este snippet em vez de copiá-lo.
 
+**Retentativa de gate reseta estado compartilhado (AM-41).** Gate que re-roda a suíte depois de uma falha DEVE limpar o estado compartilhado entre as passadas (ex.: `FLUSHALL` no Redis de teste, truncate das tabelas, reset de fila) — ou os testes precisam de namespace de chaves por run. Sem isso a segunda passada herda contador de rate-limit, cache e lock da primeira: flake ambiental vira **falso QUEBRADO**, e o time aprende a ignorar o gate. Namespace por run é o fix definitivo; reset entre passadas é o mínimo aceitável.
+
 ## §N — Formato de skill (padrão do plugin)
 
 Skill não carrega header de governança (Owner/Revisão/Obsolescência — nenhum mecanismo verifica). Rodapé de no máximo 3 linhas: owner + skills-par + fonte autoritativa quando houver. Skill que cita um doc como fonte NÃO cola o conteúdo dele — referencia o path e instrui a leitura.

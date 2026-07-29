@@ -123,7 +123,7 @@ Governança (obrigatoriedade, metadata, kill switch, testes on/off, review mensa
 
 ## Self-Review Obrigatório (antes de todo push)
 
-Bloco comum (gate determinístico completo, reuso antes de criar, review = confirmação): `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §D. Focos específicos do mobile:
+Bloco comum (gate determinístico completo, reuso antes de criar): `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §D. **Gate e testes rodam em FOREGROUND (AM-40)** — nunca lançar em background e encerrar o relatório com execução pendente. Focos específicos do mobile:
 
 - **§1**: nenhum secret em código/log; storage local validado antes de tipar
 - **§5**: gate "rodou e olhou" nas DUAS plataformas — screenshots dos 4 estados

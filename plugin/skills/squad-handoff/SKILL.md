@@ -146,8 +146,8 @@ ${CLAUDE_PLUGIN_ROOT}/scripts/squad-metrics.sh --limit <PRs da sessão>
 
 Colar a linha `saude: ...` do output junto à entrada do Session Log.
 
-- **achados-review** (comentários de review + CHANGES_REQUESTED) — leitura DUPLA: achado repetido → item novo no engineer-self-review.md (loop de feedback); **0 achados em 3+ PRs não-triviais consecutivos = ALARME de gate morto** (reviewer complacente/teatro), não sinal de saúde — registrar como risco no handoff e pautar com o usuário. Zero saudável só existe acompanhado de "Caça documentada" nos reviews
-- **ciclos-ci** (runs failure + 1 por PR) — meta 1 (o push-gate deveria tornar >1 impossível)
+- **achados-review** × **revisoes** (AM-39) — o coletor só vê o GitHub, e o reviewer da squad roda **em sessão** (subagent), sem postar review no PR. Por isso: `revisoes=0` significa que **o dado não está lá**, não que o gate falhou — nesse caso, anotar a contagem real da sessão à mão (ex.: `achados-review=12 (em sessao, subagent)`). Com `revisoes>0` e `achados=0` em PR não-trivial → **ALARME de gate morto** (reviewer complacente), não saúde. Zero saudável só existe com "Caça documentada" no review. Achado repetido → item novo no `engineer-self-review.md`
+- **ciclos-ci** (runs failure COM trabalho real + 1, dentro da janela de vida do PR) — meta 1. Runs de 0 steps (billing/runner) são descartados e reportados à parte: contá-los deu média 98.0 sem uma falha de código (AM-39). Acima da meta → achar a causa antes de chamar de qualidade (flake conhecido conta como CI vermelho permanente e mata o sinal)
 - **retrabalho** (reverts citando PRs do range) — meta 0
 
 Fallback (sem `gh` disponível): registrar auto-relato marcado como `saude(auto-relato): ...` — explicitar que não é dado coletado.

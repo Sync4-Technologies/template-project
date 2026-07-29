@@ -144,7 +144,7 @@ Nenhuma funcionalidade crítica pode depender exclusivamente de IA. Sempre defin
 
 ## Self-Review Obrigatório (antes de todo push)
 
-Bloco comum (gate determinístico completo, reuso antes de criar, review = confirmação): `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §D. Focos específicos de IA:
+Bloco comum (gate determinístico completo, reuso antes de criar): `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §D. **Gate e testes rodam em FOREGROUND (AM-40)** — nunca lançar em background e encerrar o relatório com execução pendente. Focos específicos de IA:
 
 - **§1**: nenhum prompt/output com PII em log; credenciais de provider fora do código
 - **§3**: fallback determinístico testado; eval de regressão se tocou prompt/modelo/contexto/tools

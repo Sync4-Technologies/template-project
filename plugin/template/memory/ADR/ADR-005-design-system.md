@@ -61,43 +61,16 @@ Product Designer pode escolher alternativa quando há justificativa concreta:
 
 ---
 
-## Por que Material 3 como Default
+## Por que default POR PLATAFORMA (racional da v2)
 
-### Prós
+- **Web (shadcn/ui + Tailwind + Radix):** componentes copiados para o repo — ownership total, sem lock-in de lib; tokens em CSS variables; controle visual fino sem lutar contra opinião de terceiro. É o que os projetos web reais da squad já usavam.
+- **Mobile (Material 3):** nativo no Flutter (`useMaterial3`) e coberto por `react-native-paper` no RN — a11y e patterns prontos, Material You dá identidade via paleta seed sem sair do DS. Trocar isso por DS próprio no mobile custa caro e entrega pouco.
+- **Por que não um default único:** o único anterior (Material 3 em tudo) descolou da prática — default que ninguém segue não é default. Custo assumido: web e mobile não têm paridade visual estrita out-of-box; quando paridade é requisito, Material 3 web (MUI/Vuetify) é a alternativa documentada.
 
-- **Open source** e mantido pelo Google
-- **Maduro e completo** — vasto component library
-- **Cross-platform** — funciona em Web (MUI) e Mobile (Flutter nativo, RN libs)
-- **Material You** — temas dinâmicos baseados em cor seed
-- **Acessibilidade built-in** (Material guidelines incluem a11y)
-- **Patterns ricos** para B2C e enterprise
-- **Ecosistema** — libs prontas, documentação extensa, comunidade ativa
-- **Mobile-first friendly** — fácil adaptive Material 3 (Android) + Cupertino-like (iOS) quando necessário
+### Alternativas rejeitadas (ainda válidas)
 
-### Contras (mitigados)
-
-- **"Cara de Google"** — mitigado por customização de paleta seed e fonte (Material You preserva identidade)
-- **Componentes opinionated** — mitigado por possibilidade de override granular
-- **Menos enxuto que shadcn/ui** — aceitável; ganho de funcionalidades compensa
-
----
-
-## Alternativas Consideradas
-
-### A1. shadcn/ui como default
-- **Prós:** muito enxuto, Tailwind nativo, controle total
-- **Contras:** apenas React; Mobile precisa de outro DS; não é "design system" canônico (é mais um component starter)
-- **Status:** rejeitado como default — limita cross-platform
-
-### A2. Sem default (PD decide tudo)
-- **Prós:** máxima flexibilidade
-- **Contras:** cada projeto reinventa; sem padrão entre projetos da squad; oversight do PD em cada projeto
-- **Status:** rejeitado — quebra princípio de template padronizado
-
-### A3. Tailwind sem DS canônico
-- **Prós:** zero opinião visual
-- **Contras:** não é um DS — é só utility CSS; sem patterns prontos
-- **Status:** rejeitado — viola "padrão visual inegociável"
+- **Sem default, PD decide tudo:** cada projeto reinventa; quebra o padrão entre projetos da squad.
+- **Tailwind puro sem DS:** utility CSS não é design system — sem componentes nem patterns prontos.
 
 ---
 
@@ -176,43 +149,17 @@ Cada projeto cria ADR específico que registra:
 
 ---
 
-## Trade-offs Assumidos
+## Consequências e trade-offs
 
-- Material 3 tem opinião visual forte — projetos que precisam de identidade radicalmente diferente migram para alternativa (esperado em ~10-20% dos projetos)
-- Componentes Material 3 são mais "pesados" que shadcn/ui — overhead aceitável para benefício de a11y + patterns prontos
-- Cross-platform Material 3 não é perfeitamente uniforme (iOS prefere Cupertino) — PD pode definir adaptive UI quando aplicável
+**Positivas:** default claro por plataforma, alinhado ao que a squad já pratica; PD adapta (paleta, tipografia, componentes-chave) em vez de criar do zero; a11y vem de fábrica nos dois lados; ownership dos componentes na web.
 
----
+**Negativas / riscos:** sem paridade visual estrita web↔mobile no default (alternativa Material 3 web quando for requisito); dois vocabulários de componente para o PD manter; brand-heavy no mobile sente M3 limitante — alternativa via ADR do projeto; migração futura de DS é custosa, mitigada por tokens centralizados.
 
-## Consequências
-
-### Positivas
-
-- Padrão visual claro por default em todos os projetos da squad
-- Onboarding rápido para devs (Material 3 amplamente conhecido)
-- Cross-platform funciona out-of-box (Web + Mobile)
-- Acessibilidade default
-- PD pode focar em **adaptação** (paleta seed, tipografia, componentes-chave) ao invés de criar do zero
-- Material You permite identidade visual sem sair do DS
-
-### Negativas / Riscos
-
-- Projetos com brand-heavy podem sentir M3 limitante — alternativa via ADR
-- "Cara de Material" em alguns projetos pode ser indesejada — Material You + customização mitigam
-- Migração futura para outro DS é custosa (mitigado por design tokens centralizados)
-
-### Neutras
-
-- Convenção de tokens segue padrão Material 3 (cores semânticas, escala de tipografia, etc.)
-- ADR específico do projeto sempre referencia esta ADR
+**Neutras:** tokens seguem convenção semântica (cores, escala tipográfica) compatível com ambos; ADR de projeto sempre referencia esta ADR.
 
 ---
 
 ## Critérios de Revisão
 
-Esta decisão deve ser revisada se:
-
-- Material 3 perder tração ou Google descontinuar suporte
-- Mais de 50% dos projetos novos precisarem de alternativa (sinal de que default está errado)
-- Surgir DS comparável com melhor cross-platform fit
+Revisar se: um dos defaults perder tração/manutenção · >50% dos projetos novos precisarem de alternativa (sinal de default errado) · paridade web↔mobile virar requisito recorrente (então o default único Material volta à mesa) · surgir DS com melhor fit cross-platform.
 - Squad adicionar nova stack que não tenha Material 3 maduro
