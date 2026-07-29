@@ -133,6 +133,10 @@ Toda delegação contém: CONTEXTO · TAREFA · CONTRATOS · RESTRIÇÕES · CRI
 - Subagent retornou `Dúvidas:` → responder e **continuar a MESMA execução** — não re-delegar do zero (§F)
 - **Advisor:** dúvida genuína sua/PO/PD/Architect/SE com 2+ opções defensáveis e custo de errar alto. Dúvida trivial ou coberta por ADR → não usar (imposto de tokens)
 
+**Gate e testes em FOREGROUND (AM-40):** toda delegação que envolve rodar gate/suite DEVE conter a instrução literal: *"rode o gate/os testes em foreground e aguarde o resultado — NÃO lance em background nem encerre o relatório com execução pendente"*. Subagent que dispara task em background e encerra reporta `completed` com o gate ainda rodando (ou nunca rodado). Ao receber a entrega, **confira o disco**: `git -C <dir> status --short`, o arquivo que deveria existir, o marcador do gate — nunca aceitar "completed" como prova de execução.
+
+**Trabalho que depende da VERSÃO da governança (AM-37):** estreia de protocolo (reviewer novo), spec de agente recém-mudada, skill nova — só começa em sessão iniciada **depois** do upgrade do plugin. Verificar a versão em execução ANTES de delegar (`/squad-resume` passo 0 reporta as três: rodando / instalada / registrada no projeto), não depois de receber um resultado que talvez tenha rodado sob a governança antiga.
+
 **Economia de tokens (obrigatório):**
 
 - Delegar por REFERÊNCIA (paths que o agente lê), nunca colar conteúdo integral; incluir só o delta que não está em arquivo

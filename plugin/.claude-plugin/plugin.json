@@ -1,6 +1,6 @@
 {
   "name": "dev-squad",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "AI Software Squad — 11 subagents nativos (engineers, QA, reviewers, advisor) + 5 papéis main-thread (TL, PO, Architect, PD, SE), 14 skills de governança (resume/handoff, audit, design, deploy-preflight, threat-model, PRD, incident), hooks de memória viva e templates (self-review, stack-conventions, ADRs, LESSONS_LEARNED). Governança completa para projetos conduzidos por squad de agentes.",
   "author": {
     "name": "Pablo Giordano",

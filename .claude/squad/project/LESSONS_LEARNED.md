@@ -217,6 +217,52 @@ Contrato entre arquivos vive nos DOIS lados. Reescrever um lado sem varrer o out
 
 ---
 
+## 10. Coletor de metricas media 98.0 sem uma falha de codigo; e celebra zero achados (severidade: ALTO)
+
+### O que aconteceu
+
+Backport da batalha trokey (AM-39). O `squad-metrics.sh` produzia numeros sem sentido por tres causas independentes, todas confirmadas com dado real:
+
+1. **Runs de 0 steps contavam como ciclo de CI** — billing esgotado/runner fora derruba o job sem executar nada; media da sessao trokey saiu **98.0** sem uma unica falha de codigo. Medido no upstream: **57 runs** descartaveis nos ultimos 3 PRs.
+2. **PR cujo head e branch longeva herdava o historico inteiro dela** — sync `main->develop` e release `develop->main` consultavam `head_branch=main`, trazendo TODAS as falhas historicas da branch. Mesma classe do UP-14 (head develop/main se comporta diferente).
+3. **`achados-review=0` era ambiguo** — nao distinguia "reviewer rodou e nao achou" (ALARME pela 1.9.0) de "reviewer nunca rodou" (o caso do trokey). Pior: o script imprimia **`[OK] metas atingidas (achados=0...)`**, ou seja, o coletor continuava celebrando zero DEPOIS de a Fase 0 ter desinvertido a metrica na documentacao — frase-eco da mesma classe da UP-15, agora em codigo.
+
+Descoberto tambem que o reviewer da squad roda **em sessao** (subagent) e nao posta review no GitHub: coletar do GitHub subestima por desenho. A batalha teve 12 achados reais e o GitHub mostra 0 revisoes.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-16 | Coletor: descartar runs sem steps (reportando quantos), limitar runs a janela de vida do PR, reportar `revisoes` ao lado de `achados`, trocar o `[OK] achados=0` pela leitura tripla (0 revisoes = dado ausente / 0 achados com revisao = alarme / achados>0 = sinal), retry em erro transiente do `gh`, e nunca truncar em silencio | `plugin/scripts/squad-metrics.sh` + `squad-handoff` 5d | [OK] 2026-07-29 — provado no dado: trokey **98.0 -> 2.0** (e o 2.0 tem causa real: flake do vehicle-lookup), upstream 1.0 |
+
+### Principio
+
+Metrica que nao distingue "nao aconteceu" de "aconteceu e deu zero" nao mede nada — e coletor que imprime elogio contradizendo a regra vigente ensina a ignorar a regra. Contar so o que teve trabalho real; expor o ponto cego em vez de reportar zero confortavel.
+
+---
+
+## 11. Detectar divergencia de governanca nao e reconciliar (severidade: ALTO)
+
+### O que aconteceu
+
+`/squad-resume` comparava `SQUAD_VERSION` com a versao instalada e avisava "reconciliacao pendente" — e parava ali. Nao havia procedimento: nas duas reconciliacoes reais (trokey 1.4->1.6 e 1.6->1.10) a lista de acoes foi montada **a mao pelo TL**, lendo git log e changelog do upstream. Sem isso, o aviso e ruido: o projeto segue rodando governanca velha com a divergencia registrada.
+
+Agravante da mesma familia (AM-36): a sessao reportava a versao **instalada**, nao a **em execucao**. Sessao trokey rodou 1.6.0 acreditando estar em 1.9.0 — o trabalho que dependia do protocolo novo rodou sob o antigo.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-17 | `/squad-resume` passo 0: reportar SEMPRE as tres versoes (em execucao — derivada do path do proprio SKILL.md — - instalada - registrada no projeto) com tabela de acao por divergencia (AM-36) | `plugin/skills/squad-resume/SKILL.md` | [OK] 2026-07-29 |
+| UP-18 | `/squad-resume` passo 0b: procedimento de reconciliacao em 5 passos — ler o changelog entre a versao registrada e a atual, derivar acoes dos BREAKING, executar o mecanico, escalar o que e decisao, registrar o adiado no DECISIONS_LOG | `plugin/skills/squad-resume/SKILL.md` | [OK] 2026-07-29 |
+| UP-19 | Regra do TL: trabalho que depende da versao da governanca so comeca em sessao iniciada DEPOIS do upgrade — verificar antes de delegar (AM-37) | `plugin/template/agents/tech-lead.md` | [OK] 2026-07-29 |
+
+### Principio
+
+Aviso sem procedimento vira paisagem. E versao "instalada" nao governa nada — governa a que esta carregada no processo; reportar a errada e pior que nao reportar, porque cria confianca falsa.
+
+---
+
 ## Indice de acoes
 
 | ID | Acao (resumo) | Arquivo-alvo | Status |
@@ -234,5 +280,11 @@ Contrato entre arquivos vive nos DOIS lados. Reescrever um lado sem varrer o out
 | UP-12 | Review-teatro: reviewer cacador + QA executa + metrica desinvertida (Fase 0 do plano) | agents + skills + squad-core | Feito (v1.9.0), prova pendente na batalha |
 | UP-13 | Changelog no README como passo do fluxo de release | ARCHITECTURE.md | Feito (2026-07-28) |
 | UP-14 | plugin-ci: `push` so em main — elimina suite dupla em PR com head develop/main | .github/workflows/plugin-ci.yml | Feito (2026-07-28), prova de efeito no proximo release PR |
-| UP-15 | Reescrita de spec: grep de frases-eco + ancoras no mesmo PR | processo + candidato a check CI | Aplicado a mao (Fase 1); check pendente |
+| UP-15 | Reescrita de spec: grep de frases-eco + ancoras no mesmo PR | processo + candidato a check CI | Aplicado a mao (Fase 1 e backport); check pendente. **Reincidiu:** 5 frases "review = confirmacao" sobreviveram a Fase 0 nos 4 engineers + security-engineer, e o proprio coletor imprimia `[OK] achados=0` — corrigidas em 2026-07-29 |
+| UP-16 | Coletor de metricas: descartar runs de 0 steps, janela do PR, `revisoes` ao lado de `achados`, leitura tripla, retry no gh | plugin/scripts/squad-metrics.sh | [OK] 2026-07-29 (trokey 98.0 -> 2.0 no dado real) |
+| UP-17 | Resume reporta as 3 versoes (em execucao / instalada / registrada) — AM-36 | plugin/skills/squad-resume/SKILL.md | [OK] 2026-07-29 |
+| UP-18 | Resume ganha procedimento de reconciliacao (5 passos, a partir do changelog) | plugin/skills/squad-resume/SKILL.md | [OK] 2026-07-29 |
+| UP-19 | TL: trabalho dependente de versao de governanca so em sessao pos-upgrade — AM-37 | plugin/template/agents/tech-lead.md | [OK] 2026-07-29 |
+| UP-20 | Delegacao exige gate/testes em FOREGROUND; TL confere disco, nao aceita "completed" — AM-40 | tech-lead.md + 4 engineers | [OK] 2026-07-29 |
+| UP-21 | Guidance de gate: retentativa reseta estado compartilhado (ou namespace por run) — AM-41 | squad-core §M | [OK] 2026-07-29 |
 | UP-09 | Skills mandavam `claude plugin update dev-squad` — CLI exige id COMPLETO `dev-squad@pdati`; nome curto falha com "Plugin not found" (falhou pro usuario na 1a tentativa real do passo novo) | plugin/skills/squad-resume + squad-handoff | Feito (v1.8.1) |

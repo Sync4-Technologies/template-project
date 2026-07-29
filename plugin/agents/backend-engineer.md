@@ -146,7 +146,7 @@ Correção: exportar `DOCKER_HOST` com o socket do contexto ativo (e `TESTCONTAI
 
 ## Self-Review Obrigatório (antes de todo push)
 
-Bloco comum (gate determinístico completo, reuso antes de criar, review = confirmação): `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §D. Focos específicos do backend:
+Bloco comum (gate determinístico completo, reuso antes de criar): `${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md` §D. **Gate e testes rodam em FOREGROUND (AM-40)** — nunca lançar em background e encerrar o relatório com execução pendente; sem output real na mão, a tarefa não está pronta. Focos específicos do backend:
 
 - **§1**: PII/secret em log, fail-closed, tenant no WHERE de toda escrita, token novo com consumer + teste
 - **§3**: invariante de banco (enum/constraint/RLS) com teste contra banco REAL; eval de regressão se tocou prompt/modelo/contexto
