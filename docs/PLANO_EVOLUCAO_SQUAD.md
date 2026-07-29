@@ -157,14 +157,15 @@ Impacto recorrente: resume/handoff/status (630 linhas juntas) rodam em quase tod
 | 2.3 | **Fast lane no TL**: tarefa trivial (fix ≤ ~20 linhas com teste existente, copy, config) pula QA-define; engineer + CR em passada única. Critério objetivo escrito, não subjetivo |
 | 2.4 | Qualificar "feature crítica" com materialidade (dados pessoais além de identificadores de sessão; dinheiro; authz) |
 | 2.5 | M0: propor delegação de merge junto com a proposta do M0 (1 linha no fluxo) |
-| 2.6 | Fundir política de indisponibilidade na matriz de autonomia (1 regime só) |
+| 2.6 | ~~Fundir política de indisponibilidade na matriz de autonomia (1 regime só)~~ — **FEITO na Fase 1** (tech-lead.md reescrito já saiu com regime único) |
+| 2.7 | ~~UP-14: plugin-ci duplicava suite em PR com head develop/main~~ — **FEITO (2026-07-28)**: `push` restrito a `main`; prova de efeito no próximo release PR |
 
 ### FASE 3 — Métricas que geram ação (v2.x)
 | # | Ação |
 |---|------|
 | 3.1 | Redefinir linha de saúde: `achados-review/PR-não-trivial` (alvo > 0), `achados-audit-externo` (alvo → 0), `spawns/tarefa` (eficiência), latência CI |
 | 3.2 | Regra de leitura no handoff: cada métrica fora do alvo → 1 linha de ação ou justificativa. Métrica sem consequência 2 sessões seguidas → deletar a métrica |
-| 3.3 | ADR-005: remover argumentação obsoleta do Material 3 web |
+| 3.3 | ~~ADR-005: remover argumentação obsoleta do Material 3 web~~ — **FEITO (2026-07-28)**: racional reescrito para default-por-plataforma; "A1 shadcn rejeitado" removida (contradizia a v2); trade-offs/consequências/critérios de revisão realinhados (218→~170 linhas) |
 | 3.4 | **Observabilidade de custo (degrau 1)**: ligar OpenTelemetry nativo do Claude Code → Grafana local (ou `ccusage` sobre os JSONL) para custo/tokens por sessão. Painel web custom (degrau 2, live por agente/tarefa) só se o degrau 1 deixar pergunta sem resposta — dogfooding da squad quando vier |
 
 ### Decisões de escopo discutidas (2026-07-28)
