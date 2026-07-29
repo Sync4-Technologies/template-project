@@ -263,6 +263,30 @@ Aviso sem procedimento vira paisagem. E versao "instalada" nao governa nada — 
 
 ---
 
+## 12. Alinhar memoria numa branch com texto DIFERENTE do da outra garante conflito na release (severidade: MEDIO)
+
+### O que aconteceu
+
+UP-14 e o item 3.3 foram mergeados so em `develop` (release adiada por decisao do usuario). Os arquivos de memoria foram no mesmo PR, entao `main` passou a servir o diagnostico ANTIGO da UP-14. Para corrigir isso o TL abriu o PR #53 levando **so os arquivos de memoria** para main — com o texto **reescrito** ("implementado em develop, aguarda release" em vez de "Feito"), porque em main o fix ainda nao existia e marcar `Feito` violaria AM-35.
+
+O raciocinio estava certo e o resultado foi um conflito garantido: as duas branches passaram a ter edicoes divergentes nas MESMAS linhas. O TL previu em voz alta que "o merge da proxima release reconcilia naturalmente" — nao reconciliou: o PR #55 (release) abriu com `CONFLICT` em `LESSONS_LEARNED.md` e `PLANO_EVOLUCAO_SQUAD.md`, e a resolucao teve que ser manual (branch de resolucao + PR extra).
+
+### Causa raiz
+
+Duas verdades simultaneas sobre o MESMO texto (em main o fix nao existe; em develop existe) foram escritas como duas versoes do texto. Merge de arquivo nao sabe qual "verdade" vence — ve duas edicoes concorrentes na mesma linha.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-22 | Status de acao corretiva escrito de forma **branch-agnostica e imutavel**: `Implementado no PR #NN; chega a main na vX.Y.Z` — vale nas duas branches ao mesmo tempo, nao precisa ser reescrito quando a release sai, e nao conflita. Alternativa aceitavel: NAO levar memoria para main fora da release e aceitar a janela de defasagem, registrando-a no Current Focus (1 linha) | processo de release (ARCHITECTURE.md) + habito de escrita do LESSONS | [OK] 2026-07-29 — resolucao do #55 adotou o lado do develop; regra registrada |
+
+### Principio
+
+Memoria e arquivo versionado: manter duas redacoes do mesmo fato em duas branches nao e "cada uma diz sua verdade", e conflito agendado. Escrever o status em forma que sobreviva ao merge (referencia ao PR e a versao, nunca "esta/nao esta aqui") custa uma frase e economiza um PR de resolucao.
+
+---
+
 ## Indice de acoes
 
 | ID | Acao (resumo) | Arquivo-alvo | Status |
@@ -287,4 +311,5 @@ Aviso sem procedimento vira paisagem. E versao "instalada" nao governa nada — 
 | UP-19 | TL: trabalho dependente de versao de governanca so em sessao pos-upgrade — AM-37 | plugin/template/agents/tech-lead.md | [OK] 2026-07-29 |
 | UP-20 | Delegacao exige gate/testes em FOREGROUND; TL confere disco, nao aceita "completed" — AM-40 | tech-lead.md + 4 engineers | [OK] 2026-07-29 |
 | UP-21 | Guidance de gate: retentativa reseta estado compartilhado (ou namespace por run) — AM-41 | squad-core §M | [OK] 2026-07-29 |
+| UP-22 | Status de acao corretiva em forma branch-agnostica (`Implementado no PR #NN; chega a main na vX.Y.Z`) — texto divergente entre branches conflita na release | processo de release + escrita do LESSONS | [OK] 2026-07-29 |
 | UP-09 | Skills mandavam `claude plugin update dev-squad` — CLI exige id COMPLETO `dev-squad@pdati`; nome curto falha com "Plugin not found" (falhou pro usuario na 1a tentativa real do passo novo) | plugin/skills/squad-resume + squad-handoff | Feito (v1.8.1) |

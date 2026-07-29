@@ -10,6 +10,7 @@
 - **Em andamento:** nada — PRs #47/#48/#49 mergeados; v1.10.0 released e instalada (aplica na proxima sessao)
 - **Proximo passo:** BATALHA TROKEY em sessao nova com plugin 1.10.0 — estreia do reviewer cacador em PR real + primeira rodada da governanca enxuta. Reconciliacao la e 1.6->1.10.0: usar o checklist entregue na sessao (blocos A/B validos; versao-alvo agora 1.10.0; item novo: /squad-design substitui o trio de design)
 - **Bloqueios:** nenhum — runner self-hosted ativo contorna billing (revert ~2026-08-01: card UP-08-REVERT)
+- **`develop` ESTA A FRENTE de main:** PR #52 (UP-14 triggers do plugin-ci + 3.3 ADR-005) mergeado em develop e NAO releasado — decisao do usuario: entra na proxima release, junto com os achados da batalha. Trabalho novo parte de `origin/develop`, nao de main
 - **Branch ativo:** main (worktree squad-resume-0af529 encerrado no handoff)
 - **Modo do projeto:** Production
 

@@ -28,6 +28,7 @@ memory/                      # memória auxiliar
 
 1. Branch `feat/*` ou `chore/*` → PR para `develop` (plugin-ci: 4 jobs)
 2. **Changelog da versão no `plugin/README.md` entra no PR da release** (UP-13 — a 1.9.0 saiu sem)
+2b. **Status de ação corretiva no LESSONS é branch-agnóstico** (UP-22): `Implementado no PR #NN; chega a main na vX.Y.Z` — nunca "está/não está em main", que exige reescrita por branch e conflita no merge da release
 3. PR `develop` → `main` (release)
 4. Tag `vX.Y.Z` SÓ após confirmar `gh pr view --json state` == MERGED **e** `git fetch` + merge visível em `origin/main` (UP-11 — leitura pós-merge pode vir stale; nunca encadear merge+tag)
 5. `claude plugin marketplace update pdati` + `claude plugin update dev-squad@pdati`
