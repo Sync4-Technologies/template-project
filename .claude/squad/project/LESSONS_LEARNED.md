@@ -179,21 +179,23 @@ Passo de release que nenhum gate cobra e passo que some sob pressao. Ou vira ite
 
 ---
 
-## 8. plugin-ci dispara 2 suites por PR — dobra custo e trava merge (severidade: MEDIO)
+## 8. plugin-ci duplicava suite em PR cujo HEAD e develop/main (severidade: MEDIO)
 
 ### O que aconteceu
 
-Todo PR roda 2 check-suites identicas (gatilhos `push` + `pull_request` sobrepostos). Com required checks, o PR fica BLOCKED ate a SEGUNDA suite fechar mesmo com a primeira 4/4 verde — visto em #44, #46 e de novo no release da v1.10.0 (#49: 4/4 pass e BLOCKED por ~2min). No runner self-hosted, dobra a fila; a metrica ciclos-ci-media (27.0 na sessao) fica poluida e sem sinal.
+Gatilhos `push: [develop, main]` e `pull_request: [develop, main]` sobrepostos. Quando o HEAD do PR e a propria develop/main (release `develop->main`, sync `main->develop`), o SHA ja tinha suite do evento `push` (do merge anterior) e ganhava outra do `pull_request` — DUAS suites no MESMO SHA. Com required checks, o PR fica BLOCKED ate a segunda fechar, mesmo com a primeira 4/4 verde: #44, #46 e #49 (v1.10.0).
+
+**Diagnostico refinado por medicao** (`gh api .../check-runs`, contagem de `check_suite.id` unicos): PR de feature branch = 1 suite (#47, #48, #50); PR com head develop/main = 2 (#49, #51). A anotacao original dizia "todo PR duplica" — era generalizacao a partir dos casos visiveis (que eram todos releases). Medir antes de corrigir mudou o fix.
 
 ### Acao corretiva
 
 | ID | Acao | Arquivo | Status |
 |----|------|---------|--------|
-| UP-14 | Ajustar triggers do workflow para 1 suite por PR (ex.: `pull_request` + `push` restrito a develop/main) | .github/workflows/plugin-ci.yml | Registrado (Fase 2) |
+| UP-14 | `push` restrito a `main` (verificacao pos-merge do release); `pull_request` cobre os PRs. Nada entra em develop/main fora de PR (enforce_admins), entao push em develop era so re-execucao | .github/workflows/plugin-ci.yml | Implementado em `develop` (PR #52) — **nao esta em main**, entra na proxima release por decisao do usuario. Prova de efeito: 1 suite no proximo PR `develop->main` |
 
 ### Principio
 
-Gate duplicado nao e rigor em dobro — e custo em dobro e sinal pela metade.
+Gate duplicado nao e rigor em dobro — e custo em dobro e sinal pela metade. E: contar o fenomeno antes de corrigi-lo; a hipotese formada no calor do bloqueio descreveu o sintoma, nao a causa.
 
 ---
 
@@ -231,6 +233,6 @@ Contrato entre arquivos vive nos DOIS lados. Reescrever um lado sem varrer o out
 | UP-11 | Release: confirmar MERGED + fetch antes de taguear (tag nasceu no commit errado) | ARCHITECTURE.md (fluxo de release) | [OK] Efeito provado (release v1.10.0: leitura stale pos-merge detectada ANTES da tag; sequencia segurou) |
 | UP-12 | Review-teatro: reviewer cacador + QA executa + metrica desinvertida (Fase 0 do plano) | agents + skills + squad-core | Feito (v1.9.0), prova pendente na batalha |
 | UP-13 | Changelog no README como passo do fluxo de release | ARCHITECTURE.md | Feito (2026-07-28) |
-| UP-14 | plugin-ci: 1 suite por PR (double-trigger dobra custo e trava merge) | .github/workflows/plugin-ci.yml | Registrado (Fase 2) |
+| UP-14 | plugin-ci: `push` so em main — elimina suite dupla em PR com head develop/main | .github/workflows/plugin-ci.yml | Implementado em develop (PR #52), aguarda release; prova de efeito no proximo PR develop->main |
 | UP-15 | Reescrita de spec: grep de frases-eco + ancoras no mesmo PR | processo + candidato a check CI | Aplicado a mao (Fase 1); check pendente |
 | UP-09 | Skills mandavam `claude plugin update dev-squad` — CLI exige id COMPLETO `dev-squad@pdati`; nome curto falha com "Plugin not found" (falhou pro usuario na 1a tentativa real do passo novo) | plugin/skills/squad-resume + squad-handoff | Feito (v1.8.1) |
