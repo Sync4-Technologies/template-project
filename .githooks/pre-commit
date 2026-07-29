@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Dispatcher de pre-commit. Sem gerenciador de hooks neste repo (husky/lefthook
+# ausentes) — core.hooksPath aponta direto para .githooks.
+set -e
+"$(git rev-parse --show-toplevel)/.githooks/pre-commit-quality"

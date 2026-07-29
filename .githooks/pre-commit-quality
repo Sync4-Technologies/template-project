@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# pre-commit-quality — gate determinístico do UPSTREAM do plugin dev-squad.
+#
+# A stack aqui não é app: são os próprios checks do plugin-ci, rodáveis local.
+# Regra crítica do CLAUDE.md: "toda mudança em skill/hook/agent roda os checks
+# locais ANTES de commitar" — este hook torna a regra máquina em vez de prosa.
+#
+# Instalado por: .githooks/pre-commit (core.hooksPath=.githooks). Sem husky neste repo.
+# Bypass consciente (emergência, nunca rotina): git commit --no-verify
+
+set -uo pipefail
+
+# Raiz do repo PRINCIPAL (o script vive lá); os checks rodam na worktree corrente.
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+cd "${REPO_ROOT}" || exit 1
+
+falhou=0
+run_gate() {
+  local nome="$1"; shift
+  echo "[gate] ${nome}..."
+  if ! "$@"; then
+    echo "[gate] FALHOU: ${nome}"
+    falhou=1
+  fi
+}
+
+# Os 4 jobs do plugin-ci, na mesma ordem
+run_gate "frontmatter das skills"      python3 scripts/ci/check-frontmatter.py
+run_gate "referências internas"        python3 scripts/ci/check-plugin-paths.py
+run_gate "smoke dos hooks"             bash    scripts/ci/hooks-smoke.sh
+if command -v claude >/dev/null 2>&1; then
+  run_gate "claude plugin validate"    claude  plugin validate plugin/
+else
+  echo "[gate] claude CLI ausente — validate pulado (o plugin-ci cobre no PR)"
+fi
+
+if [ "${falhou}" -ne 0 ]; then
+  echo ""
+  echo "[gate] VERMELHO — corrija antes de commitar. CI confirma qualidade, não a descobre."
+  echo "Bypass consciente (emergência): git commit --no-verify"
+  exit 1
+fi
+
+# Marcador pro push-gate: a árvore que acabou de passar. GIT_DIR é por-worktree,
+# então cada worktree grava o próprio marcador (AM-18/UP-03).
+GIT_DIR=$(git rev-parse --git-dir 2>/dev/null || echo .git)
+TREE=$(git write-tree 2>/dev/null || git rev-parse "HEAD^{tree}" 2>/dev/null || true)
+[ -n "${TREE}" ] && echo "${TREE}" > "${GIT_DIR}/squad-gate-ok"
+
+echo "[gate] OK — 4 checks verdes, marcador gravado."
