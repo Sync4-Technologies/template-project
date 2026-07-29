@@ -55,6 +55,19 @@ Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.c
 
 ## Changelog
 
+### 1.11.0 (2026-07-29)
+
+Backport da batalha em `trokey-franchising` (AM-36 a AM-41) — a primeira validação em campo da governança 1.9/1.10. **Resultado da batalha: o protocolo funcionou** — 12 achados no PR do marco M4 (2 MAJOR provados por execução) contra 291 testes verdes, num histórico de 24 PRs com zero achados.
+
+- **[fix] Coletor de métricas media o que não existe (AM-39)**: `squad-metrics.sh` contava runs de CI que falharam com **0 steps executados** (billing esgotado, runner fora) — a média de uma sessão saiu **98.0** sem uma única falha de código. Agora descarta e reporta quantos descartou. Também: runs limitados à **janela de vida do PR** (PR cujo head é `develop`/`main` herdava o histórico inteiro da branch, mesma classe do UP-14), `retry` em erro transiente do `gh`, e nenhum truncamento silencioso
+- **[fix] `achados-review=0` era ambíguo e o script celebrava zero**: não distinguia "reviewer rodou e não achou" (alarme, pela 1.9.0) de "reviewer nunca rodou". O coletor ainda imprimia `[OK] metas atingidas (achados=0…)` — resíduo do contrato pré-1.9.0 **dentro do código**. Nova saída reporta `revisoes` ao lado de `achados` com leitura tripla, e explicita o ponto cego: o reviewer da squad roda em sessão (subagent) e não posta review no GitHub, então `revisoes=0` significa "o dado não está aqui", não "o gate falhou"
+- **Resume reporta a versão CARREGADA, não a instalada (AM-36)**: passo 0 agora informa as **três** — em execução (derivada do path do próprio `SKILL.md`), instalada, registrada no projeto — com ação por divergência. Sessão rodou 1.6.0 acreditando estar em 1.9.0 e o trabalho que dependia do protocolo novo rodou sob o antigo
+- **Reconciliação deixa de ser só um aviso (AM-36/AM-37)**: passo 0b novo com procedimento de 5 passos — ler o changelog entre a versão registrada e a atual, derivar ações dos itens BREAKING, executar o mecânico, escalar o que é decisão, registrar o adiado. Antes, `/squad-resume` detectava a divergência e parava ali; as duas reconciliações reais foram montadas à mão
+- **Trabalho dependente de versão só em sessão pós-upgrade (AM-37)**: regra no `tech-lead.md` — verificar a versão em execução ANTES de delegar estreia de protocolo ou spec recém-mudada, não depois de receber o resultado
+- **Gate e testes em FOREGROUND (AM-40)**: delegação exige a instrução literal; subagent que lança em background e encerra reporta `completed` com o gate pendente. TL confere o disco (`git status`, marcador, arquivo esperado) — "completed" não é prova de execução
+- **Retentativa de gate reseta estado compartilhado (AM-41)**: guidance em squad-core §M — sem reset (ou namespace de chaves por run), a segunda passada herda contador de rate-limit e cache da primeira, e flake ambiental vira falso QUEBRADO
+- **[fix] 5 frases-eco do contrato pré-1.9.0** sobreviveram à Fase 0 nos 4 engineers e no security-engineer ("review = confirmação", "rede de segurança (confirmação)") — reincidência do UP-15, corrigida na varredura deste backport
+
 ### 1.10.0 (2026-07-28)
 
 Fase 1 do plano de evolução: **dieta de tokens** — ~32% do sistema era gordura (duplicação, retórica, cerimônia). Squad-core vira fonte única; specs e skills enxutos sem perda de comportamento.

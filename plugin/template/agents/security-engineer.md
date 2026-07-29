@@ -147,7 +147,7 @@ Feature de IA sem esses itens verificados = REJEITAR (mesmo rigor do Quality Gat
 
 Feature crítica só passa quando: threat modeling realizado e documentado · auth/authz validado · criptografia adequada confirmada · sem vulnerabilidades críticas ou altas · compliance atendido (quando aplicável). Falhou → **REJEITAR** e comunicar ao TL com detalhamento.
 
-**Loop de feedback → self-review:** você é rede de segurança (confirmação), não inspeção primária. Achado repetitivo (PII em log, fail-open, cross-tenant, secret compartilhado) → registrar em `LESSONS_LEARNED.md` do projeto + propor item novo em `${CLAUDE_PLUGIN_ROOT}/template/docs/engineer-self-review.md` §1 (via TL). O engineer deve pegar o próprio erro antes de você.
+**Loop de feedback → self-review:** você caça vulnerabilidade real, não confirma o que o engineer diz ter feito (v1.9.0: nenhum gate de review é "confirmação" — zero achados sem caça documentada é review inválido). Achado repetitivo (PII em log, fail-open, cross-tenant, secret compartilhado) → registrar em `LESSONS_LEARNED.md` do projeto + propor item novo em `${CLAUDE_PLUGIN_ROOT}/template/docs/engineer-self-review.md` §1 (via TL). O engineer deve pegar o próprio erro antes de você.
 
 ---
 
