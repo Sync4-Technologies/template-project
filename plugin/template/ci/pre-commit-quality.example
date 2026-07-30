@@ -31,25 +31,44 @@ run_gate() {
   fi
 }
 
-# --- PRE-CHECK DE AMBIENTE (antes de qualquer gate) ---
+# --- PRE-CHECK DE AMBIENTE ---
 # Gate que falha por ambiente errado nao mede qualidade — vira obstaculo, e obstaculo
 # ensina o habito do --no-verify. Observado nos 3 projetos da squad no mesmo dia: Node
-# fora do range de engines, node_modules incompleto, servico de teste no ar faltando.
-# Aqui a mensagem diz O QUE fazer, em vez de morrer no meio com erro de package manager.
+# fora do range de engines, node_modules incompleto, Prisma client velho.
+#
+# Roda DEPOIS do cd para a raiz do repo (senao le o package.json do diretorio de onde o
+# hook foi chamado) e RESPEITA O OPERADOR do range: a 1a versao comparava o major por
+# IGUALDADE, entao `">=22"` com Node 26 abortava TODO push dizendo "pede major 22" —
+# oferecendo `--no-verify` como saida. O pre-check contra o habito do --no-verify virou
+# a causa dele (AM-46/AM-47, trokey PR #96).
+cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
+
 ambiente_ok=1
 aviso_ambiente() { echo "[ambiente] $1"; ambiente_ok=0; }
 
 if [ -f package.json ] && command -v node >/dev/null 2>&1; then
-  # range de engines.node do projeto vs node em uso (compara so o major — suficiente
-  # para o caso real: ">=22.0.0 <23.0.0" com v26 instalado)
-  req_major=$(sed -n 's/.*"node"[[:space:]]*:[[:space:]]*"[^0-9]*\([0-9]\{1,\}\).*/\1/p' package.json | head -1)
+  node_range=$(sed -n 's/.*"node"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' package.json | head -1)
   cur_major=$(node -v | sed 's/^v\([0-9]*\).*/\1/')
-  if [ -n "${req_major}" ] && [ -n "${cur_major}" ] && [ "${req_major}" != "${cur_major}" ]; then
-    aviso_ambiente "Node em uso: v${cur_major} · package.json pede major ${req_major}. O package manager recusa rodar os scripts. Use \`nvm use ${req_major}\` (ou fnm/volta) e rode de novo."
+  if [ -n "${node_range}" ] && [ -n "${cur_major}" ]; then
+    problema=""
+    # Avalia cada constraint do range no MAJOR. Precisao de major basta para o proposito
+    # (pegar incompatibilidade grosseira) e evita depender de semver instalado.
+    for c in ${node_range}; do
+      num=$(printf '%s' "${c}" | sed 's/[^0-9]*\([0-9]\{1,\}\).*/\1/')
+      [ -z "${num}" ] && continue
+      op=$(printf '%s' "${c}" | sed 's/[0-9].*//')
+      case "${op}" in
+        ">="|">")   [ "${cur_major}" -lt "${num}" ] && problema="abaixo do minimo ${num}" ;;
+        "<")        [ "${cur_major}" -ge "${num}" ] && problema="precisa ser menor que ${num}" ;;
+        "<=")       [ "${cur_major}" -gt "${num}" ] && problema="precisa ser ${num} ou menor" ;;
+        ""|"="|"v"|"^"|"~") [ "${cur_major}" -ne "${num}" ] && problema="pede o major ${num}" ;;
+      esac
+    done
+    if [ -n "${problema}" ]; then
+      aviso_ambiente "Node em uso v${cur_major} nao satisfaz engines.node '${node_range}' (${problema}). O package manager recusa rodar os scripts — use \`nvm use\` (ou fnm/volta) na versao certa."
+    fi
   fi
-  if [ ! -d node_modules ]; then
-    aviso_ambiente "node_modules ausente — rode \`pnpm install\` (ou npm/yarn) antes."
-  fi
+  [ -d node_modules ] || aviso_ambiente "node_modules ausente — rode \`pnpm install\` (ou npm/yarn) antes."
 fi
 
 if [ "${ambiente_ok}" -ne 1 ]; then
