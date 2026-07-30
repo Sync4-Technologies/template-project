@@ -31,6 +31,35 @@ run_gate() {
   fi
 }
 
+# --- PRE-CHECK DE AMBIENTE (antes de qualquer gate) ---
+# Gate que falha por ambiente errado nao mede qualidade — vira obstaculo, e obstaculo
+# ensina o habito do --no-verify. Observado nos 3 projetos da squad no mesmo dia: Node
+# fora do range de engines, node_modules incompleto, servico de teste no ar faltando.
+# Aqui a mensagem diz O QUE fazer, em vez de morrer no meio com erro de package manager.
+ambiente_ok=1
+aviso_ambiente() { echo "[ambiente] $1"; ambiente_ok=0; }
+
+if [ -f package.json ] && command -v node >/dev/null 2>&1; then
+  # range de engines.node do projeto vs node em uso (compara so o major — suficiente
+  # para o caso real: ">=22.0.0 <23.0.0" com v26 instalado)
+  req_major=$(sed -n 's/.*"node"[[:space:]]*:[[:space:]]*"[^0-9]*\([0-9]\{1,\}\).*/\1/p' package.json | head -1)
+  cur_major=$(node -v | sed 's/^v\([0-9]*\).*/\1/')
+  if [ -n "${req_major}" ] && [ -n "${cur_major}" ] && [ "${req_major}" != "${cur_major}" ]; then
+    aviso_ambiente "Node em uso: v${cur_major} · package.json pede major ${req_major}. O package manager recusa rodar os scripts. Use \`nvm use ${req_major}\` (ou fnm/volta) e rode de novo."
+  fi
+  if [ ! -d node_modules ]; then
+    aviso_ambiente "node_modules ausente — rode \`pnpm install\` (ou npm/yarn) antes."
+  fi
+fi
+
+if [ "${ambiente_ok}" -ne 1 ]; then
+  echo ""
+  echo "[pre-commit-quality] ABORTADO NO PRE-CHECK — ambiente, nao qualidade."
+  echo "Corrija o ambiente acima; o gate nao roda as verificacoes assim."
+  echo "Se precisa commitar agora: git commit --no-verify (e registre o porque no PR)."
+  exit 1
+fi
+
 # --- CONFIGURAR PARA A STACK DO PROJETO ---
 if [ -f package.json ]; then
   PKG="npm run"
