@@ -60,6 +60,13 @@ Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualq
 
 ## Changelog
 
+### 1.13.0 (2026-07-29)
+
+Reconciliação de governança deixa de ser trabalho manual quando não há nada a decidir.
+
+- **`squad-migrate.py` reconcilia sozinho o delta sem BREAKING**: lê o changelog do plugin instalado entre a versão registrada no projeto e a atual, e classifica. Delta **sem** item marcado `[BREAKING]` → gravar o `SQUAD_VERSION` é ação **segura** (nada a decidir no projeto), executada com `--apply` e com linha de histórico dizendo o que foi incorporado. Delta **com** BREAKING → cada item vira ação a tratar e o bump **não** acontece: bump antes de tratar apaga o único sinal de que havia trabalho pendente (AM-35). Fecha o ciclo em que toda release nova defasava os projetos e a reconciliação era montada à mão
+- **[fix] Detecção de BREAKING por marcador, não por palavra**: a primeira versão marcava a entrada da 1.11.0 como breaking porque o texto dela *menciona* "itens BREAKING" ao descrever o procedimento de reconciliação. É o mesmo erro que a UP-06 pegou no push-gate (substring confundindo menção com execução), agora em terceira forma — o critério passou a ser o marcador `[BREAKING]` entre colchetes
+
 ### 1.12.0 (2026-07-29)
 
 Migração e atualização de projeto deixam de ser trabalho manual.

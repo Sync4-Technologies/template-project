@@ -30,6 +30,8 @@
 |----|--------|--------|-----------|
 | BATALHA-TROKEY | Validação em batalha do plugin 1.10.0 no trokey-franchising (reviewer caçador + governança enxuta da Fase 1) | TL | Sessão nova lá; reconciliação 1.6→1.10.0 com checklist entregue; achados → LESSONS → próxima release |
 | FASE-1C | Dieta opcional: stack-conventions ~1.100 linhas cortáveis (genérico fora; gotchas/comandos ficam) | TL | Baixa prioridade — carrega sob demanda, não pesa em toda sessão |
+| GATE-PRECHECK-MONOREPO | Pre-check de ambiente so confere node_modules da RAIZ; em monorepo pnpm um workspace pode estar sem deps (caso concilia: packages/ui) | TL | Achado na reconciliacao 1.12; candidato a proxima release |
+| CI-LINT-OPENAPI | Lint dos OpenAPI movidos para packages/contracts no concilia e jobtracker — hoje sao doc, nao contrato verificado (2 estavam com YAML invalido e ninguem sabia) | DevOps | AM-30 fez a metade: contrato esta no repo, falta o CI olhar |
 | FASE-2 | Performance/fluxo (hooks early-exit, fast lane, qualificar "feature crítica") | TL | [plano](docs/PLANO_EVOLUCAO_SQUAD.md) |
 | FASE-3 | Métricas acionáveis + OTEL degrau 1 | TL | [plano](docs/PLANO_EVOLUCAO_SQUAD.md) |
 | UP-08-REVERT | Quando billing voltar (~2026-08-01): `gh variable delete CI_RUNNER` nos 4 repos + desligar runner | DevOps | Runbook: trokey `ops/self-hosted-runner.md` §"Quando o billing voltar" |
