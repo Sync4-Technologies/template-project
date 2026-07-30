@@ -1,7 +1,7 @@
 # ARCHITECTURE.md — dev-squad (upstream)
 
 > Fonte de verdade da arquitetura deste repositório. Atualizar a cada mudança estrutural.
-> Última atualização: 2026-07-28 (v1.10.0: Fase 1 dieta de tokens — squad-core §H-§N fonte única, /squad-design funde o trio, −6.058 linhas; 14 skills)
+> Última atualização: 2026-07-30 (v1.13.0: squad-migrate automatizado, gate com pre-check de ambiente, reconciliação automática; o próprio upstream passou a rodar seu gate)
 
 ---
 
