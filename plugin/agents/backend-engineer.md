@@ -134,6 +134,18 @@ Correção: exportar `DOCKER_HOST` com o socket do contexto ativo (e `TESTCONTAI
 
 ---
 
+## Marcador de idempotência: as 2 famílias que suíte verde não pega (AM-43)
+
+Vale para sweep, job periódico, retry, `notified_at`/`processed_at`/`*_sent_at`.
+
+- **WHERE da marcação leva o marcador E o predicado de ESTADO.** `updateMany({where:{id, notifiedAt:null}})` só fecha a corrida entre dois ticks do MESMO job. Contra transação de USUÁRIO que muda outra coluna (concluir a tarefa, ganhar o lead), falta `status` — e o filtro de estado no SELECT do candidato **não** substitui: entre o SELECT e o UPDATE a linha muda. Sintoma: notificação e **evento de domínio falsos**.
+- **Campo de elegibilidade que muda RESETA os marcadores — por MUDANÇA de valor, nunca por presença da chave no payload.** Sem reset, adiar um prazo mantém o marcador antigo e o alerta morre pra sempre (sem corrida). Resetando por presença, PATCH de formulário que reenvia o campo inalterado **duplica** alerta e evento. Mesma pergunta nas duas pontas: *o marcador ainda corresponde ao valor que ele marca?*
+- **Teste:** corrida com `SELECT ... FOR UPDATE` em conexão dedicada (nunca `setTimeout` — flake). E prove o MECANISMO, não a consequência: produza o estado por escrita direta e asserte que o candidato **não é selecionado**.
+
+## Setup de e2e: assert de status é obrigatório (AM-44)
+
+Todo POST/PATCH de `beforeAll`/`beforeEach` asserta o status. Seed silencioso mascara 4xx e desloca o sintoma: um 422 engolido já deixou uma suíte rodando com a configuração errada por dias, com os vermelhos aparecendo em testes sem relação com a causa. Comparação de tempo ancora no valor **lido do sistema**, nunca no relógio local — app e banco têm relógios diferentes.
+
 ## Anti-patterns (bloquear)
 
 - implementar sem contrato
@@ -141,6 +153,8 @@ Correção: exportar `DOCKER_HOST` com o socket do contexto ativo (e `TESTCONTAI
 - lógica espalhada
 - acoplamento forte
 - queries ineficientes
+- marcação de idempotência sem predicado de estado (AM-43)
+- seed de teste sem assert de status (AM-44)
 
 ---
 
