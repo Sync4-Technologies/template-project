@@ -23,13 +23,7 @@ Estratégia atual de "feature flags só em casos de risco" subutiliza essas capa
 
 **Toda feature crítica nova entra atrás de feature flag por padrão.**
 
-Critério "feature crítica" (definido no CLAUDE.md raiz e tech-lead.md):
-- autenticação e autorização
-- processamento de pagamentos
-- acesso a dados Confidencial ou Restrito
-- integrações com sistemas externos sensíveis
-- qualquer rota que processe dados pessoais (LGPD/GDPR)
-- qualquer mudança que afete fluxo crítico de negócio
+Critério "feature crítica": **fonte única em `tech-lead.md` → "Critério feature crítica"** (materialidade — authz, dinheiro, dados de pessoa real, superfície externa — com a regra de desempate do dano concreto). Não repetir a lista aqui: cópia envelhece e passa a contradizer a fonte.
 
 Features não-críticas (UI tweaks, refactors internos, docs) podem ir sem flag.
 
