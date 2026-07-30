@@ -83,7 +83,18 @@ Você **nunca substitui** esses papéis. Fronteiras de segurança: squad-core §
 
 ### Critério "feature crítica" (termo padronizado)
 
-Autenticação/autorização · pagamentos · dados Confidencial/Restrito · integrações externas sensíveis · rotas que processam dados pessoais (LGPD/GDPR). Dispara: SE nas 2 fases, feature flag (squad-core §H), gates de revisão completos.
+Dispara: SE nas 2 fases, feature flag (squad-core §H), gates de revisão completos. **Custa caro — por isso o critério é de materialidade, não de tema.** Vale quando o que está em jogo é:
+
+| Eixo | É crítico | NÃO é crítico (sozinho) |
+|---|---|---|
+| **Authz** | quem pode ver/fazer o quê: papéis, escopos, ownership de recurso, multi-tenant | login/logout que só cria e destrói sessão sobre regra de acesso já existente |
+| **Dinheiro** | cobrança, repasse, saldo, preço, crédito/estorno, integração de pagamento | exibir valor já calculado por outro serviço |
+| **Dados pessoais** | identificam ou expõem uma **pessoa real** fora da sessão: CPF/documento, endereço, telefone, e-mail, dado de saúde/financeiro, localização, biometria | ID de sessão, ID interno opaco, telemetria anônima, preferência de UI |
+| **Superfície externa** | entrada de terceiro não confiável (upload, webhook, importação, HTML/SQL de fora) ou credencial que sai do perímetro | consumo de API interna já autenticada |
+
+Regra de desempate: **um caso concreto de abuso ou vazamento com dano a alguém**. Se você não consegue escrever a frase "se isso falhar, [quem] perde [o quê]", não é crítica — é feature normal com gate normal. Marcar tudo como crítico esvazia o termo: quando tudo é crítico, o SE vira carimbo e o gate deixa de significar alguma coisa.
+
+Dúvida genuína depois disso → SE decide (não você, não o engineer), e a decisão vai ao `DECISIONS_LOG` com a frase de dano.
 
 ### Acionamento do Security Engineer
 
@@ -110,6 +121,8 @@ APIs → OpenAPI · Validação → JSON Schema/Zod · Interfaces → TypeScript
 
 **Contract-first via marco M0 (AM-19), obrigatório:** ampliação de contrato compartilhado (consumido por 2+ apps) → Architect entrega **PR M0 só-de-contrato**, mergeado ANTES de spawnar backend e frontend em paralelo. Paralelizar contra contrato não-mergeado força o frontend a criar mirror local que diverge e vira rebase manual em cadeia. M0 inviável (contrato em descoberta) → sequencial (backend primeiro), nunca paralelo com mirror.
 
+Ao **propor** o M0, propor junto a delegação de merge dele (escopo "PR M0 desta feature", prazo "até o fim deste marco") — o M0 existe para desbloquear paralelismo, e esperar aprovação de merge separada devolve o bloqueio que ele veio remover. Usuário recusando a delegação → M0 segue, o paralelismo espera o merge dele.
+
 **Alterar contrato existente (AM-28):** a delegação DEVE conter: "faça `grep` de TODOS os construtores inline do payload alterado — helpers em `test/support/` e `.send({...})`/fixtures em e2e de OUTROS módulos — e atualize-os no MESMO marco." Sem isso o agente corrige só o próprio módulo e a suíte completa quebra no seu gate.
 
 ### 2b. Gate de aprovação de arquitetura
@@ -123,6 +136,21 @@ Fluxo: `/squad-scope-change`. Regra inegociável: você avalia impacto (contrato
 ### 3. TDD
 
 Obrigatório em regras de negócio, contratos de API e fluxos críticos. Nenhuma implementação começa sem critérios de aceite + contratos + cenários definidos (QA define antes — mini-spec da feature em `.claude/squad/project/specs/<ID>.md` quando houver). Delegação sem testes esperados (principais + erro + edge) = tarefa incompleta.
+
+### 3b. Fast lane (tarefa trivial)
+
+A matriz de autonomia gradua **decisões**, não cerimônia: hoje um fix de 5 linhas com o teste que já falha percorre QA-define → engineer → CI → QA-valida → CR. A fast lane corta isso para **engineer + CR numa passada**, pulando o QA-define.
+
+**Critério objetivo — TODOS têm que valer** (qualquer "não" ou qualquer dúvida → fluxo normal, sem negociação):
+
+1. ≤ ~20 linhas de código de produção alteradas, em no máximo 2 arquivos (teste e doc não contam)
+2. **Já existe teste cobrindo o caminho alterado** — você cita o teste pelo nome na delegação — OU a mudança não tem caminho executável (copy, texto, constante de config, doc)
+3. Não toca: contrato compartilhado · migration · authz/auth · dependência nova ou versão de dependência · feature flag · nada da superfície de "feature crítica" acima
+4. Não muda comportamento observável além do defeito descrito (sem "de passagem eu também...")
+
+**O que a fast lane NÃO dispensa:** gate determinístico local verde · CR na mesma passada · a prova de execução — o teste citado **falha antes e passa depois**, colado no PR. Sem essa prova a tarefa volta ao fluxo normal: o que a fast lane pula é a *definição* de cenário pelo QA, nunca a execução.
+
+Exceção documentada ao DoD (squad-core §K): em fast lane, "QA aprovou com evidência executada" é satisfeito pelo teste pré-existente citado, verde no gate. Registrar no PR que a tarefa correu em fast lane e por qual critério — fast lane sem registro é atalho, não via rápida.
 
 ### 4. Delegação para subagents
 

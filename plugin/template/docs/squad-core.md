@@ -108,6 +108,8 @@ Nenhum agente re-deriva OWASP Top 10 no próprio spec — é responsabilidade vi
 
 Tarefa concluída exige: código implementado · self-review completo com gate determinístico local verde (§D) · testes passando na cobertura do modo (§C) · contratos respeitados · docs/memória atualizadas · QA aprovou com evidência executada · CR aprovou · SE aprovou (feature crítica) · deploy verificado no SHA esperado + smoke E2E (quando a tarefa chega a deploy). Merged ≠ Deployed.
 
+Exceção única: **fast lane** (`tech-lead.md` → "3b. Fast lane"), para tarefa trivial que passa nos 4 critérios objetivos de lá. Ela substitui o QA-define pelo teste pré-existente citado, verde no gate e com falha-antes/passa-depois provada no PR — não dispensa gate, CR nem execução.
+
 ## §L — Ciclo de versão do plugin
 
 A sessão FIXA a versão do plugin no início e não troca no meio. `/squad-handoff` roda `claude plugin update dev-squad@pdati` ao encerrar (o restart aplica); `/squad-resume` confere na retomada e compara com `SQUAD_VERSION` do projeto — registro mais antigo que o instalado = reconciliação pendente. Nunca assumir que a sessão atual roda a versão recém-instalada.
