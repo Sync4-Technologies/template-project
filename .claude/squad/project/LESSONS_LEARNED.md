@@ -287,6 +287,26 @@ Memoria e arquivo versionado: manter duas redacoes do mesmo fato em duas branche
 
 ---
 
+## 13. Reconciliacao automatizavel ficou de fora da release em que foi prometida (severidade: BAIXO)
+
+### O que aconteceu
+
+Ao explicar por que o `SQUAD_VERSION` nao se atualizava sozinho, o TL desenhou a solucao (auto-bump quando o delta nao tem BREAKING), disse "vale implementar na proxima release" — e cortou a v1.12.0 SEM ela. O usuario cobrou na sessao seguinte. Nada se perdeu, mas a promessa virou divida invisivel: nao estava em card, nem em lesson, nem no plano.
+
+Ao implementar, o proprio codigo repetiu a UP-06 em TERCEIRA forma: a deteccao de BREAKING usava `"BREAKING" in linha`, e a entrada da 1.11.0 — que descreve o procedimento de reconciliacao e cita "itens BREAKING" no texto — foi marcada como breaking. Mencao tratada como marcacao, de novo. Criterio corrigido para o marcador `[BREAKING]` entre colchetes.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-23 | Proposta de melhoria aceita em conversa vira CARD no board na hora, nao promessa no meio de um paragrafo — senao a release seguinte sai sem ela e ninguem lembra | TASK_BOARD (habito do TL) | [OK] 2026-07-29 |
+| UP-24 | Reconciliacao automatica do delta sem BREAKING (`squad-migrate --apply` grava o SQUAD_VERSION); com BREAKING nao grava, so lista as acoes | plugin/scripts/squad-migrate.py + squad-resume 0b | [OK] 2026-07-29 (v1.13.0) |
+
+### Principio
+
+"Fica pra proxima" dito em prosa nao sobrevive a release. E reconhecer comando/marcador por substring erra sempre do mesmo jeito: o texto que FALA sobre a coisa e confundido com a coisa. Terceira ocorrencia (push-gate, coletor de metricas, changelog) — o padrao agora e conhecido: marcador delimitado, nunca palavra solta.
+
+
 ## Indice de acoes
 
 | ID | Acao (resumo) | Arquivo-alvo | Status |
@@ -312,4 +332,6 @@ Memoria e arquivo versionado: manter duas redacoes do mesmo fato em duas branche
 | UP-20 | Delegacao exige gate/testes em FOREGROUND; TL confere disco, nao aceita "completed" — AM-40 | tech-lead.md + 4 engineers | [OK] 2026-07-29 |
 | UP-21 | Guidance de gate: retentativa reseta estado compartilhado (ou namespace por run) — AM-41 | squad-core §M | [OK] 2026-07-29 |
 | UP-22 | Status de acao corretiva em forma branch-agnostica (`Implementado no PR #NN; chega a main na vX.Y.Z`) — texto divergente entre branches conflita na release | processo de release + escrita do LESSONS | [OK] 2026-07-29 |
+| UP-23 | Melhoria aceita em conversa vira card na hora (a promessa de auto-reconciliacao ficou fora da v1.12.0) | TASK_BOARD (habito do TL) | [OK] 2026-07-29 |
+| UP-24 | Reconciliacao automatica do delta sem `[BREAKING]`; deteccao por MARCADOR, nao por palavra (UP-06 em 3a forma) | squad-migrate.py + squad-resume 0b | [OK] 2026-07-29 (v1.13.0) |
 | UP-09 | Skills mandavam `claude plugin update dev-squad` — CLI exige id COMPLETO `dev-squad@pdati`; nome curto falha com "Plugin not found" (falhou pro usuario na 1a tentativa real do passo novo) | plugin/skills/squad-resume + squad-handoff | Feito (v1.8.1) |
