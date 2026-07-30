@@ -15,7 +15,7 @@ Este repositório é o **upstream do plugin `dev-squad`** (marketplace `pdati`):
 plugin/                      # o plugin em si (fonte publicada)
 ├── agents/                  # 11 subagents nativos (engineers, QA, reviewers, advisor)
 ├── skills/                  # 14 skills /squad-* (resume, handoff, init, audit, design, preflight, ...)
-├── hooks/                   # hooks.json + load-memory, push-gate, reminders
+├── hooks/                   # hooks.json + load-memory, pre-bash (gate+reminder), architecture-reminder
 ├── scripts/                 # scripts internos do plugin
 └── template/                # templates copiados por /squad-init (agents main-thread, ADRs, memória)
 scripts/ci/                  # checks do plugin-ci (rodáveis localmente)

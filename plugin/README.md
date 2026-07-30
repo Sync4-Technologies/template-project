@@ -60,6 +60,18 @@ Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualq
 
 ## Changelog
 
+### 2.0.0 (não lançada — FASE 2 do plano de evolução)
+
+Performance do runtime e fluxo. Antes: todo comando Bash da sessão pagava dois subprocessos python para quase sempre concluir "não é push nem commit".
+
+- **[BREAKING] Os dois hooks PreToolUse/Bash viraram um: `pre-bash.sh`** (2.1). `push-gate.sh` e `memory-update-reminder.sh` **foram removidos**. Early-exit em bash puro (`case` na string do payload) descarta o comando que não é push nem commit **sem spawnar python**; no pior caso roda **um** python em vez de dois. Medido neste repo, comando trivial: **83.6ms → 5.1ms por comando Bash (-94%)**. O parse caro rodava antes do teste barato.
+  - **Ação no projeto:** só é preciso agir se o `.claude/settings.json` do projeto referenciar os scripts antigos por path. Conferir: `grep -rn 'push-gate\|memory-update-reminder' .claude/settings.json` → trocar por `${CLAUDE_PLUGIN_ROOT}/hooks/pre-bash.sh` (uma entrada só). Quem usa os hooks do plugin sem override não precisa fazer nada.
+  - O early-exit por substring **não é a volta da UP-06**: ali a substring era a *decisão*, aqui é *filtro negativo* — execução implica menção, então ausência de substring prova que não é execução; presença não decide nada e cai no parser preciso (primeiro verbo por segmento, heredoc descartado). Falso negativo é impossível por construção.
+  - **[fix] O ramo de commit ficou worktree-aware**: o `memory-update-reminder` derivava o root de `$CLAUDE_PROJECT_DIR` (main worktree) — mesma classe de bug do AM-18/UP-03, que o push-gate já tinha corrigido lendo o `cwd` do payload. A cópia não recebeu o fix na época.
+- **`gh pr view` sai do caminho síncrono do push** (2.2). O check da UP-01 (branch com PR MERGED/CLOSED) passa a ler um cache local em `$GIT_DIR/squad-pr-state` (zero rede) e disparar o refresh em **background** para o push seguinte. Antes, todo push real pagava segundos de rede no caminho crítico para um check declaradamente fail-open. **Consequência aceita e explícita:** numa branch que morreu agora, o aviso chega no push *seguinte* — o custo que a UP-01 evita é trabalho invisível acumulado, que um push de atraso não muda. Entrada de cache com mais de 24h é ignorada (nome de branch se recicla).
+- **[fix] UP-02 fechada** (pendente desde a v1.6.1): push que **não** empurra a branch atual — tag (`git push origin v2.0.0`), `--tags`, refspec de outra ref — não dispara mais o aviso da UP-01. A branch morta não está sendo tocada. Refspec explícito da branch atual (`main:main`, `HEAD`) continua disparando; flags com valor (`--force-with-lease`) não confundem o parser.
+- **Casos de comportamento do hook no CI** (`scripts/ci/pre-bash-cases.sh`, chamado pelo job `hooks-smoke`): 19 asserções, cada regra testada **nos dois sentidos** — o que ela deve pegar e o que ela não pode pegar (UP-26). Antes o `hooks-smoke` só fazia `bash -n` nos hooks de push/commit: nenhum comportamento era verificado.
+
 ### 1.13.1 (2026-07-30)
 
 **[fix bloqueante]** O pre-check de ambiente da 1.12.0 abortava TODO `git push` em projeto cujo `engines.node` fosse range aberto.

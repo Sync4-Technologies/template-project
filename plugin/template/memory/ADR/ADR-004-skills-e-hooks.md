@@ -57,7 +57,7 @@ Adotar **skills e hooks de forma seletiva** para automatizar workflows repetitiv
 |------|--------|------|---------|
 | `load-memory` | SessionStart | Carrega `.claude/squad/project/` (TASK_BOARD ativo, decisões recentes, ADRs) no contexto da sessão | Ativo por default |
 | `architecture-reminder` | PostToolUse em Edit/Write em `.claude/squad/project/ARCHITECTURE.md` | Lembra de atualizar `.claude/squad/project/DECISIONS_LOG.md` | Ativo por default |
-| `memory-update-reminder` | PreToolUse em Bash `git commit` | Sugere atualizar memory quando commit toca código sem memory correspondente | Opt-in via settings.json |
+| `pre-bash` | PreToolUse em Bash (único neste evento) | Dois ramos: `git push` -> gate determinístico (marcador + UP-01/UP-02); `git commit` -> sugere atualizar memory quando toca código sem memory correspondente. Early-exit em bash puro descarta comando que não é push nem commit sem spawnar python | Sempre ativo (gate advisory; enforce opt-in) |
 
 ### CI Enforcement (opt-in)
 

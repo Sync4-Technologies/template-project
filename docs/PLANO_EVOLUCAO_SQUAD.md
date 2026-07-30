@@ -96,7 +96,8 @@ Impacto recorrente: resume/handoff/status (630 linhas juntas) rodam em quase tod
 ## 3. Diagnóstico: performance e gargalos de fluxo
 
 ### 3.1 Runtime (hooks)
-1. **Todo comando Bash paga 2 subprocessos python** — `push-gate.sh` e `memory-update-reminder.sh` registrados separadamente no PreToolUse matcher Bash. ~100-200ms × milhares de chamadas/sessão, quase todas terminando em "não é push/commit → exit 0". O parse caro roda ANTES do teste barato.
+1. ~~**Todo comando Bash paga 2 subprocessos python**~~ — **RESOLVIDO (2026-07-30, item 2.1)**. Medição confirmou a ordem de grandeza do diagnóstico: 83.6ms/comando com os dois hooks, 5.1ms com o `pre-bash.sh` unificado.
+2b. ~~**`gh pr view` (rede) dentro do hook**~~ — **RESOLVIDO (2026-07-30, item 2.2)**: cache local + refresh em background.
 2. **`gh pr view` (rede) dentro do hook** a cada push real (UP-01) — segundos no caminho crítico, fail-open mas lento.
 3. `architecture-reminder` em todo Edit/Write — aceitável (barato, dirigido), manter.
 
@@ -114,7 +115,7 @@ Impacto recorrente: resume/handoff/status (630 linhas juntas) rodam em quase tod
 |---|-----|------|
 | B1 | Referência fantasma: manda seguir "formato dos exemplos em template/memory/" — exemplos não existem → boards inconsistentes entre projetos | squad-init:48 |
 | B2 | 9 links markdown quebrados (`[x](../../../${CLAUDE_PLUGIN_ROOT}/...)` mistura path relativo com variável) | squad-new-project |
-| B3 | Padrão UP-06 não propagado: `*"git commit"*` substring casa MENÇÃO, não execução — mesmo bug corrigido no push-gate vive na cópia | memory-update-reminder.sh:23 |
+| B3 | ~~Padrão UP-06 não propagado: `*"git commit"*` substring casa MENÇÃO, não execução~~ — **FEITO (v1.10.0)**; a cópia deixou de existir na v2.0.0 (hooks fundidos) | ex-`memory-update-reminder.sh:23` |
 | B4 | Sintaxe `[${VAR}/...](../${VAR}/...)` dobra tokens e gera link morto | backend:46-50, frontend, mobile, ai, architect |
 | B5 | advisor pinna `model: claude-fable-5` (ID completo envelhece; resto usa alias) | advisor.md frontmatter |
 
@@ -152,8 +153,8 @@ Impacto recorrente: resume/handoff/status (630 linhas juntas) rodam em quase tod
 ### FASE 2 — Performance e fluxo (v2.0)
 | # | Ação |
 |---|------|
-| 2.1 | Fundir os 2 hooks PreToolUse Bash num script único com early-exit shell barato (`case` em `git push`/`git commit` ANTES de spawnar python) — corta ~90% do overhead |
-| 2.2 | Tirar `gh pr view` do caminho síncrono do push (advisory pós-push ou cache curto) |
+| 2.1 | ~~Fundir os 2 hooks PreToolUse Bash num script único com early-exit shell barato~~ — **FEITO (2026-07-30)**: `pre-bash.sh` substitui push-gate + memory-update-reminder (BREAKING). Medido: 83.6ms -> 5.1ms por comando Bash (**-94%**, 16.3x). Ganho extra: o ramo de commit herdou o fix worktree-aware (AM-18/UP-03) que a cópia nunca recebeu |
+| 2.2 | ~~Tirar `gh pr view` do caminho síncrono do push~~ — **FEITO (2026-07-30)**: cache em `$GIT_DIR/squad-pr-state` (TTL 24h) lido sem rede + refresh em background para o push seguinte. Aviso da UP-01 chega um push depois numa branch que morreu agora — trade-off explícito no changelog. **UP-02 fechada de carona** (pendente desde v1.6.1) |
 | 2.3 | **Fast lane no TL**: tarefa trivial (fix ≤ ~20 linhas com teste existente, copy, config) pula QA-define; engineer + CR em passada única. Critério objetivo escrito, não subjetivo |
 | 2.4 | Qualificar "feature crítica" com materialidade (dados pessoais além de identificadores de sessão; dinheiro; authz) |
 | 2.5 | M0: propor delegação de merge junto com a proposta do M0 (1 linha no fluxo) |

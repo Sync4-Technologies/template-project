@@ -41,7 +41,7 @@ Release da propria v1.6.0: `git push origin v1.6.0` rodou a partir da branch cuj
 
 | ID | Acao | Arquivo a modificar | Status |
 |----|------|---------------------|--------|
-| UP-02 | Isentar do check UP-01 pushes cujo refspec e tag (`git push origin vX.Y.Z`, `--tags`) ou que nao empurram a branch atual | `plugin/hooks/push-gate.sh` | Pendente (v1.6.1) |
+| UP-02 | Isentar do check UP-01 pushes cujo refspec e tag (`git push origin vX.Y.Z`, `--tags`) ou que nao empurram a branch atual | `plugin/hooks/pre-bash.sh` | Implementado na FASE 2 (fusao dos hooks); chega a main na v2.0.0. Coberto por `scripts/ci/pre-bash-cases.sh` nos dois sentidos: tag/--tags/outra-branch nao disparam, `main:main` e `HEAD` ainda disparam |
 
 ### Principio
 
@@ -304,6 +304,7 @@ Ao implementar, o proprio codigo repetiu a UP-06 em TERCEIRA forma: a deteccao d
 | UP-25 | Pre-check respeita operador do range de engines.node + roda depois do `cd` (bloqueava TODO push com range aberto) | template/ci/pre-commit-quality.example | [OK] 2026-07-30 |
 | UP-26 | Teste de guarda exige caso adversarial (o que ela reprova errado), nao so o que aprova certo | processo + qa-engineer.md | [OK] registrado; backport pendente |
 | UP-27 | Porte de codigo executavel do template exige execucao no ambiente real (AM-46 trokey) | squad-resume 0b + tech-lead.md | Pendente |
+| UP-28 | Teste que roda dentro de hook do git tem que dar `unset GIT_DIR/GIT_INDEX_FILE`: `git -C` NAO sobrepoe essas vars | scripts/ci/pre-bash-cases.sh | [OK] 2026-07-30 |
 
 ### Principio
 
@@ -330,6 +331,7 @@ Nao fui eu que descobri: outra sessao (trokey, PR #96) quebrou o gate em `main`,
 | UP-25 | Pre-check respeita o OPERADOR do range (`>=`/`>` reprovam so abaixo do minimo; `<`/`<=` cobrem upper bound; pin/caret/til exigem o major) e roda DEPOIS do `cd` para a raiz | plugin/template/ci/pre-commit-quality.example | [OK] 2026-07-30 — testado nos DOIS sentidos, com Node 22 e 26 reais |
 | UP-26 | Teste de guarda/validacao exige o caso que a REPROVA errado, nao so o que ela aprova certo: para cada regra, um caso que deve passar e um que deve falhar. "Testado em 3 cenarios" sem caso adversarial nao e teste, e confirmacao | processo (auto-review antes de abrir PR) + `qa-engineer.md` (backport candidato) | [OK] registrado; backport ao spec do QA pendente |
 | UP-27 | Porte de codigo EXECUTAVEL do template para um projeto exige execucao no ambiente real antes do commit (AM-46 do trokey) — reconciliacao que altera script nao e mudanca de doc | `/squad-resume` passo 0b + tech-lead.md | Pendente (proxima release) |
+| UP-28 | Suite chamada de dentro de um hook do git herda `GIT_DIR`/`GIT_INDEX_FILE` do repo de fora, e **`git -C <outro-repo>` nao sobrepoe** essas vars: o teste opera no indice do repo errado. Sintoma exato: VERDE rodado a mao, VERMELHO dentro do gate — o pior formato, porque acusa o codigo em vez do teste. Todo script de teste que cria repo fixture comeca com `unset` das GIT_*. Parente da AM-41 (estado herdado entre passadas do gate), agora vindo do ambiente em vez do disco | `scripts/ci/pre-bash-cases.sh` | [OK] 2026-07-30 — reproduzido com `GIT_DIR=/tmp/fake.git` e verificado nos dois estados |
 
 ### Principio
 
@@ -341,7 +343,7 @@ Guarda que reprova o caso legitimo e pior que guarda ausente: ela treina a burla
 | ID | Acao (resumo) | Arquivo-alvo | Status |
 |----|---------------|--------------|--------|
 | UP-01 | push-gate avisa sobre PR mergeado da branch | plugin/hooks/push-gate.sh | Feito (v1.6.0) |
-| UP-02 | UP-01 isenta push de tag/refspec que nao e a branch | plugin/hooks/push-gate.sh | Pendente (v1.6.1) |
+| UP-02 | UP-01 isenta push de tag/refspec que nao e a branch | plugin/hooks/pre-bash.sh | Implementado na FASE 2; chega a main na v2.0.0 |
 | UP-03 | push-gate: restaurar leitura de `cwd` do payload (regressao 1.5.0 -> 1.6.0) | plugin/hooks/push-gate.sh | Feito (v1.7.0) |
 | UP-04 | push-gate le SQUAD_SKIP_GATE do comando (escape inacionavel por agente) | plugin/hooks/push-gate.sh | Feito (v1.8.0) |
 | UP-05 | Revisar desenho do push-gate -> ADVISORY por padrao, enforce opt-in | plugin/hooks/push-gate.sh | Feito (v1.8.0) |

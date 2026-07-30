@@ -252,7 +252,7 @@ Skills automatizam checklist, não substituem julgamento. Workflow não coberto 
 
 ## Multi-user Continuity
 
-Squad é projetada para handoff entre usuários. Encerramento significativo → `/squad-handoff` (Current Focus, Session Log, agent-memory, update do plugin — squad-core §L). Retomada → `/squad-resume`. Snapshot → `/squad-status`. Hooks de apoio: SessionStart carrega memória; architecture-reminder pós-Edit; memory-update-reminder (opt-in) em commits. CI enforcement opcional: `${CLAUDE_PLUGIN_ROOT}/template/ci/`.
+Squad é projetada para handoff entre usuários. Encerramento significativo → `/squad-handoff` (Current Focus, Session Log, agent-memory, update do plugin — squad-core §L). Retomada → `/squad-resume`. Snapshot → `/squad-status`. Hooks de apoio: SessionStart carrega memória; architecture-reminder pós-Edit; `pre-bash` em Bash (gate no push + reminder de memória no commit). CI enforcement opcional: `${CLAUDE_PLUGIN_ROOT}/template/ci/`.
 
 Disciplina que sustenta: commits frequentes (trabalho não-commitado é invisível), memória atualizada antes de encerrar, decisões em DECISIONS_LOG/ADR (não só no chat), PRs linkados a cards.
 

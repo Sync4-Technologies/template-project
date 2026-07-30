@@ -77,7 +77,7 @@ Estes templates **complementam**, não substituem, a disciplina manual da squad.
 Combinados com:
 - Skill `/squad-handoff` (encerramento)
 - Skill `/squad-resume` (retomada)
-- Hook `memory-update-reminder.sh` (PreToolUse, opt-in)
+- Hook `pre-bash.sh` (PreToolUse em Bash: gate de push + reminder de memória)
 
 ...formam camada robusta de continuidade.
 
@@ -101,5 +101,5 @@ Manter customizações documentadas em ADR específico do projeto.
 - ADR-004 (Skills e Hooks): `${CLAUDE_PLUGIN_ROOT}/template/memory/ADR/ADR-004-skills-e-hooks.md`
 - Skill `/squad-handoff`: `${CLAUDE_PLUGIN_ROOT}/skills/squad-handoff/SKILL.md`
 - Skill `/squad-resume`: `${CLAUDE_PLUGIN_ROOT}/skills/squad-resume/SKILL.md`
-- Hook `memory-update-reminder.sh`: `${CLAUDE_PLUGIN_ROOT}/hooks/memory-update-reminder.sh`
+- Hook `pre-bash.sh`: `${CLAUDE_PLUGIN_ROOT}/hooks/pre-bash.sh`
 - CLAUDE.md → "Multi-user Continuity"
