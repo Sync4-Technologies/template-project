@@ -49,11 +49,24 @@ Skills completas: ver `skills/`. Specs main-thread (TL, PO, PD, Architect, SE): 
 - Cada projeto grava a versão em uso em `.claude/squad/project/SQUAD_VERSION` — auditável qual governança valia em cada fase.
 - Update é ação explícita do usuário (`/plugin` → update), nunca silencioso.
 
-## Migração de projetos com template clonado (layout legado)
+## Migração / atualização de projeto (automatizada)
 
-Rodar `/squad-init` no projeto — a skill detecta o layout legado, preserva `.claude/squad/project/`, remove as cópias locais de template/skills/hooks (com confirmação) e grava `SQUAD_VERSION`.
+```bash
+scripts/squad-migrate.py --project .            # diagnóstico (dry-run)
+scripts/squad-migrate.py --project . --apply    # executa só o determinístico
+```
+
+Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualquer máquina: inventaria as cópias locais, classifica cada uma por **direção do diff** contra a união de todas as versões do cache (defasada = seguro remover; linha exclusiva = escalar; sem par = artefato do projeto), e aponta o resto — hooks locais no `settings.json`, contratos na memória (AM-30), gate órfão (AM-34), `hooksPath` absoluto (AM-38), governança defasada. Nunca toca `.claude/squad/project/`, `.env` ou código. Detalhe do critério e o que fazer com as decisões: `/squad-init` → "Migração".
 
 ## Changelog
+
+### 1.12.0 (2026-07-29)
+
+Migração e atualização de projeto deixam de ser trabalho manual.
+
+- **Novo `scripts/squad-migrate.py`**: diagnostica e migra um projeto para o plugin puro em qualquer estado (template clonado, híbrido, já puro) e em qualquer máquina. Dry-run por padrão; `--apply` executa só o que é determinístico. O critério não é "difere do plugin?" (quase sempre difere, o plugin evoluiu) e sim a **direção** da diferença contra a **união de todas as versões do cache, em escopo de diretório**: toda linha do arquivo local já vista em alguma versão → cópia defasada, seguro remover; linha que nenhuma versão teve → escalar. Escopo de diretório e versões antigas incluídas de propósito, para que conteúdo que apenas mudou de arquivo (trio de design → `/squad-design`) ou que o plugin removeu depois (ADR-005 reescrita) não conte como customização local — no primeiro caso real isso derrubou "arquivos para decidir" de 46 para 29
+- Detecta sem tocar: `settings.json` com hooks locais (rodariam duplicados com os do plugin), contratos versionados na memória (AM-30), gate órfão (AM-34), `core.hooksPath` absoluto em repo com worktree (AM-38), governança defasada. **Nunca toca** `.claude/squad/project/`, `.env` ou código
+- `/squad-init` → seção "Migração" reescrita: o passo manual de 5 itens virou o script + o que fazer com as decisões que ele levanta
 
 ### 1.11.0 (2026-07-29)
 
