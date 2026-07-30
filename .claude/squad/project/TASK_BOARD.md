@@ -6,12 +6,22 @@
 
 ## Current Focus
 
-- **Ultima sessao:** 2026-07-29/30 por Pablo (sessao longa; 4 releases: v1.10.0 dieta, v1.11.0 backport da batalha, v1.12.0 migracao automatizada, v1.13.0 reconciliacao automatica)
-- **Em andamento:** nada. PRs #47-#62 mergeados; v1.13.0 released e instalada (aplica na proxima sessao). `develop` == `main` == `2b5881c`
-- **Proximo passo:** FASE-2 do plano (docs/PLANO_EVOLUCAO_SQUAD.md itens 2.1-2.5: fundir os 2 hooks PreToolUse com early-exit, tirar `gh pr view` do caminho sincrono, fast lane no TL, qualificar "feature critica", M0+delegacao de merge). A batalha trokey JA ACONTECEU e validou a Fase 0 — o plano pedia essa validacao antes da Fase 2, e ela veio
-- **Bloqueios:** nenhum no upstream
-- **Branch ativo:** main
+- **Ultima sessao:** 2026-07-30 por Pablo — FASE 2 inteira (itens 2.1-2.5) implementada, revisada e mergeada em `develop`
+- **Em andamento:** nada. **v2.0.0 RELEASED** — PRs #67 e #68 mergeados, tag `v2.0.0` em `1ff6eac` (confirmada no remoto), plugin atualizado 1.13.1 -> 2.0.0 user-scope. **v2.1.0 esta em `develop`** (PR #69 `9fab391`, backport AM-42..AM-46 do trokey) e ainda NAO foi para `main` nem taggeada. PR #66 FECHADO (obsoleto: o fix dele ja saira na 1.13.1 por outro caminho; conteudo de licao reaproveitado no #69). Reconciliacao desta sessao: SQUAD_VERSION 1.13.0 -> 1.13.1 (automatica)
+- **Proximo passo:** (a) release da v2.1.0: PR `develop`->`main`, e tag `v2.1.0` so apos MERGED + `git fetch` com merge visivel em `origin/main` (UP-11); (b) **validar a 2.0.0 em sessao NOVA antes de propagar aos consumidores** — o `pre-bash.sh` e a governanca nova nao rodaram em uso real ainda (AM-37), e o salto la e BREAKING e manual; (c) FASE 3 (metricas que geram acao, itens 3.1-3.4)
+- **Bloqueios:** nenhum
+- **Branch ativo:** `chore/handoff-v200` (worktree `squad-resume-f0c4cd`); `develop` em `9fab391`, `main` em `1ff6eac`
 - **Modo do projeto:** Production
+
+### v2.0.0 — o que muda para quem consome (BREAKING)
+
+`push-gate.sh` e `memory-update-reminder.sh` **removidos**, fundidos em `pre-bash.sh`. Acao em cada projeto: `grep -rn 'push-gate\|memory-update-reminder' .claude/settings.json` — se houver referencia por path, trocar por `${CLAUDE_PLUGIN_ROOT}/hooks/pre-bash.sh`. Sem override, nada a fazer. **O `squad-migrate --apply` NAO grava o SQUAD_VERSION sozinho neste salto** (delta com `[BREAKING]`, por desenho) — os 3 consumidores exigem passagem manual.
+
+Este repo foi verificado: nenhum override em `.claude/settings.json` (projeto, local ou user).
+
+### Primeiro `achados-review > 0` num PR de sistema do upstream
+
+O CR independente **rejeitou** o PR #67 com 2 MAJOR, ambos reproduzidos e corrigidos antes do merge: (1) `--force-with-lease` classificada como flag de valor separado fazia o parser engolir o remote — push de outra branch disparava o aviso da UP-01, e **o teste passava pelo motivo errado**, usando a propria branch (UP-26 violada dentro do arquivo que a cita); (2) o refresh do cache de PR rodava depois do aviso, entao estado terminal se auto-perpetuava por 24h sem a auto-correcao que o hook antigo tinha. Mais 4 MINOR. O criterio de sucesso da Fase 0 (`0 achados` deixar de ser o normal) agora se manifesta fora da batalha trokey.
 
 ### Resultado da batalha (o que a Fase 0 provou em campo)
 
