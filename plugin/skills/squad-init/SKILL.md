@@ -92,6 +92,10 @@ Regra vira máquina, não prosa. Perguntar ao usuário e, confirmado, executar:
 
    **Provar o efeito antes de declarar feito (AM-35).** Instalado não é ativo. Fazer **um commit real** e rodar o snippet canônico de squad-core §M (`${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md`): marcador acompanhou o HEAD = gate CONECTADO; defasado = gate ÓRFÃO — o hook não está na cadeia. Não marcar o passo como concluído nesse estado: ou encadeia, ou registra explicitamente como pendência aceita (no `SQUAD_VERSION` e no `LESSONS_LEARNED`), com a decisão do usuário.
 
+   **[!] Em WORKTREE paralela, hook novo não vale até o repo PRINCIPAL trocar de branch (AM-42).** `core.hooksPath` é caminho ABSOLUTO do principal, e o dispatcher (husky `_/h`, lefthook) resolve o script irmão no **working tree DELE**. Com o principal parado em outra branch, o arquivo não existe lá e o hook sai `exit 0` **em silêncio, em TODAS as worktrees** — mesmo com o hook presente na worktree que empurra e já mergeado em `main`. Antes de declarar conectado: `git -C <principal> branch --show-current` + conferir o arquivo no working tree do principal. Caso real: gate "instalado", PR mergeado, memória atualizada, nada rodando (trokey-franchising, 2026-07-29).
+
+   **Porte de script é código, não documentação (AM-46).** Ao copiar `pre-commit-quality.example` (ou qualquer executável do template) para o projeto, **execute uma vez no ambiente real antes de commitar**. Um porte não executado já entregou um pre-check que abortava todo push por comparar range de `engines.node` com igualdade — ver o comentário `[!] RESPEITAR O OPERADOR` no próprio example.
+
 2. **CI do projeto** (workflow real, não example):
    ```bash
    mkdir -p .github/workflows

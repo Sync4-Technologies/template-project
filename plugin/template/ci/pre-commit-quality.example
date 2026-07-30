@@ -74,8 +74,8 @@ fi
 if [ "${ambiente_ok}" -ne 1 ]; then
   echo ""
   echo "[pre-commit-quality] ABORTADO NO PRE-CHECK — ambiente, nao qualidade."
-  echo "Corrija o ambiente acima; o gate nao roda as verificacoes assim."
-  echo "Se precisa commitar agora: git commit --no-verify (e registre o porque no PR)."
+  echo "Corrija o ambiente acima e rode de novo; NAO use --no-verify para contornar"
+  echo "(se o pre-check errou, o bug e dele — conserte o pre-check, nao pule o gate)."
   exit 1
 fi
 

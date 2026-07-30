@@ -113,6 +113,10 @@ Barato e não-negociável — rodar o snippet canônico de squad-core §M (`${CL
 
 Se estiver órfão: reportar no bloco "Contexto crítico" do resumo, **não consertar sozinho** — encadear hook é mudança de infra do repo e pode já ter sido adiada por decisão do usuário (conferir `SQUAD_VERSION` e `LESSONS_LEARNED` antes de propor).
 
+**Rodando em worktree paralela, conferir também a branch do repo PRINCIPAL (AM-42).** O dispatcher de hooks resolve o script no working tree do principal (`core.hooksPath` é absoluto). Principal parado numa branch que não contém o hook = `exit 0` silencioso em TODAS as worktrees, com o arquivo presente aqui e em `main`. Um `git -C <principal> branch --show-current` no bloco de contexto evita diagnosticar "gate conectado" olhando o arquivo errado.
+
+**Se a sessão vai RECONCILIAR governança, porte de script é código (AM-46).** Reconciliação que atualiza executável do template (`pre-commit-quality`, hooks, scripts de CI) exige **rodar o script uma vez no ambiente real antes de commitar** — não é mudança de doc. Caso real: um pre-check portado sem execução comparava range de `engines.node` por igualdade e passou a abortar todo push do projeto (trokey-franchising, 2026-07-29).
+
 ### 4. Listar PRs abertos
 
 Para cada PR: quem abriu · estado de revisão (aguardando review, aprovado, changes requested) · linkagem com cards em TASK_BOARD `Review` · é trabalho do usuário atual ou de outro?
