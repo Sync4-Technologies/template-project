@@ -138,6 +138,62 @@ def classificar(local_dir: Path, ref_dirs: list[tuple[str, Path]]) -> dict:
     return out
 
 
+def delta_changelog(cache: Path, ver_de: str | None, ver_ate: str | None) -> dict:
+    """Le o changelog do plugin instalado e devolve as entradas ESTRITAMENTE acima de
+    `ver_de` ate `ver_ate`, marcando quais tem item BREAKING.
+
+    E isso que decide se a reconciliacao pode ser automatica: delta sem BREAKING nao
+    pede acao no projeto — o registro pode ser gravado direto. Com BREAKING, cada item
+    e uma acao potencial e o bump so acontece ao final, depois de tratadas.
+    """
+    out: dict = {"entradas": [], "breaking": [], "lido_de": None}
+    if not (ver_de and ver_ate):
+        return out
+    readme = cache / ver_ate / "README.md"
+    if not readme.is_file():
+        return out
+    out["lido_de"] = str(readme)
+    chave = lambda v: [int(x) for x in v.split(".")]
+    atual, corpo = None, []
+    for linha in readme.read_text(encoding="utf-8", errors="replace").splitlines():
+        m = re.match(r"^###\s+(\d+\.\d+\.\d+)", linha)
+        if m:
+            if atual and chave(ver_de) < chave(atual) <= chave(ver_ate):
+                out["entradas"].append({"versao": atual, "linhas": corpo})
+            atual, corpo = m.group(1), []
+        elif atual:
+            corpo.append(linha)
+    if atual and chave(ver_de) < chave(atual) <= chave(ver_ate):
+        out["entradas"].append({"versao": atual, "linhas": corpo})
+
+    # MARCADOR `[BREAKING]`, nao a palavra solta: a entrada da 1.11.0 descreve o
+    # procedimento de reconciliacao e cita "itens BREAKING" no texto — mencao, nao
+    # marcacao. Mesmo erro que a UP-06 pegou no push-gate (substring confundia mencao
+    # com execucao), agora em terceira forma.
+    marcador = re.compile(r"\[BREAKING\]", re.I)
+    for e in out["entradas"]:
+        for l in e["linhas"]:
+            if marcador.search(l):
+                out["breaking"].append({"versao": e["versao"], "item": l.strip()[:220]})
+    return out
+
+
+def gravar_versao(proj: Path, nova: str, entradas: list[dict]) -> str:
+    """Grava a versao nova no SQUAD_VERSION preservando o conteudo e anexando uma linha
+    de historico por versao incorporada."""
+    f = proj / ".claude/squad/project/SQUAD_VERSION"
+    t = f.read_text(encoding="utf-8")
+    antiga = re.search(r"(\d+\.\d+\.\d+)", t)
+    if antiga:
+        t = t.replace(antiga.group(1), nova, 1)
+    vs = ", ".join(e["versao"] for e in entradas) or nova
+    t = t.rstrip("\n") + (
+        f"\n# reconciliacao automatica (squad-migrate --reconcile): {vs} incorporada(s) — "
+        f"nenhum item BREAKING no delta, nada a decidir no projeto\n")
+    f.write_text(t, encoding="utf-8")
+    return str(f)
+
+
 def git(proj: Path, *args: str) -> str:
     try:
         r = subprocess.run(["git", "-C", str(proj), *args],
@@ -219,9 +275,26 @@ def diagnosticar(proj: Path, cache: Path) -> dict:
                                 "principal e o gate nao roda nas worktrees (AM-38); relativo `.githooks` e mais seguro")
 
     if registrada and instalada and registrada != instalada:
-        d["decisoes"].append({"tema": f"governanca defasada: projeto {registrada} vs instalada {instalada}",
-                              "acao": "rodar /squad-resume passo 0b (reconciliacao a partir do changelog) "
-                                      "e so ao final gravar a versao nova no SQUAD_VERSION"})
+        delta = delta_changelog(cache, registrada, instalada)
+        d["delta"] = delta
+        if delta["entradas"] and not delta["breaking"]:
+            d["acoes_seguras"].append({
+                "tipo": "gravar_versao", "alvo": f"SQUAD_VERSION -> {instalada}",
+                "versao": instalada, "entradas": delta["entradas"],
+                "porque": f"delta {registrada}->{instalada} ({len(delta['entradas'])} versao(oes)) "
+                          "sem nenhum item BREAKING no changelog — nada a decidir no projeto"})
+        elif delta["breaking"]:
+            d["decisoes"].append({
+                "tema": f"governanca defasada COM breaking: {registrada} -> {instalada}",
+                "arquivos": [f"{b['versao']}: {b['item']}" for b in delta["breaking"]],
+                "acao": "cada item BREAKING e uma acao potencial no projeto. Tratar primeiro "
+                        "(/squad-resume passo 0b) e so ao final gravar a versao nova — bump antes "
+                        "apaga o unico sinal de que havia trabalho pendente"})
+        else:
+            d["decisoes"].append({
+                "tema": f"governanca defasada: projeto {registrada} vs instalada {instalada}",
+                "acao": "changelog do delta nao encontrado no plugin instalado — reconciliar "
+                        "manualmente (/squad-resume passo 0b)"})
     return d
 
 
@@ -244,6 +317,9 @@ def aplicar(proj: Path, plano: dict) -> list[str]:
             k, v = a["alvo"].split("=", 1)
             subprocess.run(["git", "-C", str(proj), "config", k, v], check=False)
             feitas.append(f"git config {k}={v}")
+        elif t == "gravar_versao":
+            f = gravar_versao(proj, a["versao"], a["entradas"])
+            feitas.append(f"SQUAD_VERSION -> {a['versao']} ({f})")
     return feitas
 
 

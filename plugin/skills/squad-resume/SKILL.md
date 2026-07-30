@@ -50,6 +50,15 @@ claude plugin update dev-squad@pdati 2>&1 | tail -3   # id COMPLETO nome@marketp
 
 Detectar não é reconciliar. Governança de duas versões atrás já rodou sem ninguém notar (trokey 1.4→1.6, depois 1.6→1.10). Procedimento:
 
+0. **Tentar a via automática primeiro** (plugin 1.13.0+):
+
+```bash
+${CLAUDE_PLUGIN_ROOT}/scripts/squad-migrate.py --project .          # diagnóstico
+${CLAUDE_PLUGIN_ROOT}/scripts/squad-migrate.py --project . --apply   # grava se for seguro
+```
+
+Delta sem item `[BREAKING]` no changelog → o script grava o `SQUAD_VERSION` com a linha de histórico e a reconciliação está feita; reportar e seguir. Delta **com** BREAKING → ele lista os itens e NÃO grava; seguir os passos abaixo e só gravar ao final.
+
 1. **Ler o que mudou** — changelog do plugin em execução, só o trecho entre a versão registrada e a atual: `${CLAUDE_PLUGIN_ROOT}/README.md` → seção "Changelog". Itens **BREAKING** são os que exigem ação no projeto.
 2. **Montar a lista de ações** a partir dos BREAKING: skill renomeada/fundida (grep do nome antigo no `CLAUDE.md` e na memória do projeto), regra de agente que mudou (conferir se `agent-memory/` contradiz a spec nova), default invertido (ex.: push-gate advisory), artefato novo esperado (ex.: `specs/`).
 3. **Executar o que é mecânico** (renomear referência, criar diretório, atualizar `SQUAD_VERSION` com uma linha por versão pulada).
