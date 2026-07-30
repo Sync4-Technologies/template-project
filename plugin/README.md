@@ -60,6 +60,19 @@ Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualq
 
 ## Changelog
 
+### 2.1.0 (2026-07-30)
+
+Backport das lições da batalha `trokey-franchising` (AM-42..AM-45). Dois marcos consecutivos rodaram o protocolo de review caçador da 1.9.0 e renderam **23 achados sobre suítes 100% verdes** — as famílias que se repetiram viraram checklist.
+
+- **AM-43 — checklist de marcador de idempotência** (`backend-engineer`, `template/docs/feature-spec.md`): o `WHERE` da marcação leva o marcador **e** o predicado de estado (marcador sozinho só fecha a corrida entre dois ticks do mesmo job, não contra a transação do usuário); campo de elegibilidade que muda **reseta** os marcadores por mudança de valor, nunca por presença da chave no payload. As duas pontas do mesmo erro: uma mata o alerta para sempre, a outra duplica alerta e evento.
+- **AM-44 — seed de e2e sem assert de status** (`qa-engineer`): um 422 engolido no `beforeAll` deixou uma suíte rodando com a configuração errada por dias, com os vermelhos aparecendo em dois testes sem relação com a causa. Junto: comparação de tempo ancora no valor lido do sistema, não no relógio local (~300 ms entre host e Postgres bastaram para reprovar).
+- **AM-45 — marco que herda lições pede reviewer de contexto limpo** (`tech-lead` §6): quem ditou a lição tem viés de confirmação ao checar se foi seguida. O reviewer novo achou 2 MAJOR, **um deles dentro da correção ditada pelo reviewer anterior**. Re-verificar fechamento, ao contrário, volta ao mesmo reviewer — caçar pede olhos novos, conferir fechamento pede memória do achado.
+- **AM-42 — hook novo não vale até o repo principal trocar de branch** (`/squad-init` passo 5, `/squad-resume` 3c): `core.hooksPath` absoluto faz o dispatcher (husky `_/h`, lefthook) resolver o script no working tree do **principal**. Parado em outra branch, o hook sai `exit 0` em silêncio em **todas** as worktrees — com o arquivo presente na worktree e já em `main`.
+- **AM-46 — porte de script é código, não documentação** (`/squad-init`, `/squad-resume`): copiar executável do template para um projeto exige rodá-lo uma vez no ambiente real antes de commitar. Foi assim que um pre-check quebrado chegou a um projeto.
+- **O pre-check deixa de oferecer `--no-verify` quando ele próprio aborta**: se o pre-check errou, o bug é dele — a saída é consertar o pre-check, não pular o gate. A mensagem antiga ensinava exatamente o hábito que o pre-check existe para evitar.
+
+Origem: PR #66, aberto antes da 1.13.1 e da 2.0.0. O fix do `engines.node` que vinha nele **já havia saído na 1.13.1** por outro caminho, e o bump para 1.14.0 conflitava com a 2.0.0 — só o conteúdo de lição foi reaproveitado.
+
 ### 2.0.0 (não lançada — FASE 2 do plano de evolução)
 
 Performance do runtime e fluxo. Antes: todo comando Bash da sessão pagava dois subprocessos python para quase sempre concluir "não é push nem commit".
