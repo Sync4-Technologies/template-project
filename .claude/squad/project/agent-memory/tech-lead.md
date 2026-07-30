@@ -20,6 +20,8 @@
 
 ## Learnings acumulados
 
+- [2026-07-30] `squad-metrics.sh` reporta `revisoes=0` quando o CR rodou como subagent em sessao — ele so ve review postado no GitHub (AM-39). Nao confundir com gate verde: no mesmo range em que o coletor disse `achados-review=0`, o CR tinha achado 6. A contagem real vai a mao no Session Log, sempre.
+
 - [2026-07-30] Suite de teste que cria repo fixture e roda de dentro de um hook do git: `unset GIT_DIR GIT_INDEX_FILE GIT_WORK_TREE ...` no topo, SEMPRE. `git -C <outro-repo>` NAO sobrepoe essas vars — o teste opera no indice do repo real. Sintoma no pior formato: VERDE rodado a mao, VERMELHO dentro do gate, acusando o codigo em vez do teste. E o `git init` do fixture chega a reinicializar o git dir do repo real (marcou `core.bare=true`, quebrou git em todas as worktrees). UP-28.
 - [2026-07-30] Teste de guarda que usa o caso FELIZ da regra pode passar pelo fallback e mascarar parser quebrado. O teste da UP-02 usava `git push --force-with-lease origin main`: o parser estava engolindo o remote e devolvendo refspec vazio, que o fallback "vazio = branch atual" aprova. Trocar por OUTRA branch reprovava. Caso adversarial nao e o caso que a regra reprova certo — e o caso em que errar passa despercebido (UP-26 em forma nova).
 - [2026-07-30] Trocar consulta ao vivo por cache muda mais que latencia: some a AUTO-CORRECAO. O cache de estado de PR avisava e so atualizava no caminho que nao avisava — estado terminal se auto-perpetuava por 24h. Ao introduzir cache, perguntar sempre "o que se corrigia sozinho e agora nao se corrige?".
