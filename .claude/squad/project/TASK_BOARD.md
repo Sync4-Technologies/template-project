@@ -6,11 +6,11 @@
 
 ## Current Focus
 
-- **Ultima sessao:** 2026-07-30 por Pablo — FASE 2 inteira (itens 2.1-2.5) implementada, revisada e mergeada em `develop`
-- **Em andamento:** nada. **v2.0.0 RELEASED** — PRs #67 e #68 mergeados, tag `v2.0.0` em `1ff6eac` (confirmada no remoto), plugin atualizado 1.13.1 -> 2.0.0 user-scope. **v2.1.0 esta em `develop`** (PR #69 `9fab391`, backport AM-42..AM-46 do trokey) e ainda NAO foi para `main` nem taggeada. PR #66 FECHADO (obsoleto: o fix dele ja saira na 1.13.1 por outro caminho; conteudo de licao reaproveitado no #69). Reconciliacao desta sessao: SQUAD_VERSION 1.13.0 -> 1.13.1 (automatica)
-- **Proximo passo:** (a) release da v2.1.0: PR `develop`->`main`, e tag `v2.1.0` so apos MERGED + `git fetch` com merge visivel em `origin/main` (UP-11); (b) **validar a 2.0.0 em sessao NOVA antes de propagar aos consumidores** — o `pre-bash.sh` e a governanca nova nao rodaram em uso real ainda (AM-37), e o salto la e BREAKING e manual; (c) FASE 3 (metricas que geram acao, itens 3.1-3.4)
+- **Ultima sessao:** 2026-07-30 por Pablo — FASE 2 inteira (2.1-2.5) + backport do trokey; DUAS releases (v2.0.0 e v2.1.0)
+- **Em andamento:** nada. **v2.0.0 e v2.1.0 RELEASED** — tags `v2.0.0` (`1ff6eac`) e `v2.1.0` (`50372a2`) confirmadas no remoto; plugin user-scope em **2.1.0**. PRs #67, #68, #69, #70, #71 mergeados; #66 FECHADO (obsoleto: o fix dele ja saira na 1.13.1 por outro caminho; conteudo de licao reaproveitado no #69). Nenhum PR aberto. Reconciliacao desta sessao: SQUAD_VERSION 1.13.0 -> 1.13.1 (automatica)
+- **Proximo passo:** (a) **validar a 2.0.0/2.1.0 em sessao de trabalho real ANTES de propagar aos consumidores** — o `pre-bash.sh` roda em todo comando Bash de toda sessao, foi reescrito nesta e teve 2 MAJOR achados DEPOIS de parecer pronto; o salto em trokey/concilia/jobtracker e BREAKING e manual (`squad-migrate --apply` nao grava sozinho nesse delta, por desenho); (b) **UP-29**: dar gatilho executavel ao gate "CR aprovou" no fluxo de release — hoje ele so roda se alguem lembrar; (c) FASE 3 (metricas que geram acao, itens 3.1-3.4)
 - **Bloqueios:** nenhum
-- **Branch ativo:** `chore/handoff-v200` (worktree `squad-resume-f0c4cd`); `develop` em `9fab391`, `main` em `1ff6eac`
+- **Branch ativo:** `chore/handoff-v210` (worktree `squad-resume-f0c4cd`); `main` em `50372a2` (v2.1.0), `develop` em `948a7af`
 - **Modo do projeto:** Production
 
 ### v2.0.0 — o que muda para quem consome (BREAKING)

@@ -1,7 +1,7 @@
 # ARCHITECTURE.md — dev-squad (upstream)
 
 > Fonte de verdade da arquitetura deste repositório. Atualizar a cada mudança estrutural.
-> Última atualização: 2026-07-30 (v1.13.0: squad-migrate automatizado, gate com pre-check de ambiente, reconciliação automática; o próprio upstream passou a rodar seu gate)
+> Última atualização: 2026-07-30 (v2.0.0: os 2 hooks PreToolUse/Bash fundidos em `pre-bash.sh` com early-exit — 3 scripts de hook no lugar de 4; v2.1.0: backport AM-42..AM-46)
 
 ---
 
