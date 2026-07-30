@@ -301,10 +301,39 @@ Ao implementar, o proprio codigo repetiu a UP-06 em TERCEIRA forma: a deteccao d
 |----|------|---------|--------|
 | UP-23 | Proposta de melhoria aceita em conversa vira CARD no board na hora, nao promessa no meio de um paragrafo — senao a release seguinte sai sem ela e ninguem lembra | TASK_BOARD (habito do TL) | [OK] 2026-07-29 |
 | UP-24 | Reconciliacao automatica do delta sem BREAKING (`squad-migrate --apply` grava o SQUAD_VERSION); com BREAKING nao grava, so lista as acoes | plugin/scripts/squad-migrate.py + squad-resume 0b | [OK] 2026-07-29 (v1.13.0) |
+| UP-25 | Pre-check respeita operador do range de engines.node + roda depois do `cd` (bloqueava TODO push com range aberto) | template/ci/pre-commit-quality.example | [OK] 2026-07-30 |
+| UP-26 | Teste de guarda exige caso adversarial (o que ela reprova errado), nao so o que aprova certo | processo + qa-engineer.md | [OK] registrado; backport pendente |
+| UP-27 | Porte de codigo executavel do template exige execucao no ambiente real (AM-46 trokey) | squad-resume 0b + tech-lead.md | Pendente |
 
 ### Principio
 
 "Fica pra proxima" dito em prosa nao sobrevive a release. E reconhecer comando/marcador por substring erra sempre do mesmo jeito: o texto que FALA sobre a coisa e confundido com a coisa. Terceira ocorrencia (push-gate, coletor de metricas, changelog) — o padrao agora e conhecido: marcador delimitado, nunca palavra solta.
+
+
+## 14. Testei so o caso que confirmava meu desenho — e entreguei um gate que bloqueava todo push (severidade: ALTO)
+
+### O que aconteceu
+
+O pre-check de ambiente que eu adicionei na v1.12.0 tinha DOIS defeitos, e o primeiro **abortava todo `git push`** em qualquer projeto cujo `engines.node` fosse um range aberto:
+
+1. **Comparacao ignorava o operador do range.** O parser pegava o primeiro numero de `">=22"` e comparava com IGUALDADE contra o major em uso. Node 26 satisfaz `>=22`, mas o gate abortava com "pede major 22" — e a mensagem oferecia `--no-verify` como saida. **Um pre-check cujo proposito declarado era "obstaculo ensina o habito do --no-verify" virou exatamente esse obstaculo, e ainda ensinava a burla.**
+2. **Rodava ANTES do `cd` para a raiz** do repo, lendo `package.json`/`node_modules` do diretorio de onde o hook foi chamado.
+
+Nao fui eu que descobri: outra sessao (trokey, PR #96) quebrou o gate em `main`, diagnosticou e corrigiu, registrando AM-46/AM-47 com "backport URGENTE". Eu ia encerrar a sessao sem isso — os 3 projetos reconciliam para 1.13.0 na proxima sessao e herdariam o gate quebrado.
+
+**Causa raiz do MEU erro:** testei tres cenarios e todos confirmavam o desenho — `">=22.0.0 <23.0.0"` com Node 26 (reprova certo), `node_modules` ausente (reprova certo), ambiente OK (passa). **Nunca testei range aberto.** Testei o caminho que validava minha hipotese e chamei de "testado nos 3 cenarios" no proprio PR. E o viés de confirmacao que eu passei o dia inteiro consertando no reviewer — aplicado a mim mesmo, sem perceber.
+
+### Acao corretiva
+
+| ID | Acao | Arquivo | Status |
+|----|------|---------|--------|
+| UP-25 | Pre-check respeita o OPERADOR do range (`>=`/`>` reprovam so abaixo do minimo; `<`/`<=` cobrem upper bound; pin/caret/til exigem o major) e roda DEPOIS do `cd` para a raiz | plugin/template/ci/pre-commit-quality.example | [OK] 2026-07-30 — testado nos DOIS sentidos, com Node 22 e 26 reais |
+| UP-26 | Teste de guarda/validacao exige o caso que a REPROVA errado, nao so o que ela aprova certo: para cada regra, um caso que deve passar e um que deve falhar. "Testado em 3 cenarios" sem caso adversarial nao e teste, e confirmacao | processo (auto-review antes de abrir PR) + `qa-engineer.md` (backport candidato) | [OK] registrado; backport ao spec do QA pendente |
+| UP-27 | Porte de codigo EXECUTAVEL do template para um projeto exige execucao no ambiente real antes do commit (AM-46 do trokey) — reconciliacao que altera script nao e mudanca de doc | `/squad-resume` passo 0b + tech-lead.md | Pendente (proxima release) |
+
+### Principio
+
+Guarda que reprova o caso legitimo e pior que guarda ausente: ela treina a burla que existia para impedir. E o teste que so exercita o caminho felizes da regra mede a minha confianca, nao a regra — a assimetria (aprova certo / reprova certo) e obrigatoria.
 
 
 ## Indice de acoes

@@ -60,6 +60,14 @@ Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualq
 
 ## Changelog
 
+### 1.13.1 (2026-07-30)
+
+**[fix bloqueante]** O pre-check de ambiente da 1.12.0 abortava TODO `git push` em projeto cujo `engines.node` fosse range aberto.
+
+- **Comparação passa a respeitar o operador do range.** A versão anterior pegava o primeiro número de `">=22"` e comparava por IGUALDADE com o major em uso: Node 26 satisfaz `>=22`, mas o gate abortava com "pede major 22" — e oferecia `--no-verify` como saída. Um pre-check cujo propósito declarado é "obstáculo ensina o hábito do `--no-verify`" virou exatamente esse obstáculo. Agora `>=`/`>` reprovam só quem está abaixo do mínimo, `<`/`<=` cobrem upper bound, e pin/caret/til exigem o major
+- **Roda depois do `cd` para a raiz do repo** — antes lia `package.json`/`node_modules` do diretório de onde o hook foi chamado
+- Achado e corrigido primeiro em campo (`trokey-franchising` PR #96, AM-46/AM-47), backportado aqui. Testado nos **dois sentidos** com Node 22 e 26 reais — a falha original passou porque os 3 cenários testados na 1.12.0 só exercitavam o que a regra aprova certo (UP-26)
+
 ### 1.13.0 (2026-07-29)
 
 Reconciliação de governança deixa de ser trabalho manual quando não há nada a decidir.
