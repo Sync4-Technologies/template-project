@@ -43,7 +43,7 @@ Trabalho aqui é majoritariamente de **sistema** (governança, skills, hooks, te
 
 ## Regras críticas do projeto
 
-1. **Toda mudança em skill/hook/agent roda os checks locais ANTES de commitar**: `scripts/ci/*.py`, `plugin/hooks` smoke, `claude plugin validate` — pegaram bugs reais em toda release
+1. **Toda mudança em skill/hook/agent roda os checks locais ANTES de commitar**: `scripts/ci/*.py`, `plugin/hooks` smoke, `claude plugin validate` — pegaram bugs reais em toda release. **Isto é máquina, não prosa:** `.githooks/pre-commit` roda os 4 e grava o marcador do push-gate. `core.hooksPath` é config local (não versionável) — em clone novo, rodar uma vez: `git config core.hooksPath .githooks`
 2. Release segue o fluxo: branch → PR `develop` (plugin-ci verde) → PR `develop`→`main` → tag `vX.Y.Z` → `claude plugin marketplace update pdati` + `claude plugin update dev-squad@pdati`
 3. Plugin atualizado **só aplica na sessão seguinte** — nunca assumir que a sessão atual roda a versão recém-instalada (UP-01/UP-09)
 4. Branch protection com `enforce_admins` em `develop` e `main` — sem porta dos fundos; exceção via ritual documentado (UP-02)

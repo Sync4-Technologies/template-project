@@ -121,13 +121,39 @@ Apresentar ao usuário o que foi criado + próximo passo (`/squad-new-project` p
 
 ---
 
-## Migração de projeto com template clonado (layout legado)
+## Migração de projeto legado → plugin puro (AUTOMATIZADA)
 
-1. Manter `.claude/squad/project/` intacto (a memória é do projeto)
-2. Criar `SQUAD_VERSION` (passo 3)
-3. Remover do projeto: `.claude/squad/template/`, `.claude/skills/squad-*`, `.claude/hooks/{load-memory,architecture-reminder,memory-update-reminder}.sh` e as entradas correspondentes em `.claude/settings.json` (o plugin passa a fornecer tudo)
-4. Confirmar com o usuário ANTES de remover (mostrar lista) — customizações locais do template viram candidatas a backport no upstream, não podem ser perdidas
-5. Commit: `chore: migra squad de template clonado para plugin dev-squad@<versão>`
+Não fazer à mão: `${CLAUDE_PLUGIN_ROOT}/scripts/squad-migrate.py` faz o inventário e separa o que é determinístico do que é decisão. Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualquer máquina.
+
+```bash
+# 1) DIAGNÓSTICO — dry-run, não toca em nada
+${CLAUDE_PLUGIN_ROOT}/scripts/squad-migrate.py --project .
+
+# 2) executa só o que ele classificou como SEGURO
+${CLAUDE_PLUGIN_ROOT}/scripts/squad-migrate.py --project . --apply
+```
+
+**Como ele decide** (a parte que importa entender): comparar "o arquivo local difere do plugin?" não serve — quase sempre difere, porque o plugin evoluiu. O critério é a **direção** da diferença, contra a **união de todas as versões no cache, em escopo de diretório**:
+
+| Classificação | Significa | Ação |
+|---|---|---|
+| **defasado** | toda linha do arquivo local existe em alguma versão do plugin | remover é seguro — o plugin fornece igual ou mais novo |
+| **linha exclusiva** | há conteúdo que nenhuma versão do plugin teve | ESCALAR com as linhas no relatório |
+| **sem par** | arquivo não existe no plugin | artefato do projeto — preservar |
+
+Escopo de diretório e versões antigas incluídas de propósito: conteúdo que apenas **mudou de arquivo** (trio de design fundido em `/squad-design`, blocos movidos para `squad-core`) ou que o plugin **removeu depois** (ADR-005 reescrita) não é customização local. Sem isso o relatório afoga o sinal real em dezenas de falsos positivos — medido no primeiro caso real: 46 arquivos "para decidir" caíram para 29, com o resto legível.
+
+Ele também detecta, sem tocar: `settings.json` registrando hooks locais (rodariam em duplicado com os do plugin), contratos versionados na memória (AM-30), gate órfão (`.githooks` sem `core.hooksPath` — AM-34), `core.hooksPath` absoluto em repo com worktree (AM-38) e governança defasada.
+
+**O que ele NUNCA toca:** `.claude/squad/project/` (memória do projeto), `.env`, código do produto.
+
+Depois do `--apply`:
+
+1. Revisar `git status`/`git diff` — a memória do projeto tem de estar intacta
+2. Resolver as DECISÕES do relatório: linha exclusiva que é regra útil vira lesson/backport ANTES de o arquivo morrer
+3. Remover o bloco `hooks` do `.claude/settings.json` se ele aponta para `.claude/hooks/` local
+4. Reconciliar a governança (`/squad-resume` passo 0b) e só então gravar a versão nova no `SQUAD_VERSION`
+5. Commit: `chore(squad): migra de template clonado para plugin dev-squad@<versão>`
 
 ---
 
