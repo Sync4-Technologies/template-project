@@ -97,8 +97,7 @@ Impacto recorrente: resume/handoff/status (630 linhas juntas) rodam em quase tod
 
 ### 3.1 Runtime (hooks)
 1. ~~**Todo comando Bash paga 2 subprocessos python**~~ — **RESOLVIDO (2026-07-30, item 2.1)**. Medição confirmou a ordem de grandeza do diagnóstico: 83.6ms/comando com os dois hooks, 5.1ms com o `pre-bash.sh` unificado.
-2b. ~~**`gh pr view` (rede) dentro do hook**~~ — **RESOLVIDO (2026-07-30, item 2.2)**: cache local + refresh em background.
-2. **`gh pr view` (rede) dentro do hook** a cada push real (UP-01) — segundos no caminho crítico, fail-open mas lento.
+2. ~~**`gh pr view` (rede) dentro do hook** a cada push real (UP-01) — segundos no caminho crítico, fail-open mas lento.~~ — **RESOLVIDO (2026-07-30, item 2.2)**: cache local + refresh em background (que roda também no push que avisa — ver revisão do PR #67).
 3. `architecture-reminder` em todo Edit/Write — aceitável (barato, dirigido), manter.
 
 ### 3.2 Fluxo (orquestração)

@@ -139,18 +139,27 @@ Obrigatório em regras de negócio, contratos de API e fluxos críticos. Nenhuma
 
 ### 3b. Fast lane (tarefa trivial)
 
-A matriz de autonomia gradua **decisões**, não cerimônia: hoje um fix de 5 linhas com o teste que já falha percorre QA-define → engineer → CI → QA-valida → CR. A fast lane corta isso para **engineer + CR numa passada**, pulando o QA-define.
+A matriz de autonomia gradua **decisões**, não cerimônia: hoje um fix de 5 linhas com o teste que já falha percorre QA-define → engineer → CI → QA-valida → CR. A fast lane corta isso para **engineer + CR numa passada**. O que ela remove é a **etapa de QA-define** — o QA escrever cenário novo antes da implementação. O QA-valida do DoD continua exigido; muda só o que serve de evidência (abaixo).
 
 **Critério objetivo — TODOS têm que valer** (qualquer "não" ou qualquer dúvida → fluxo normal, sem negociação):
 
 1. ≤ ~20 linhas de código de produção alteradas, em no máximo 2 arquivos (teste e doc não contam)
-2. **Já existe teste cobrindo o caminho alterado** — você cita o teste pelo nome na delegação — OU a mudança não tem caminho executável (copy, texto, constante de config, doc)
+2. Uma das duas vias, e a via escolhida vai escrita no PR:
+   - **2a — com teste:** já existe teste cobrindo o caminho alterado, citado pelo nome na delegação
+   - **2b — sem caminho executável:** copy, texto, constante de config sem lógica, doc. Nada que possa quebrar em runtime
 3. Não toca: contrato compartilhado · migration · authz/auth · dependência nova ou versão de dependência · feature flag · nada da superfície de "feature crítica" acima
 4. Não muda comportamento observável além do defeito descrito (sem "de passagem eu também...")
 
-**O que a fast lane NÃO dispensa:** gate determinístico local verde · CR na mesma passada · a prova de execução — o teste citado **falha antes e passa depois**, colado no PR. Sem essa prova a tarefa volta ao fluxo normal: o que a fast lane pula é a *definição* de cenário pelo QA, nunca a execução.
+**O que a fast lane NÃO dispensa, nas duas vias:** gate determinístico local verde · CR na mesma passada · registro no PR de que correu em fast lane, por qual via e com qual evidência.
 
-Exceção documentada ao DoD (squad-core §K): em fast lane, "QA aprovou com evidência executada" é satisfeito pelo teste pré-existente citado, verde no gate. Registrar no PR que a tarefa correu em fast lane e por qual critério — fast lane sem registro é atalho, não via rápida.
+**Evidência que satisfaz "QA aprovou com evidência executada" (DoD, squad-core §K):**
+
+| Via | Evidência aceita |
+|---|---|
+| 2a | o teste citado **falha antes e passa depois**, output colado no PR |
+| 2b | gate verde + CR aprovado. Não há execução a provar porque não há caminho executável — é essa a razão de a via existir |
+
+Via 2a **sem** a prova de falha-antes/passa-depois volta ao fluxo normal: o que a fast lane pula é a *definição* de cenário, nunca a execução do que existe. Fast lane sem registro é atalho, não via rápida.
 
 ### 4. Delegação para subagents
 

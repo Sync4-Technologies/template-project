@@ -157,10 +157,98 @@ run "$REPO" 'git push origin main:main'
   && ok "UP-02: refspec explícito da branch atual AINDA dispara UP-01" \
   || fail "refspec main:main deveria disparar UP-01 (err='$ERR')"
 
+# Contra-prova do parser de flags (MAJOR-1 da revisão do PR #67): a versão
+# anterior tratava --force-with-lease como flag de valor SEPARADO (ela é só
+# `=<ref>`), o skip_next comia o REMOTE e os refspecs saíam vazios. O caso com
+# `main` passava assim mesmo, pelo fallback "refspec vazio = branch atual" — teste
+# verde pelo motivo errado. O caso que reprova é o de OUTRA branch.
+run "$REPO" 'git push --force-with-lease origin outra-branch'
+[[ "$ERR" != *"UP-01"* ]] \
+  && ok "UP-02: --force-with-lease não engole o remote (outra branch, adversarial)" \
+  || fail "--force-with-lease quebrou o parse: outra-branch disparou UP-01 (err='$ERR')"
+
 run "$REPO" 'git push --force-with-lease origin main'
 [[ "$ERR" == *"UP-01"* ]] \
-  && ok "UP-02: flag com valor não confunde o parser de refspec" \
-  || fail "--force-with-lease quebrou o parse de refspec (err='$ERR')"
+  && ok "UP-02: --force-with-lease da branch atual ainda dispara" \
+  || fail "--force-with-lease origin main deveria disparar (err='$ERR')"
+
+run "$REPO" 'git push -o ci.skip origin outra-branch'
+[[ "$ERR" != *"UP-01"* ]] \
+  && ok "UP-02: flag de valor separado real (-o) consome só o valor" \
+  || fail "-o ci.skip quebrou o parse de refspec (err='$ERR')"
+
+# Formas de empurrar a branch atual que a v1 do parser não reconhecia
+for form in "+main" "refs/heads/main" "HEAD:main" "main:main"; do
+  run "$REPO" "git push origin $form"
+  [[ "$ERR" == *"UP-01"* ]] \
+    && ok "UP-02: '$form' reconhecido como a branch atual" \
+    || fail "'$form' empurra a branch atual e nao disparou UP-01"
+done
+
+run "$REPO" 'git push'
+[[ "$ERR" == *"UP-01"* ]] \
+  && ok "UP-02: push sem argumento = branch atual" \
+  || fail "push sem argumento deveria disparar UP-01"
+
+run "$REPO" 'git push -u origin main'
+[[ "$ERR" == *"UP-01"* ]] \
+  && ok "UP-02: -u origin main dispara" \
+  || fail "-u origin main deveria disparar UP-01"
+
+run "$REPO" 'git push --mirror origin'
+[[ "$ERR" == *"UP-01"* ]] \
+  && ok "UP-02: --mirror empurra a branch atual junto, dispara" \
+  || fail "--mirror deveria disparar UP-01 (empurra tudo)"
+
+run "$REPO" 'git push origin :outra-branch'
+[[ "$ERR" != *"UP-01"* ]] \
+  && ok "UP-02: ':ref' (delecao remota) nao empurra nada local" \
+  || fail "delecao remota disparou UP-01"
+
+# TTL
+printf 'main\tMERGED\t%s\n' "$(( $(date +%s) - 90000 ))" > "$GIT_DIR_REPO/squad-pr-state"
+run "$REPO" 'git push origin main'
+[[ "$ERR" != *"UP-01"* ]] \
+  && ok "cache com mais de 24h e ignorado" \
+  || fail "cache expirado nao deveria avisar"
+
+# Cache corrompido nao pode MATAR o hook: se matar, o check do marcador (motivo
+# de o hook existir) deixa de rodar e o silencio parece aprovacao.
+marker_clear
+for lixo in 'lixo' 'a\tb' 'l1\tMERGED\t123\nl2\tMERGED\t456'; do
+  printf "$lixo\n" > "$GIT_DIR_REPO/squad-pr-state"
+  run "$REPO" 'git push origin main'
+  [[ "$ERR" == *"não validou o HEAD atual"* ]] && [[ "$ERR" != *"unbound variable"* ]] \
+    && ok "cache corrompido ignorado, check do marcador segue rodando" \
+    || fail "cache corrompido quebrou o hook (err='$ERR')"
+done
+marker_set
+
+# MAJOR-2 da revisão: o refresh tem que rodar NO push que avisa. Se so rodasse
+# no caminho silencioso, estado terminal cacheado se auto-perpetuaria ate o TTL.
+FAKEBIN=$(mktemp -d)
+printf '#!/usr/bin/env bash\necho OPEN\n' > "$FAKEBIN/gh"
+chmod +x "$FAKEBIN/gh"
+cache_write main CLOSED
+PATH="$FAKEBIN:$PATH" run "$REPO" 'git push origin main'
+[[ "$ERR" == *"UP-01"* ]] || fail "setup: cache CLOSED deveria avisar"
+for _ in $(seq 40); do
+  grep -q "OPEN" "$GIT_DIR_REPO/squad-pr-state" 2>/dev/null && break
+  sleep 0.25
+done
+grep -q "OPEN" "$GIT_DIR_REPO/squad-pr-state" 2>/dev/null \
+  && ok "refresh roda TAMBEM no push que avisa (cache terminal se auto-corrige)" \
+  || fail "cache ficou preso em CLOSED: aviso nao se auto-corrige ate o TTL"
+rm -rf "$FAKEBIN"
+
+# enforce pelo caminho da UP-01 (antes so o caminho do marcador era exercitado)
+cache_write main MERGED
+touch "$REPO/.claude/squad/project/gate-enforce"
+run "$REPO" 'git push origin main'
+[ "$RC" = 2 ] \
+  && ok "enforce + UP-01: BLOQUEIA (exit 2)" \
+  || fail "enforce pelo caminho da UP-01 deveria bloquear (rc=$RC)"
+rm -f "$REPO/.claude/squad/project/gate-enforce"
 cache_clear
 
 # ===========================================================================

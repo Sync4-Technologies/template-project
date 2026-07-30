@@ -108,7 +108,7 @@ Nenhum agente re-deriva OWASP Top 10 no próprio spec — é responsabilidade vi
 
 Tarefa concluída exige: código implementado · self-review completo com gate determinístico local verde (§D) · testes passando na cobertura do modo (§C) · contratos respeitados · docs/memória atualizadas · QA aprovou com evidência executada · CR aprovou · SE aprovou (feature crítica) · deploy verificado no SHA esperado + smoke E2E (quando a tarefa chega a deploy). Merged ≠ Deployed.
 
-Exceção única: **fast lane** (`tech-lead.md` → "3b. Fast lane"), para tarefa trivial que passa nos 4 critérios objetivos de lá. Ela substitui o QA-define pelo teste pré-existente citado, verde no gate e com falha-antes/passa-depois provada no PR — não dispensa gate, CR nem execução.
+Exceção única: **fast lane** (`tech-lead.md` → "3b. Fast lane"), para tarefa trivial que passa nos 4 critérios objetivos de lá. Ela remove a etapa de QA-**define** (cenário novo antes de implementar); o item "QA aprovou com evidência executada" **continua exigido**, satisfeito pelo teste pré-existente citado com falha-antes/passa-depois no PR (via 2a) ou por gate verde + CR quando a mudança não tem caminho executável (via 2b). Gate e CR nunca são dispensados.
 
 ## §L — Ciclo de versão do plugin
 

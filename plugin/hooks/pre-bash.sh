@@ -81,8 +81,12 @@ for seg in re.split(r"&&|\|\||;|\||\n", stripped):
         # UP-02: o que este push empurra. Posicionais depois do remote; flags e
         # seus valores fora. Vazio = empurra a branch atual (upstream/default).
         rest = seg[m.end():].split()
-        FLAG_WITH_VALUE = ("--repo", "-o", "--push-option", "--receive-pack",
-                           "--exec", "--force-with-lease")
+        # SO estas aceitam valor SEPARADO em `git push`. `--force-with-lease`,
+        # `--receive-pack` e `--exec` sao APENAS `--flag=<valor>`: incluir uma
+        # delas aqui faz o skip_next comer o REMOTE, os refspecs saem vazios e o
+        # push de outra branch passa por push da branch atual (falso positivo
+        # da UP-01 — em enforce, push legitimo bloqueado).
+        FLAG_WITH_VALUE = ("--repo", "-o", "--push-option")
         positional = []
         skip_next = False
         for tok in rest:
@@ -94,10 +98,24 @@ for seg in re.split(r"&&|\|\||;|\||\n", stripped):
                     skip_next = True
                 continue
             positional.append(tok)
-        if "--tags" in rest or "--mirror" in rest:
+        # `--tags` sozinho empurra tags, nao a branch -> nao e caso da UP-01.
+        # `--mirror` NAO entra aqui: mirror empurra a branch atual junto.
+        if "--tags" in rest:
             refspecs.append("__TAGS__")
-        # positional[0] e o remote; o resto sao refspecs
-        refspecs.extend(positional[1:])
+        # positional[0] e o remote; o resto sao refspecs. Normalizar para o
+        # nome local: `+ref` (force), `src:dst` (so o lado src importa) e
+        # `refs/heads/x` sao todos formas de empurrar a branch `x`.
+        for spec in positional[1:]:
+            src = spec.lstrip("+").split(":", 1)[0]
+            if not src:
+                # `:dst` = delecao remota. Nao empurra nada local, mas E um
+                # refspec explicito: nao pode cair no fallback "lista vazia =
+                # empurra a branch atual". Marcador que nunca casa com branch.
+                refspecs.append("__DELETE__")
+                continue
+            if src.startswith("refs/heads/"):
+                src = src[len("refs/heads/"):]
+            refspecs.append(src)
         continue
 
     if re.match(r"^(command\s+)?git" + GIT_OPTS + r"\s+commit(\s|$)", seg):
@@ -203,49 +221,70 @@ BRANCH=$(git branch --show-current 2>/dev/null)
 CHECK_UP01=1
 if [ -n "$REFSPECS" ]; then
   CHECK_UP01=0
-  for ref in $REFSPECS; do
+  set -f                      # refspec pode ter glob (refs/heads/*): sem noglob
+  for ref in $REFSPECS; do    # o `for` expandiria contra o conteúdo do cwd
     case "$ref" in
-      "$BRANCH"|"$BRANCH":*|HEAD|HEAD:*) CHECK_UP01=1 ;;
+      "$BRANCH"|HEAD) CHECK_UP01=1 ;;
     esac
   done
+  set +f
 fi
 
 PR_CACHE="$GIT_DIR/squad-pr-state"
 if [ "$CHECK_UP01" = "1" ] && [ -n "$BRANCH" ]; then
-  NOW=$(date +%s 2>/dev/null || echo 0)
+  NOW=$(date +%s 2>/dev/null || echo "")
+  case "$NOW" in
+    ''|*[!0-9]*) NOW="" ;;    # sem relógio confiável -> não dá para avaliar idade
+  esac
 
-  if [ -r "$PR_CACHE" ]; then
-    # formato: <branch>TAB<state>TAB<epoch>
-    C_BRANCH=$(cut -f1 "$PR_CACHE" 2>/dev/null)
-    C_STATE=$(cut -f2 "$PR_CACHE" 2>/dev/null)
-    C_EPOCH=$(cut -f3 "$PR_CACHE" 2>/dev/null)
-    : "${C_EPOCH:=0}"
-    AGE=$(( NOW - C_EPOCH ))
-    # >24h é velho demais: nome de branch se recicla, e estado terminal antigo
-    # de outra encarnação da branch geraria aviso falso.
-    if [ "$C_BRANCH" = "$BRANCH" ] && [ "$AGE" -lt 86400 ] && \
+  # O refresh vem ANTES de qualquer saída. Se ele ficasse depois do aviso,
+  # o único caminho que atualiza o cache seria o caminho que NÃO avisa: estado
+  # terminal cacheado se auto-perpetuaria até o TTL (PR reaberto, ou PR novo na
+  # mesma branch, avisaria por 24h sem chance de se corrigir — em enforce, todo
+  # push bloqueado). O hook antigo consultava ao vivo e se corrigia sozinho no
+  # push seguinte; essa propriedade tem que sobreviver ao cache.
+  # Fail-open: sem gh, sem auth, timeout ou processo morto -> só não atualiza.
+  if [ -n "$NOW" ] && command -v gh >/dev/null 2>&1; then
+    (
+      ST=$(gh pr view "$BRANCH" --json state --jq .state 2>/dev/null)
+      if [ -n "$ST" ]; then
+        # nome único: duas invocações concorrentes na mesma worktree (subagents
+        # em paralelo) compartilhavam um `.tmp` de nome fixo e produziam cache
+        # com duas linhas — que quebrava a leitura abaixo.
+        TMP="$PR_CACHE.$$.tmp"
+        printf '%s\t%s\t%s\n' "$BRANCH" "$ST" "$NOW" > "$TMP" 2>/dev/null \
+          && mv "$TMP" "$PR_CACHE" 2>/dev/null
+      fi
+    ) >/dev/null 2>&1 &
+    disown 2>/dev/null || true
+  fi
+
+  if [ -n "$NOW" ] && [ -r "$PR_CACHE" ]; then
+    # formato: <branch>TAB<state>TAB<epoch>, uma linha. `head -1` + `cut -s`
+    # (só linha COM separador) + validação numérica: cache corrompido é
+    # ignorado, nunca mata o hook. Sem isso o `set -u` derrubava o processo em
+    # `$(( ))` e o check do marcador — o motivo de o hook existir — não rodava.
+    C_LINE=$(head -1 "$PR_CACHE" 2>/dev/null)
+    C_BRANCH=$(printf '%s\n' "$C_LINE" | cut -s -f1)
+    C_STATE=$(printf '%s\n' "$C_LINE" | cut -s -f2)
+    C_EPOCH=$(printf '%s\n' "$C_LINE" | cut -s -f3)
+    case "$C_EPOCH" in
+      ''|*[!0-9]*) C_EPOCH="" ;;
+    esac
+    if [ -n "$C_EPOCH" ] && [ "$C_BRANCH" = "$BRANCH" ] && \
+       [ "$(( NOW - C_EPOCH ))" -lt 86400 ] && \
        { [ "$C_STATE" = "MERGED" ] || [ "$C_STATE" = "CLOSED" ]; }; then
+      # >24h é velho demais: nome de branch se recicla, e estado terminal antigo
+      # de outra encarnação da branch geraria aviso falso.
       cat >&2 <<UPMSG
 [pre-bash] AVISO (UP-01): a branch '$BRANCH' tem PR $C_STATE — branch morta.
 Push aqui tende a ser trabalho invisível. O caminho normal é branch nova a partir da base:
   git fetch origin && git switch -c <nova-branch> origin/<base>
-(estado lido do cache local, sem rede; refresh em background para o próximo push)
+(estado lido do cache local, sem rede; já disparei o refresh — se o PR reabriu, o
+ próximo push não avisa mais)
 UPMSG
       warned
     fi
-  fi
-
-  # Refresh assíncrono para o próximo push. Fail-open: sem gh, sem auth,
-  # timeout ou processo morto pelo harness -> o cache só não atualiza.
-  if command -v gh >/dev/null 2>&1; then
-    (
-      ST=$(gh pr view "$BRANCH" --json state --jq .state 2>/dev/null)
-      if [ -n "$ST" ]; then
-        printf '%s\t%s\t%s\n' "$BRANCH" "$ST" "$NOW" > "$PR_CACHE.tmp" 2>/dev/null \
-          && mv "$PR_CACHE.tmp" "$PR_CACHE" 2>/dev/null
-      fi
-    ) >/dev/null 2>&1 &
-    disown 2>/dev/null || true
   fi
 fi
 
