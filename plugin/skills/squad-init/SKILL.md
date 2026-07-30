@@ -88,7 +88,7 @@ Regra vira máquina, não prosa. Perguntar ao usuário e, confirmado, executar:
    | **pre-commit (Python)** | Adicionar um hook `local` de `entry: .githooks/pre-commit-quality` no `.pre-commit-config.yaml` |
    | **nenhum gerenciador** | Aí sim: `.githooks/pre-commit` chamando o script + `git config core.hooksPath .githooks` |
 
-   Em seguida, **adaptar os comandos do hook à stack** do projeto (bloco de detecção no topo do script; comandos vêm da stack-convention → "Standard commands"). Ao passar, o hook grava o marcador `$GIT_DIR/squad-gate-ok` — é ele que o push-gate do plugin verifica.
+   Em seguida, **adaptar os comandos do hook à stack** do projeto (bloco de detecção no topo do script; comandos vêm da stack-convention → "Standard commands"). Ao passar, o hook grava o marcador `$GIT_DIR/squad-gate-ok` — é ele que o `pre-bash` do plugin verifica.
 
    **Provar o efeito antes de declarar feito (AM-35).** Instalado não é ativo. Fazer **um commit real** e rodar o snippet canônico de squad-core §M (`${CLAUDE_PLUGIN_ROOT}/template/docs/squad-core.md`): marcador acompanhou o HEAD = gate CONECTADO; defasado = gate ÓRFÃO — o hook não está na cadeia. Não marcar o passo como concluído nesse estado: ou encadeia, ou registra explicitamente como pendência aceita (no `SQUAD_VERSION` e no `LESSONS_LEARNED`), com a decisão do usuário.
 
@@ -99,9 +99,9 @@ Regra vira máquina, não prosa. Perguntar ao usuário e, confirmado, executar:
    ```
    **Preencher os `TODO(stack)`** com os comandos da stack-convention (setup, install com lockfile, format/lint/typecheck, testes com cobertura, build). Workflow com TODO restante FALHA de propósito — não deixar placeholder em produção.
 
-3. Informar: o **push-gate** do plugin (hook PreToolUse) bloqueia `git push` sem o gate rodado no HEAD atual; escape consciente `SQUAD_SKIP_GATE=1` (registrar o porquê no PR).
+3. Informar: o **`pre-bash`** do plugin (hook PreToolUse em Bash) AVISA em `git push` sem o gate rodado no HEAD atual — advisory por padrão desde a v1.8.0, não bloqueia. Bloqueio duro é opt-in do projeto (`SQUAD_GATE_ENFORCE=1` ou arquivo `.claude/squad/project/gate-enforce`); escape consciente `SQUAD_SKIP_GATE=1` inline no comando (registrar o porquê no PR).
 
-Os demais hooks do plugin (SessionStart carrega memória + persona; reminders) já ficam ativos com o plugin instalado — nada a copiar. Opt-out: desabilitar o plugin no projeto.
+Os demais hooks do plugin (SessionStart carrega memória + persona; architecture-reminder pós-Edit) já ficam ativos com o plugin instalado — nada a copiar. Opt-out: desabilitar o plugin no projeto.
 
 ### 5b. Plugin complementar (projeto COM UI)
 

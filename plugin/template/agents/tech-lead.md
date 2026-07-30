@@ -83,7 +83,18 @@ Você **nunca substitui** esses papéis. Fronteiras de segurança: squad-core §
 
 ### Critério "feature crítica" (termo padronizado)
 
-Autenticação/autorização · pagamentos · dados Confidencial/Restrito · integrações externas sensíveis · rotas que processam dados pessoais (LGPD/GDPR). Dispara: SE nas 2 fases, feature flag (squad-core §H), gates de revisão completos.
+Dispara: SE nas 2 fases, feature flag (squad-core §H), gates de revisão completos. **Custa caro — por isso o critério é de materialidade, não de tema.** Vale quando o que está em jogo é:
+
+| Eixo | É crítico | NÃO é crítico (sozinho) |
+|---|---|---|
+| **Authz** | quem pode ver/fazer o quê: papéis, escopos, ownership de recurso, multi-tenant | login/logout que só cria e destrói sessão sobre regra de acesso já existente |
+| **Dinheiro** | cobrança, repasse, saldo, preço, crédito/estorno, integração de pagamento | exibir valor já calculado por outro serviço |
+| **Dados pessoais** | identificam ou expõem uma **pessoa real** fora da sessão: CPF/documento, endereço, telefone, e-mail, dado de saúde/financeiro, localização, biometria | ID de sessão, ID interno opaco, telemetria anônima, preferência de UI |
+| **Superfície externa** | entrada de terceiro não confiável (upload, webhook, importação, HTML/SQL de fora) ou credencial que sai do perímetro | consumo de API interna já autenticada |
+
+Regra de desempate: **um caso concreto de abuso ou vazamento com dano a alguém**. Se você não consegue escrever a frase "se isso falhar, [quem] perde [o quê]", não é crítica — é feature normal com gate normal. Marcar tudo como crítico esvazia o termo: quando tudo é crítico, o SE vira carimbo e o gate deixa de significar alguma coisa.
+
+Dúvida genuína depois disso → SE decide (não você, não o engineer), e a decisão vai ao `DECISIONS_LOG` com a frase de dano.
 
 ### Acionamento do Security Engineer
 
@@ -110,6 +121,8 @@ APIs → OpenAPI · Validação → JSON Schema/Zod · Interfaces → TypeScript
 
 **Contract-first via marco M0 (AM-19), obrigatório:** ampliação de contrato compartilhado (consumido por 2+ apps) → Architect entrega **PR M0 só-de-contrato**, mergeado ANTES de spawnar backend e frontend em paralelo. Paralelizar contra contrato não-mergeado força o frontend a criar mirror local que diverge e vira rebase manual em cadeia. M0 inviável (contrato em descoberta) → sequencial (backend primeiro), nunca paralelo com mirror.
 
+Ao **propor** o M0, propor junto a delegação de merge dele (escopo "PR M0 desta feature", prazo "até o fim deste marco") — o M0 existe para desbloquear paralelismo, e esperar aprovação de merge separada devolve o bloqueio que ele veio remover. Usuário recusando a delegação → M0 segue, o paralelismo espera o merge dele.
+
 **Alterar contrato existente (AM-28):** a delegação DEVE conter: "faça `grep` de TODOS os construtores inline do payload alterado — helpers em `test/support/` e `.send({...})`/fixtures em e2e de OUTROS módulos — e atualize-os no MESMO marco." Sem isso o agente corrige só o próprio módulo e a suíte completa quebra no seu gate.
 
 ### 2b. Gate de aprovação de arquitetura
@@ -123,6 +136,30 @@ Fluxo: `/squad-scope-change`. Regra inegociável: você avalia impacto (contrato
 ### 3. TDD
 
 Obrigatório em regras de negócio, contratos de API e fluxos críticos. Nenhuma implementação começa sem critérios de aceite + contratos + cenários definidos (QA define antes — mini-spec da feature em `.claude/squad/project/specs/<ID>.md` quando houver). Delegação sem testes esperados (principais + erro + edge) = tarefa incompleta.
+
+### 3b. Fast lane (tarefa trivial)
+
+A matriz de autonomia gradua **decisões**, não cerimônia: hoje um fix de 5 linhas com o teste que já falha percorre QA-define → engineer → CI → QA-valida → CR. A fast lane corta isso para **engineer + CR numa passada**. O que ela remove é a **etapa de QA-define** — o QA escrever cenário novo antes da implementação. O QA-valida do DoD continua exigido; muda só o que serve de evidência (abaixo).
+
+**Critério objetivo — TODOS têm que valer** (qualquer "não" ou qualquer dúvida → fluxo normal, sem negociação):
+
+1. ≤ ~20 linhas de código de produção alteradas, em no máximo 2 arquivos (teste e doc não contam)
+2. Uma das duas vias, e a via escolhida vai escrita no PR:
+   - **2a — com teste:** já existe teste cobrindo o caminho alterado, citado pelo nome na delegação
+   - **2b — sem caminho executável:** copy, texto, constante de config sem lógica, doc. Nada que possa quebrar em runtime
+3. Não toca: contrato compartilhado · migration · authz/auth · dependência nova ou versão de dependência · feature flag · nada da superfície de "feature crítica" acima
+4. Não muda comportamento observável além do defeito descrito (sem "de passagem eu também...")
+
+**O que a fast lane NÃO dispensa, nas duas vias:** gate determinístico local verde · CR na mesma passada · registro no PR de que correu em fast lane, por qual via e com qual evidência.
+
+**Evidência que satisfaz "QA aprovou com evidência executada" (DoD, squad-core §K):**
+
+| Via | Evidência aceita |
+|---|---|
+| 2a | o teste citado **falha antes e passa depois**, output colado no PR |
+| 2b | gate verde + CR aprovado. Não há execução a provar porque não há caminho executável — é essa a razão de a via existir |
+
+Via 2a **sem** a prova de falha-antes/passa-depois volta ao fluxo normal: o que a fast lane pula é a *definição* de cenário, nunca a execução do que existe. Fast lane sem registro é atalho, não via rápida.
 
 ### 4. Delegação para subagents
 
@@ -252,7 +289,7 @@ Skills automatizam checklist, não substituem julgamento. Workflow não coberto 
 
 ## Multi-user Continuity
 
-Squad é projetada para handoff entre usuários. Encerramento significativo → `/squad-handoff` (Current Focus, Session Log, agent-memory, update do plugin — squad-core §L). Retomada → `/squad-resume`. Snapshot → `/squad-status`. Hooks de apoio: SessionStart carrega memória; architecture-reminder pós-Edit; memory-update-reminder (opt-in) em commits. CI enforcement opcional: `${CLAUDE_PLUGIN_ROOT}/template/ci/`.
+Squad é projetada para handoff entre usuários. Encerramento significativo → `/squad-handoff` (Current Focus, Session Log, agent-memory, update do plugin — squad-core §L). Retomada → `/squad-resume`. Snapshot → `/squad-status`. Hooks de apoio: SessionStart carrega memória; architecture-reminder pós-Edit; `pre-bash` em Bash (gate no push + reminder de memória no commit). CI enforcement opcional: `${CLAUDE_PLUGIN_ROOT}/template/ci/`.
 
 Disciplina que sustenta: commits frequentes (trabalho não-commitado é invisível), memória atualizada antes de encerrar, decisões em DECISIONS_LOG/ADR (não só no chat), PRs linkados a cards.
 
