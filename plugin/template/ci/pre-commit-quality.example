@@ -39,13 +39,45 @@ run_gate() {
 ambiente_ok=1
 aviso_ambiente() { echo "[ambiente] $1"; ambiente_ok=0; }
 
+cd "$(git rev-parse --show-toplevel)" || exit 1   # checar o REPO, nao o diretorio de chamada
+
 if [ -f package.json ] && command -v node >/dev/null 2>&1; then
-  # range de engines.node do projeto vs node em uso (compara so o major — suficiente
-  # para o caso real: ">=22.0.0 <23.0.0" com v26 instalado)
-  req_major=$(sed -n 's/.*"node"[[:space:]]*:[[:space:]]*"[^0-9]*\([0-9]\{1,\}\).*/\1/p' package.json | head -1)
+  # Range de engines.node vs node em uso (so o major).
+  #
+  # [!] RESPEITAR O OPERADOR — a primeira versao nao respeitava. Ela extraia o primeiro
+  # numero do range e comparava por IGUALDADE: num projeto que pede ">=22", o v26 (que
+  # SATISFAZ o range) abortava TODO push com "pede major 22", e a mensagem oferecia
+  # --no-verify como saida. Um pre-check anti-obstaculo que virou o obstaculo e ainda
+  # ensinou a burla. Caso real: trokey-franchising, 2026-07-29 (AM-46/AM-47).
+  engines_node=$(sed -n 's/.*"node"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' package.json | head -1)
+  req_major=$(printf '%s' "${engines_node}" | sed -n 's/[^0-9]*\([0-9]\{1,\}\).*/\1/p')
+  # Teto explicito, quando o range e FECHADO (">=22.0.0 <23.0.0" — o caso que motivou o
+  # pre-check original; v26 de fato nao serve ali).
+  # `|| true` obrigatorio: sob `set -euo pipefail`, um grep/sed SEM match retorna nao-zero e
+  # MATA o script em silencio — o gate sairia sem rodar nada e sem dizer por que, justamente
+  # nos ranges sem teto (">=22"), que sao a maioria. Pego na execucao real do example (AM-46).
+  upper_major=$(printf '%s' "${engines_node}" | sed -n 's/.*<=\{0,1\}[[:space:]]*\([0-9]\{1,\}\).*/\1/p' || true)
+  upper_op=$(printf '%s' "${engines_node}" | grep -o '<=\{0,1\}' | head -1 || true)
   cur_major=$(node -v | sed 's/^v\([0-9]*\).*/\1/')
-  if [ -n "${req_major}" ] && [ -n "${cur_major}" ] && [ "${req_major}" != "${cur_major}" ]; then
-    aviso_ambiente "Node em uso: v${cur_major} · package.json pede major ${req_major}. O package manager recusa rodar os scripts. Use \`nvm use ${req_major}\` (ou fnm/volta) e rode de novo."
+
+  if [ -n "${req_major}" ] && [ -n "${cur_major}" ]; then
+    case "${engines_node}" in
+      '>='*|'>'*)
+        if [ "${cur_major}" -lt "${req_major}" ]; then
+          aviso_ambiente "Node em uso: v${cur_major} · package.json pede ${engines_node}. Use \`nvm use ${req_major}\` (ou fnm/volta) e rode de novo."
+        elif [ -n "${upper_major}" ] &&
+             { { [ "${upper_op}" = "<" ]  && [ "${cur_major}" -ge "${upper_major}" ]; } ||
+               { [ "${upper_op}" = "<=" ] && [ "${cur_major}" -gt "${upper_major}" ]; }; }; then
+          aviso_ambiente "Node em uso: v${cur_major} · package.json pede ${engines_node} (passa do teto). Use \`nvm use ${req_major}\` (ou fnm/volta) e rode de novo."
+        fi
+        ;;
+      *)
+        # Major fixo — pin ("22", "22.x") e caret ("^22.1.0" = >=22.1.0 <23.0.0).
+        if [ "${cur_major}" != "${req_major}" ]; then
+          aviso_ambiente "Node em uso: v${cur_major} · package.json fixa ${engines_node}. Use \`nvm use ${req_major}\` (ou fnm/volta) e rode de novo."
+        fi
+        ;;
+    esac
   fi
   if [ ! -d node_modules ]; then
     aviso_ambiente "node_modules ausente — rode \`pnpm install\` (ou npm/yarn) antes."
@@ -55,8 +87,8 @@ fi
 if [ "${ambiente_ok}" -ne 1 ]; then
   echo ""
   echo "[pre-commit-quality] ABORTADO NO PRE-CHECK — ambiente, nao qualidade."
-  echo "Corrija o ambiente acima; o gate nao roda as verificacoes assim."
-  echo "Se precisa commitar agora: git commit --no-verify (e registre o porque no PR)."
+  echo "Corrija o ambiente acima e rode de novo; NAO use --no-verify para contornar"
+  echo "(se o pre-check errou, o bug e dele — conserte o pre-check, nao pule o gate)."
   exit 1
 fi
 

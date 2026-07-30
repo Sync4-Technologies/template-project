@@ -60,6 +60,17 @@ Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualq
 
 ## Changelog
 
+### 1.14.0 (2026-07-29)
+
+Backport do trokey-franchising (AM-42..AM-47) — dois marcos consecutivos entregues com o protocolo de review caçador renderam 23 achados sobre suítes 100% verdes. As duas famílias que se repetiram viraram checklist, e o pre-check da 1.12.0 levou um fix urgente.
+
+- **[fix] O pre-check de ambiente da 1.12.0 abortava todo push em Node acima do mínimo.** Ele extraía o primeiro número do range de `engines.node` e comparava por **igualdade**: num projeto que pede `">=22"`, o v26 (que **satisfaz** o range) era barrado com "pede major 22" — e a mensagem oferecia `--no-verify` como saída. Um pre-check cujo propósito declarado é *"obstáculo ensina o hábito do --no-verify"* virou o obstáculo e ensinou a burla. Agora respeita o operador: `>=`/`>` reprovam só abaixo do mínimo **e** acima do teto quando o range é fechado (`">=22.0.0 <23.0.0"`, o caso que motivou o pre-check original, segue reprovando v26); pin e caret exigem o major. Roda depois do `cd` para a raiz, para checar o repositório e não o diretório de chamada. Verificado nos 12 casos das 3 formas de range. **Quem já reconciliou para 1.12.0 tem o gate quebrado — atualizar é urgente**
+- **Checklist de marcador de idempotência** (`template/docs/feature-spec.md`, `backend-engineer`): (a) o WHERE da marcação leva o marcador **e** o predicado de estado — marcador sozinho só fecha a corrida entre dois ticks do mesmo job, não contra a transação do usuário; (b) campo de elegibilidade que muda **reseta** os marcadores, por mudança de valor e nunca por presença da chave no payload — as duas pontas do mesmo erro, uma mata o alerta para sempre, a outra duplica alerta e evento; (c) teste de corrida com lock explícito, e que prove o **mecanismo**, não a consequência
+- **Seed de e2e sem assert de status vira regra** (`qa-engineer`, `backend-engineer`): um 422 engolido no `beforeAll` deixou uma suíte rodando com a configuração errada por dias, com os vermelhos aparecendo em dois testes sem relação com a causa. Comparação de tempo ancora no valor lido do sistema, nunca no relógio local (~300 ms entre host e Postgres bastaram)
+- **Marco que herda lições pede reviewer de contexto limpo** (`tech-lead` §6): quem ditou a lição tem viés de confirmação ao checar se foi seguida — o reviewer novo achou 2 MAJOR, um deles dentro da correção ditada pelo reviewer anterior. Re-verificar fechamento, ao contrário, volta ao mesmo reviewer. Junto: achado que alcança código já em produção se corrige no mesmo ciclo, em commit separado e com teste discriminante
+- **Hook novo não vale até o repo principal trocar de branch** (`/squad-init` passo 5, `/squad-resume` 3c): `core.hooksPath` é absoluto e o dispatcher resolve o script no working tree do **principal** — parado em outra branch, o hook sai `exit 0` em silêncio em todas as worktrees, com o arquivo presente na worktree e já em `main`
+- **Porte de script é código, não documentação** (`/squad-init`, `/squad-resume`): copiar executável do template para o projeto exige rodá-lo uma vez no ambiente real antes de commitar. Foi assim que o pre-check quebrado chegou a um projeto
+
 ### 1.13.0 (2026-07-29)
 
 Reconciliação de governança deixa de ser trabalho manual quando não há nada a decidir.

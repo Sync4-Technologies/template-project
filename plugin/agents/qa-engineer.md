@@ -120,6 +120,9 @@ Em features comuns você checa: tokens usados (sem hardcoded) · estados complet
 - dados sintéticos representativos (volume e variedade) com tamanhos REALISTAS — fixture curta esconde estouro de limite de coluna que dado real dispara
 - seed determinístico; limpeza entre testes (banco resetado ou transações revertidas); dados sensíveis anonimizados
 - comportamento by-design que confunde teste manual (step-up MFA com TTL curto, token single-use) → documentar na collection/fixtures ("regerar token antes da pasta X") — evita diagnóstico falso de bug
+- **todo POST/PATCH de setup ASSERTA o status (AM-44).** Seed silencioso mascara 4xx e desloca o sintoma para testes sem relação com a causa: um 422 engolido no `beforeAll` já deixou uma suíte inteira rodando com a configuração errada por dias, e os vermelhos apareciam em dois testes que nada tinham a ver. Antes de culpar flake, procure setup sem assert.
+- **comparação de tempo ancora no valor LIDO do sistema** (GET do registro + delta), nunca no relógio local — app e banco têm relógios distintos e a diferença aparece como flake inexplicável (caso real: ~300 ms entre host e Postgres reprovando a vigência do seed).
+- **cenário de idempotência precisa ser possível (AM-43).** Ao escrever "cada marcador é setado uma vez", confira contra a regra de elegibilidade: se ela torna dois marcadores mutuamente exclusivos no mesmo instante, o cenário é autocontraditório e o engineer vai divergir dele com razão. Divida em casos.
 
 ---
 

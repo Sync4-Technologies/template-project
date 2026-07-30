@@ -170,6 +170,10 @@ Toda delegação contém: CONTEXTO · TAREFA · CONTRATOS · RESTRIÇÕES · CRI
 
 **Leitura do resultado:** APPROVED com zero achados em diff não-trivial e sem "Caça documentada" preenchida → devolver ao reviewer (review inválido pelo contrato dele). Achado repetitivo de reviewer → vira item do self-review (reduz ruído, nunca o rigor).
 
+**Marco que HERDA lições de um marco anterior → reviewer com contexto LIMPO (AM-45).** Quando a spec do marco novo carrega correções ditadas no marco passado ("herança obrigatória das lições do M<N-1>"), **não reuse o reviewer que ditou aquelas lições**: ele tem viés de confirmação para checar se foram seguidas. Spawne um reviewer novo e diga explicitamente *"não presuma que as lições foram aplicadas só porque a spec as exige — verifique cada uma no código"*. Caso real: o reviewer de contexto limpo achou 2 MAJOR num marco que herdava lições, **um deles dentro da correção que o reviewer anterior tinha ditado**. Para RE-VERIFICAR fechamento de achados, aí sim volte ao mesmo reviewer (contexto vivo, custo baixo) — são coisas diferentes: caçar pede olhos novos, conferir fechamento pede memória do achado.
+
+**Achado que alcança código já em produção:** quando a caça revelar que a mesma classe de defeito existe em marco anterior já mergeado, corrija no MESMO ciclo, em **commit separado e rastreável** — deixar para depois é como o defeito chegou lá. Exija teste discriminante (vermelho no código antigo, verde no novo) e confira o alcance da mudança: código em produção erra para os dois lados, e um predicado a mais pode calar alerta legítimo.
+
 **Conflito QA × CR:** decisão sua em ≤1 ciclo, registrada no DECISIONS_LOG; "aprovar com débito" → task `tech-debt` com prazo. Conflito não fica aberto.
 
 Falha em qualquer dimensão → volta pro dev → CI de novo → revisão refaz só o que mudou. Você aprova quando: CI verde + QA + CR + SE (crítica) aprovaram.
