@@ -62,3 +62,12 @@
 - **ADRs relacionados:**
 - **DECISIONS_LOG.md relacionados:**
 - **Seções de ARCHITECTURE.md relacionadas:**
+- [2026-07-29/30] `gh pr view`/`mergeStateStatus` retorna stale por segundos apos qualquer acao remota (merge, push). Aconteceu 4x nesta sessao. SEMPRE reler antes de concluir — a UP-11 existe por isso e provou o valor de novo.
+- [2026-07-29/30] BLOCKED num PR tem TRES causas neste setup, com o mesmo sintoma: (a) 2a check-suite do double-trigger (UP-14, resolvido); (b) fila do runner unico (4 repos, 1 slot); (c) run PRESO — `queued` com runner `busy=false`, resolve com `gh run rerun`, e se repetir reiniciar o launchd. Diagnosticar por `gh api .../check-runs` + status do runner ANTES de afirmar causa.
+- [2026-07-29/30] Errei ao afirmar "CI progredindo normalmente" olhando um step in_progress — o run terminou em falha. Snapshot nao e tendencia: para afirmar estado de run, esperar terminal ou dizer explicitamente que e parcial.
+- [2026-07-29/30] `nvm use` do usuario NAO alcanca os meus comandos (shell proprio por chamada). Para rodar gate em projeto com engines pinado: `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use <major>` no MESMO comando.
+- [2026-07-29/30] `git add -A` em repo com sujeira do usuario commita arquivo alheio (peguei `.infisical.json` no concilia). Em repo que nao e o da sessao: `git add -- <paths especificos>`, nunca `-A`.
+- [2026-07-29/30] Gate local vermelho por AMBIENTE nos 3 projetos no mesmo dia (Node fora do range, node_modules incompleto, prettier varrendo worktree aninhada, Prisma client velho). Antes de tratar como qualidade: rodar o gate no HEAD limpo (`git stash`) e provar se e pre-existente. E consertar ambiente e barato — `pnpm install --frozen-lockfile` + `prisma generate` resolveram 2 dos 3.
+- [2026-07-29/30] Prettier varrendo `.claude/worktrees/` = projeto checado 2x (103 de 104 avisos vinham de la, no concilia). Todo projeto com worktree do Claude Code precisa disso no ignore do formatter/linter.
+- [2026-07-29/30] Reconhecer marcador por substring erra igual em toda forma: `"BREAKING" in linha` marcou como breaking a entrada que DESCREVE o procedimento de reconciliacao. Terceira ocorrencia (push-gate, coletor, changelog). Sempre delimitador: `[BREAKING]`, `git commit` como primeiro verbo, etc.
+- [2026-07-29/30] Promessa dita em prosa ("vale implementar na proxima") NAO sobrevive a release — a v1.12.0 saiu sem a reconciliacao automatica e o usuario cobrou. Melhoria aceita vira card na hora (UP-23).
