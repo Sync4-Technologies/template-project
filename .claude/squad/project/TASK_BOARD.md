@@ -7,8 +7,8 @@
 ## Current Focus
 
 - **Ultima sessao:** 2026-07-30 por Pablo — FASE 2 inteira (2.1-2.5) + backport do trokey; DUAS releases (v2.0.0 e v2.1.0)
-- **Em andamento:** nada. **v2.0.0 e v2.1.0 RELEASED** — tags `v2.0.0` (`1ff6eac`) e `v2.1.0` (`50372a2`) confirmadas no remoto; plugin user-scope em **2.1.0**. PRs #67, #68, #69, #70, #71 mergeados; #66 FECHADO (obsoleto: o fix dele ja saira na 1.13.1 por outro caminho; conteudo de licao reaproveitado no #69). Nenhum PR aberto. Reconciliacao desta sessao: SQUAD_VERSION 1.13.0 -> 1.13.1 (automatica)
-- **Proximo passo:** (a) **validar a 2.0.0/2.1.0 em sessao de trabalho real ANTES de propagar aos consumidores** — o `pre-bash.sh` roda em todo comando Bash de toda sessao, foi reescrito nesta e teve 2 MAJOR achados DEPOIS de parecer pronto; o salto em trokey/concilia/jobtracker e BREAKING e manual (`squad-migrate --apply` nao grava sozinho nesse delta, por desenho); (b) **UP-29**: dar gatilho executavel ao gate "CR aprovou" no fluxo de release — hoje ele so roda se alguem lembrar; (c) FASE 3 (metricas que geram acao, itens 3.1-3.4)
+- **Em andamento:** nada. **Propagacao concluida (2026-07-31)**: os 3 consumidores em 2.1.0 — trokey `5533918`, concilia `cf1f2bf`, jobtracker `1bd373d`. O BREAKING foi no-op no trokey e no jobtracker; no concilia exigiu acao (CLAUDE.md documentava hook removido). **v2.0.0 e v2.1.0 RELEASED** — tags `v2.0.0` (`1ff6eac`) e `v2.1.0` (`50372a2`) confirmadas no remoto; plugin user-scope em **2.1.0**. PRs #67, #68, #69, #70, #71 mergeados; #66 FECHADO (obsoleto: o fix dele ja saira na 1.13.1 por outro caminho; conteudo de licao reaproveitado no #69). Nenhum PR aberto. Reconciliacao desta sessao: SQUAD_VERSION 1.13.0 -> 1.13.1 (automatica)
+- **Proximo passo:** (a) **GATE-PRECHECK-SEMVER** — fix do pre-check (range sem espaco perde o teto). Bloqueia o porte do pre-check nos 3 consumidores, que ficaram com versoes ANTIGAS e diferentes entre si: concilia com a original (compara por igualdade), jobtracker com a intermediaria (sem teto), trokey com a dele (#96); (b) **UP-29**: dar gatilho executavel ao gate "CR aprovou" no fluxo de release — hoje ele so roda se alguem lembrar; (c) FASE 3 (metricas que geram acao, itens 3.1-3.4). **A validacao da 2.0.0/2.1.0 em uso real segue nao feita** — a propagacao aconteceu antes dela por decisao do usuario, e o `pre-bash.sh` ainda nao rodou uma sessao inteira em lugar nenhum
 - **Bloqueios:** nenhum
 - **Branch ativo:** `chore/handoff-v210` (worktree `squad-resume-f0c4cd`); `main` em `50372a2` (v2.1.0), `develop` em `948a7af`
 - **Modo do projeto:** Production
@@ -54,9 +54,9 @@ Os tres ficam defasados por 1 versao (1.12 vs 1.13 instalada) — **e a ultima v
 | ID | Tarefa | Agente | Observação |
 |----|--------|--------|-----------|
 | FASE-1C | Dieta opcional: stack-conventions ~1.100 linhas cortáveis (genérico fora; gotchas/comandos ficam) | TL | Baixa prioridade — carrega sob demanda, não pesa em toda sessão |
+| GATE-PRECHECK-SEMVER | **Pre-check aprova Node fora do range quando o `engines.node` nao tem ESPACO entre as constraints.** A 1.13.1 trocou a comparacao por igualdade por um loop `for c in ${node_range}` — que separa por espaco. `">=22.0.0<23.0.0"` (forma valida de semver, usada pelo concilia) vira UM token: o `>=22` e avaliado, o teto `<23` e PERDIDO, e Node 26 passa. Provado no ambiente real: sem espaco PASSA, com espaco ABORTA, `">=22"` PASSA. Consequencia: os 3 projetos ficaram SEM o porte do pre-check novo nesta reconciliacao, porque portar seria regressao no concilia (hoje ele aborta certo, por acidente da comparacao antiga). **Fix:** tokenizar comparadores por regex (`(>=|<=|>|<|\^|~)?\s*\d+`) em vez de split por whitespace | DevOps | Achado ao propagar a 2.1.0 (2026-07-31); bloqueia o porte do pre-check nos 3 consumidores |
 | GATE-PRECHECK-MONOREPO | Pre-check de ambiente so confere node_modules da RAIZ; em monorepo pnpm um workspace pode estar sem deps (caso concilia: packages/ui) | TL | Achado na reconciliacao 1.12; candidato a proxima release |
 | CI-LINT-OPENAPI | Lint dos OpenAPI movidos para packages/contracts no concilia e jobtracker — hoje sao doc, nao contrato verificado (2 estavam com YAML invalido e ninguem sabia) | DevOps | AM-30 fez a metade: contrato esta no repo, falta o CI olhar |
-| FASE-2 | Performance/fluxo — itens 2.1-2.5 (2.6 e 2.7 ja feitos). **Proximo passo da sessao** | TL | [plano](docs/PLANO_EVOLUCAO_SQUAD.md); batalha ja validou a Fase 0 |
 | FASE-3 | Métricas acionáveis + OTEL degrau 1 | TL | [plano](docs/PLANO_EVOLUCAO_SQUAD.md) |
 | UP-08-REVERT | Quando billing voltar (~2026-08-01): `gh variable delete CI_RUNNER` nos 4 repos + desligar runner | DevOps | Runbook: trokey `ops/self-hosted-runner.md` §"Quando o billing voltar" |
 
@@ -83,6 +83,8 @@ Os tres ficam defasados por 1 versao (1.12 vs 1.13 instalada) — **e a ultima v
 | ID | Entrega | Concluído em |
 |----|---------|-------------|
 | v1.0.0–v1.5.0 | Squad empacotada como plugin (marketplace pdati); IA no centro, squad-core dedup, plugin-ci/push-gate/metrics, frontend-design, rename dev-squad | 2026-07-05 (PRs #12–#28) |
+| v2.0.0 | FASE 2 — hooks PreToolUse fundidos em `pre-bash.sh` com early-exit (83.6ms -> 5.1ms por comando Bash, -94%), `gh pr view` fora do caminho sincrono, fast lane, "feature critica" por materialidade, M0+delegacao de merge. UP-02 fechada. Suite de comportamento do hook: 35 assercoes | 2026-07-30 (PRs #67/#68, tag `1ff6eac`) |
+| v2.1.0 | Backport trokey AM-42..AM-46 (marcador de idempotencia, seed de e2e sem assert, reviewer de contexto limpo, hooksPath do dispatcher) | 2026-07-30 (PRs #69/#71, tag `50372a2`) |
 | v1.6.0 | 11 subagents nativos + advisor, Protocolo de Dúvida, Modo Delegado, UP-01 | 2026-07-26 (PRs #31/#32) |
 | v1.7.0 | Backport trokey AM-18..35 (AM-18 era regressão da 1.6.0) | 2026-07-26 (PRs #33–#36) |
 | v1.8.0 | Push-gate advisory, menção≠execução, skip inline, CI_RUNNER, ciclo update handoff/resume, delegação de merge | 2026-07-26 (PRs #37/#38, tag `58713b4`) |
