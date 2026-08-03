@@ -6,11 +6,11 @@
 
 ## Current Focus
 
-- **Ultima sessao:** 2026-07-30 por Pablo — FASE 2 inteira (2.1-2.5) + backport do trokey; DUAS releases (v2.0.0 e v2.1.0)
+- **Ultima sessao:** 2026-07-31 por Pablo — propagacao da v2.1.0 aos 3 consumidores + achado do bug de semver no pre-check (a de 2026-07-30 entregou a FASE 2 e as duas releases)
 - **Em andamento:** nada. **Propagacao concluida (2026-07-31)**: os 3 consumidores em 2.1.0 — trokey `5533918`, concilia `cf1f2bf`, jobtracker `1bd373d`. O BREAKING foi no-op no trokey e no jobtracker; no concilia exigiu acao (CLAUDE.md documentava hook removido). **v2.0.0 e v2.1.0 RELEASED** — tags `v2.0.0` (`1ff6eac`) e `v2.1.0` (`50372a2`) confirmadas no remoto; plugin user-scope em **2.1.0**. PRs #67, #68, #69, #70, #71 mergeados; #66 FECHADO (obsoleto: o fix dele ja saira na 1.13.1 por outro caminho; conteudo de licao reaproveitado no #69). Nenhum PR aberto. Reconciliacao desta sessao: SQUAD_VERSION 1.13.0 -> 1.13.1 (automatica)
 - **Proximo passo:** (a) **GATE-PRECHECK-SEMVER** — fix do pre-check (range sem espaco perde o teto). Bloqueia o porte do pre-check nos 3 consumidores, que ficaram com versoes ANTIGAS e diferentes entre si: concilia com a original (compara por igualdade), jobtracker com a intermediaria (sem teto), trokey com a dele (#96); (b) **UP-29**: dar gatilho executavel ao gate "CR aprovou" no fluxo de release — hoje ele so roda se alguem lembrar; (c) FASE 3 (metricas que geram acao, itens 3.1-3.4). **A validacao da 2.0.0/2.1.0 em uso real segue nao feita** — a propagacao aconteceu antes dela por decisao do usuario, e o `pre-bash.sh` ainda nao rodou uma sessao inteira em lugar nenhum
 - **Bloqueios:** nenhum
-- **Branch ativo:** `chore/handoff-v210` (worktree `squad-resume-f0c4cd`); `main` em `50372a2` (v2.1.0), `develop` em `948a7af`
+- **Branch ativo:** nenhuma (worktree `squad-resume-f0c4cd`); `main` em `06e3437`, `develop` em `9b37226` — ALINHADAS, 0 PRs abertos nos 4 repos
 - **Modo do projeto:** Production
 
 ### v2.0.0 — o que muda para quem consome (BREAKING)

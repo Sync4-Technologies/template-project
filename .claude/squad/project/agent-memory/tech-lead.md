@@ -20,6 +20,11 @@
 
 ## Learnings acumulados
 
+- [2026-07-31] Corpo de PR/issue via `gh ... --body "..."` com crases QUEBRA: o shell interpreta como substituicao de comando (`command not found: main`) e o texto chega mutilado. Sempre `--body-file -` com heredoc de delimitador entre aspas (`<<'EOF'`). Mesma familia do erro de python inline com aspas ja registrado aqui.
+- [2026-07-31] NAO empurrar commit novo para PR ja anunciado como "pronto para merge" sem avisar na mensagem que o head mudou: o usuario mergeia pelo estado que a interface mostrava e o commit fica orfao (aconteceu no #75 -> teve que virar o #76). Se acrescentar algo, dizer explicitamente no chat, nao so comentar no GitHub.
+- [2026-07-31] Propagar governanca NAO e validar: o plugin e user-scope, entao o hook novo ja valia nos consumidores antes de qualquer reconciliacao. O que a reconciliacao faz e registrar a versao e provar que a acao do BREAKING era (ou nao) necessaria. Confundir os dois inverte a urgencia — o `grep` no `settings.json` era urgente, nao adiavel.
+- [2026-07-31] Rodar o script portado no ambiente real (AM-46) pegou o bug de semver que 7 cenarios de teste nao pegaram. Executar > reler, sempre que o artefato for executavel.
+
 - [2026-07-30] `squad-metrics.sh` reporta `revisoes=0` quando o CR rodou como subagent em sessao — ele so ve review postado no GitHub (AM-39). Nao confundir com gate verde: no mesmo range em que o coletor disse `achados-review=0`, o CR tinha achado 6. A contagem real vai a mao no Session Log, sempre.
 
 - [2026-07-30] Suite de teste que cria repo fixture e roda de dentro de um hook do git: `unset GIT_DIR GIT_INDEX_FILE GIT_WORK_TREE ...` no topo, SEMPRE. `git -C <outro-repo>` NAO sobrepoe essas vars — o teste opera no indice do repo real. Sintoma no pior formato: VERDE rodado a mao, VERMELHO dentro do gate, acusando o codigo em vez do teste. E o `git init` do fixture chega a reinicializar o git dir do repo real (marcou `core.bare=true`, quebrou git em todas as worktrees). UP-28.
