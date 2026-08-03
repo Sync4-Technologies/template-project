@@ -68,6 +68,7 @@ Adotar a squad numa **maquina** deixa de ser trabalho manual. O `squad-migrate.p
 - **Nao duplica criterio**: quem decide o que e customizacao local continua sendo o `squad-migrate` (direcao do diff), chamado aqui via `--json`. Uma fonte so.
 - **Dry-run por padrao; nada e apagado.** Resto user-scope e **movido** para `~/.claude/agents-disabled/` — reversivel com um `mv`. O que exige julgamento (`~/.claude/skills/`, `commands/`, bloco `hooks` no settings.json do usuario) e listado como DECISAO, nunca tocado: pode haver coisa sua ali.
 - Fecha com o lembrete da UP-01 — plugin novo so vale na proxima sessao; nenhum script contorna isso.
+- **Caminho de escrita coberto por teste** (`scripts/ci/squad-doctor-cases.sh`, 16 assercoes no job `hooks-smoke`): fixture com `HOME` falso e `claude` stubado, nada real e tocado. O `--apply` e o unico caminho do plugin que pode destruir trabalho do usuario, entao cada regra tem contra-prova — o agente que NAO e do plugin nao pode ser movido; `~/.claude/skills/` NAO pode ser apagado; colisao em `agents-disabled/` NAO pode sobrescrever o que ja estava la.
 
 ### 2.1.0 (2026-07-30)
 
