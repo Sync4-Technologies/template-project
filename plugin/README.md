@@ -60,6 +60,16 @@ Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualq
 
 ## Changelog
 
+### 2.2.0 (2026-08-03)
+
+Adotar a squad numa **maquina** deixa de ser trabalho manual. O `squad-migrate.py` ja resolvia UM projeto; faltavam as duas pontas que sobravam para a mao — e por isso eram esquecidas.
+
+- **Novo `scripts/squad-doctor.py`**: poe uma maquina inteira no plugin, em duas fases. **(A) Maquina** — registra o marketplace, instala/atualiza o plugin e detecta os restos do modelo antigo em `~/.claude`. O caso que mais custa e o **agente user-scope com o mesmo nome de um do plugin**: ele *sombreia* o do plugin, a sessao carrega a copia velha e ninguem percebe (foi assim que 9 duplicatas ficaram ativas por semanas nesta maquina). **(B) Frota** — descobre TODOS os projetos com `.claude/squad/` sob as raizes dadas e roda o `squad-migrate` em cada um, com uma tabela de pendencias por projeto. Migrar de cabeca, projeto por projeto, e como tres projetos da mesma maquina terminam em tres estados diferentes.
+- **Nao duplica criterio**: quem decide o que e customizacao local continua sendo o `squad-migrate` (direcao do diff), chamado aqui via `--json`. Uma fonte so.
+- **Dry-run por padrao; nada e apagado.** Resto user-scope e **movido** para `~/.claude/agents-disabled/` — reversivel com um `mv`. O que exige julgamento (`~/.claude/skills/`, `commands/`, bloco `hooks` no settings.json do usuario) e listado como DECISAO, nunca tocado: pode haver coisa sua ali.
+- Fecha com o lembrete da UP-01 — plugin novo so vale na proxima sessao; nenhum script contorna isso.
+- **Caminho de escrita coberto por teste** (`scripts/ci/squad-doctor-cases.sh`, 16 assercoes no job `hooks-smoke`): fixture com `HOME` falso e `claude` stubado, nada real e tocado. O `--apply` e o unico caminho do plugin que pode destruir trabalho do usuario, entao cada regra tem contra-prova — o agente que NAO e do plugin nao pode ser movido; `~/.claude/skills/` NAO pode ser apagado; colisao em `agents-disabled/` NAO pode sobrescrever o que ja estava la.
+
 ### 2.1.0 (2026-07-30)
 
 Backport das lições da batalha `trokey-franchising` (AM-42..AM-45). Dois marcos consecutivos rodaram o protocolo de review caçador da 1.9.0 e renderam **23 achados sobre suítes 100% verdes** — as famílias que se repetiram viraram checklist.
