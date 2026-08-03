@@ -125,6 +125,24 @@ Apresentar ao usuário o que foi criado + próximo passo (`/squad-new-project` p
 
 ---
 
+## Máquina inteira no modelo antigo → plugin (AUTOMATIZADA)
+
+Máquina que ainda usa o template clonado (pré-plugin) tem trabalho em **duas** camadas, e a de máquina é a que fica esquecida:
+
+```bash
+# 1) DIAGNÓSTICO da máquina + de TODOS os projetos, dry-run
+${CLAUDE_PLUGIN_ROOT}/scripts/squad-doctor.py --roots ~/srv
+
+# 2) executa as ações seguras (instala/atualiza o plugin, move restos, propaga --apply)
+${CLAUDE_PLUGIN_ROOT}/scripts/squad-doctor.py --roots ~/srv --apply
+```
+
+Ele faz o que o `squad-migrate` não faz: registra o marketplace, instala o plugin e detecta os restos user-scope em `~/.claude` — em especial **agente com o mesmo nome de um do plugin, que sombreia o do plugin em silêncio**. E descobre os projetos sozinho, em vez de depender de você lembrar de todos. O critério de "o que é customização local" continua sendo o do `squad-migrate`, chamado por ele.
+
+Nada é apagado: resto user-scope é **movido** para `~/.claude/agents-disabled/`. `~/.claude/skills/`, `commands/` e o bloco `hooks` do settings.json do usuário viram **decisão**, nunca ação automática — pode haver coisa sua ali.
+
+**O plugin novo só vale na próxima sessão** (UP-01). Reinicie antes de usar a governança nova; nenhum script contorna isso.
+
 ## Migração de projeto legado → plugin puro (AUTOMATIZADA)
 
 Não fazer à mão: `${CLAUDE_PLUGIN_ROOT}/scripts/squad-migrate.py` faz o inventário e separa o que é determinístico do que é decisão. Funciona em qualquer estado (template clonado, híbrido, plugin puro) e em qualquer máquina.
